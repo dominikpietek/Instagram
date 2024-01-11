@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup />
+  <ItemGroup>
+    <ApplicationDefinition Update="App.xaml">
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Components\HomeUserControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Components\MessengerUserControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Components\PasswordBoxUserControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Components\ProfileUserControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\CommentView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\CreateAccountWindowView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\CreateNewPostWindowView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\FeedView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\FriendInMessengerView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\FriendRequestView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\LoginOrRegisterWindowView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\MaybeFriendView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\PostView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\StoryView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Components\HomeUserControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Components\MessengerUserControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Components\PasswordBoxUserControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Components\ProfileUserControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ResourceDictionaries\BrightModeDictionary.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ResourceDictionaries\ButtonValidationDictionary.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ResourceDictionaries\DarkModeDictionary.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\CommentView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\CreateAccountWindowView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\CreateNewPostWindowView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\FeedView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\FriendInMessengerView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\FriendRequestView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\LoginOrRegisterWindowView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\MaybeFriendView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\PostView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\StoryView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+</Project>

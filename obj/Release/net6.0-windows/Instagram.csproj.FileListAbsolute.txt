@@ -1,0 +1,14 @@
+C:\Programs\Instagram\Instagram\obj\Release\net6.0-windows\Instagram.csproj.AssemblyReference.cache
+C:\Programs\Instagram\Instagram\obj\Release\net6.0-windows\MainWindow.g.cs
+C:\Programs\Instagram\Instagram\obj\Release\net6.0-windows\Views\Feed.g.cs
+C:\Programs\Instagram\Instagram\obj\Release\net6.0-windows\Views\Post.g.cs
+C:\Programs\Instagram\Instagram\obj\Release\net6.0-windows\App.g.cs
+C:\Programs\Instagram\Instagram\obj\Release\net6.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Programs\Instagram\Instagram\obj\Release\net6.0-windows\Instagram_MarkupCompile.cache
+C:\Programs\Instagram\Instagram\obj\Release\net6.0-windows\Instagram_MarkupCompile.lref
+C:\Programs\Instagram\Instagram\obj\Release\net6.0-windows\MainWindow.baml
+C:\Programs\Instagram\Instagram\obj\Release\net6.0-windows\Views\Feed.baml
+C:\Programs\Instagram\Instagram\obj\Release\net6.0-windows\Views\Post.baml
+C:\Programs\Instagram\Instagram\obj\Release\net6.0-windows\Instagram.dll
+C:\Programs\Instagram\Instagram\obj\Release\net6.0-windows\refint\Instagram.dll
+C:\Programs\Instagram\Instagram\obj\Release\net6.0-windows\Instagram.pdb

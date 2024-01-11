@@ -1,0 +1,29 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:components="clr-namespace:Instagram.Components">
+    <Style TargetType="Grid">
+        <Setter Property="Background" Value="#3C3F42"/>
+    </Style>
+    <Style TargetType="Label">
+        <Setter Property="Foreground" Value="#F1EDF2"/>
+    </Style>
+    <Style TargetType="TextBox">
+        <Setter Property="Background" Value="#CBC8CC"/>
+    </Style>
+    <Style TargetType="Button">
+        <Setter Property="Background" Value="#CBC8CC"/>
+    </Style>
+    <!--<Style TargetType="components:PasswordBoxUserControl">
+        <Setter Property="Background" Value="#CBC8CC"/>
+    </Style>-->
+    <Style TargetType="ItemsControl">
+        <Setter Property="Background" Value="#606469"/>
+    </Style>
+    <Style TargetType="Menu">
+        <Setter Property="Background" Value="#CBC8CC"/>
+    </Style>
+    <Style TargetType="MenuItem">
+        <Setter Property="Background" Value="#CBC8CC"/>
+        <Setter Property="BorderBrush" Value="#CBC8CC"/>
+    </Style>
+</ResourceDictionary>

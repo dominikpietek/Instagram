@@ -1,0 +1,184 @@
+﻿<Window x:Class="Instagram.Views.CreateAccountWindowView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Instagram.Views" 
+        xmlns:validations="clr-namespace:Instagram.Validations"
+        xmlns:components="clr-namespace:Instagram.Components"
+        mc:Ignorable="d"
+        Title="CreateAccountWindowView" Height="820" Width="300" ResizeMode="NoResize">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="30"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Button Content="Return to login page" Grid.Column="1" Grid.Row="1" Command="{Binding ReturnToLoginPageButton}" Cursor="Hand"/>
+        <Label Content="NICKNAME:" Grid.Column="1" Grid.Row="3"/>
+        <TextBox Grid.Column="1" Grid.Row="4" Padding="7" VerticalAlignment="Center" Validation.ErrorTemplate="{StaticResource validationTemplate}" x:Name="nicknameBox" Height="40">
+            <TextBox.Text>
+                <Binding Path="Nickname" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay">
+                    <Binding.ValidationRules>
+                        <validations:NicknameValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+            <TextBox.ToolTip>
+                <Label Content="Enter your nickname"/>
+            </TextBox.ToolTip>
+        </TextBox>
+        <Label Content="EMAIL:" Grid.Column="1" Grid.Row="6"/>
+        <TextBox Grid.Column="1" Grid.Row="7" Padding="7" VerticalAlignment="Center" Validation.ErrorTemplate="{StaticResource validationTemplate}" x:Name="emailBox" Height="40">
+            <TextBox.Text>
+                <Binding Path="Email" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay">
+                    <Binding.ValidationRules>
+                        <validations:EmailValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+            <TextBox.ToolTip>
+                <Label Content="Enter your email"/>
+            </TextBox.ToolTip>
+        </TextBox>
+        <Label Content="PASSWORD:" Grid.Column="1" Grid.Row="9"/>
+        <components:PasswordBoxUserControl Grid.Column="1" Grid.Row="10" VerticalAlignment="Center" Validation.ErrorTemplate="{StaticResource validationTemplate}" x:Name="firstPasswordBox">
+            <components:PasswordBoxUserControl.Password>
+                <Binding Path="FirstPassword" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay">
+                    <Binding.ValidationRules>
+                        <validations:PasswordValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </components:PasswordBoxUserControl.Password>
+            <components:PasswordBoxUserControl.ToolTip>
+                <Label Content="Enter your password"/>
+            </components:PasswordBoxUserControl.ToolTip>
+        </components:PasswordBoxUserControl>
+        <Label Content="REPEAT PASSWORD:" Grid.Column="1" Grid.Row="12"/>
+        <components:PasswordBoxUserControl Grid.Column="1" Grid.Row="13" VerticalAlignment="Center" Validation.ErrorTemplate="{StaticResource validationTemplate}" x:Name="secondPasswordBox">
+            <components:PasswordBoxUserControl.Password>
+                <Binding Path="SecondPassword" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay">
+                    <Binding.ValidationRules>
+                        <validations:PasswordValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </components:PasswordBoxUserControl.Password>
+            <components:PasswordBoxUserControl.ToolTip>
+                <Label Content="Enter your password"/>
+            </components:PasswordBoxUserControl.ToolTip>
+        </components:PasswordBoxUserControl>
+        <Label Content="FIRST NAME:" Grid.Column="1" Grid.Row="15"/>
+        <TextBox Grid.Column="1" Grid.Row="16" Padding="7" VerticalAlignment="Center" Validation.ErrorTemplate="{StaticResource validationTemplate}" x:Name="firstNameBox" Height="40">
+            <TextBox.Text>
+                <Binding Path="FirstName" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay">
+                    <Binding.ValidationRules>
+                        <validations:NameValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+            <TextBox.ToolTip>
+                <Label Content="Enter your first name"/>
+            </TextBox.ToolTip>
+        </TextBox>
+        <Label Content="LAST NAME:" Grid.Column="1" Grid.Row="18"/>
+        <TextBox Grid.Column="1" Grid.Row="19" Padding="7" VerticalAlignment="Center" Validation.ErrorTemplate="{StaticResource validationTemplate}" x:Name="lastNameBox" Height="40">
+            <TextBox.Text>
+                <Binding Path="LastName" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay">
+                    <Binding.ValidationRules>
+                        <validations:NameValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+            <TextBox.ToolTip>
+                <Label Content="Enter your last name"/>
+            </TextBox.ToolTip>
+        </TextBox>
+        <Label Content="BIRTHDATE:" Grid.Column="1" Grid.Row="21"/>
+        <DatePicker Grid.Column="1" Grid.Row="22" SelectedDate="{Binding Birthdate, UpdateSourceTrigger=PropertyChanged}" Padding="7" VerticalAlignment="Center" x:Name="birthdateBox" Height="40"/>
+        <Label Content="SELECT PROFILE PHOTO:" Grid.Column="1" Grid.Row="23"/>
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="25">
+            <Label Content="DEFAULT PHOTO:" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <CheckBox Margin="0 0 3 0" VerticalAlignment="Center" x:Name="profilePhotoRadioButton" IsChecked="True" Cursor="Hand"/>
+            <Button Padding="7" Command="{Binding OpenImageButton}" Content="{Binding OpenImageButtonContent}" Cursor="Hand">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=profilePhotoRadioButton, Path=IsChecked}" Value="true">
+                                <Setter Property="IsEnabled" Value="false"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </StackPanel>
+        <Button Content="CREATE AN ACCOUNT" Grid.Column="1" Grid.Row="27" Command="{Binding CreateAccountButton}" Cursor="Hand">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="IsEnabled" Value="False"/>
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Path=(Validation.HasError), ElementName=nicknameBox}" Value="False"/>
+                                <Condition Binding="{Binding Path=(Validation.HasError), ElementName=emailBox}" Value="False"/>
+                                <Condition Binding="{Binding Path=(Validation.HasError), ElementName=firstPasswordBox}" Value="False"/>
+                                <Condition Binding="{Binding Path=(Validation.HasError), ElementName=secondPasswordBox}" Value="False"/>
+                                <Condition Binding="{Binding Path=(Validation.HasError), ElementName=firstNameBox}" Value="False"/>
+                                <Condition Binding="{Binding Path=(Validation.HasError), ElementName=lastNameBox}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="IsEnabled" Value="True"/>
+                        </MultiDataTrigger>
+                        <DataTrigger Binding="{Binding Nickname}" Value="{x:Null}">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Email}" Value="{x:Null}">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding FirstPassword}" Value="{x:Null}">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SecondPassword}" Value="{x:Null}">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding FirstName}" Value="{x:Null}">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding LastName}" Value="{x:Null}">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+    </Grid>
+</Window>

@@ -1,0 +1,175 @@
+﻿<UserControl x:Class="Instagram.Views.PostView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Instagram.Views"
+             mc:Ignorable="d" 
+             d:DesignWidth="520">
+    <UserControl.Resources>
+        <Style x:Key="buttonStyle" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+        <Style TargetType="Button" x:Key="redButton" BasedOn="{StaticResource buttonStyle}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsPostLiked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Value="True">
+                    <Setter Property="Background" Value="#FF7F7F"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0">
+            <Button DockPanel.Dock="Right" Command="{Binding DeletePost}" Padding="10">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsPostYour}" Value="false">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+                <Button.Content>
+                    <Image Source="{Binding TrashIconPath}"/>
+                </Button.Content>
+            </Button>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                <Image Source="{Binding ProfilePhotoSource}"/>
+                <Label Content="{Binding ProfileName}"/>
+            </StackPanel>
+        </DockPanel>
+        <Label Grid.Row="1" Content="{Binding Location}">
+            <Label.Style>
+                <Style TargetType="Label">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Location}" Value="">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Label.Style>
+        </Label>
+        <Image Grid.Row="2" Source="{Binding PostPhotoSource}" x:Name="img"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="3">
+            <Button Width="auto" Grid.Column="0" Padding="10" Command="{Binding LikeButton}" Style="{DynamicResource redButton}" >
+                <Button.Content>
+                    <Image Source="{Binding LikeIconPath}"/>
+                </Button.Content>
+            </Button>
+            <Button Width="auto" Grid.Column="1" Padding="10" Command="{Binding CommentButton}" Style="{StaticResource buttonStyle}">
+                <Button.Content>
+                    <Image Source="{Binding CommentIconPath}"/>
+                </Button.Content>
+            </Button>
+            <Button Width="auto" Grid.Column="2" Padding="10" Command="{Binding MessageButton}" Style="{StaticResource buttonStyle}">
+                <Button.Content>
+                    <Image Source="{Binding MessageIconPath}"/>
+                </Button.Content>
+            </Button>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="4">
+            <Label Content="{Binding LikesNumber, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+            <Label Content="{Binding CommentsNumber, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="5" Height="60">
+            <StackPanel.Style>
+                <Style TargetType="StackPanel">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsCommentClickedToCreate}" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Style>
+            <Image Source="{Binding ProfilePhotoSource}"/>
+            <TextBox Text="{Binding CommentContent, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" TextWrapping="Wrap" Width="350"/>
+            <Button Content="CREATE" Command="{Binding CreateComment}" Padding="10">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="IsEnabled" Value="True"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding CreateComment}" Value="">
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </StackPanel>
+        <StackPanel Grid.Row="6">
+            <ScrollViewer MaxHeight="200">
+                <ScrollViewer.Style>
+                    <Style TargetType="ScrollViewer">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ShowMoreComments, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Value="false">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ScrollViewer.Style>
+                <ItemsControl ItemsSource="{Binding CommentsSection, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                </ItemsControl>
+            </ScrollViewer>
+            <Button Command="{Binding MoreComments, UpdateSourceTrigger=PropertyChanged}" Cursor="Hand" Padding="10" Height="50">
+                <Button.Content>
+                    <Image Source="{Binding ShowMoreIconPath}"/>
+                </Button.Content>
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ShowMoreComments,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Value="true">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding CommentsNumber,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Value="0 COMMENTS">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button Command="{Binding LessComments, UpdateSourceTrigger=PropertyChanged}" Cursor="Hand" Padding="10" Height="50">
+                <Button.Content>
+                    <Image Source="{Binding ShowLessIconPath}"/>
+                </Button.Content>
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ShowMoreComments,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Value="false">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </StackPanel>
+        <!-- when click more show scroll viewer when hide show one comment and more button, build other user control to it -->
+    </Grid>
+</UserControl>
