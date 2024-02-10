@@ -23,10 +23,20 @@ namespace Instagram.Views
     /// </summary>
     public partial class PostView : UserControl
     {
-        public PostView(Post post, int actualUserId, Action ShowPosts)
+        private PostViewModel _ViewModel;
+        public PostView(Post post, int actualUserId, Func<Task> ShowPosts)
         {
             InitializeComponent();
-            DataContext = new PostViewModel(post, actualUserId, ShowPosts);
+            _ViewModel = new PostViewModel(post, actualUserId, ShowPosts);
+            DataContext = _ViewModel;
+        }
+        public void ChangePostTheme(bool isDarkMode)
+        {
+            this.Resources.MergedDictionaries.Clear();
+            string resourceName = isDarkMode ? "DarkModeDictionary" : "BrightModeDictionary";
+            ResourceDictionary resourceDictionary = new ResourceDictionary() { Source = new Uri(string.Format("ResourceDictionaries/{0}.xaml", resourceName), UriKind.Relative) };
+            this.Resources.MergedDictionaries.Add(resourceDictionary);
+            _ViewModel.ChangeTheme();
         }
     }
 }

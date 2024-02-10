@@ -9,16 +9,18 @@ namespace Instagram.Commands
     public class SubmitCreatingNewPostCommand : CommandBase
     {
         private Action _CloseWindow;
-        private Action _CreatPost;
-        public SubmitCreatingNewPostCommand(Action CloseWindow, Action CreatePost)
+        private Func<bool> _CreatPost;
+        public SubmitCreatingNewPostCommand(Action CloseWindow, Func<bool> CreatePost)
         {
             _CloseWindow = CloseWindow;
             _CreatPost = CreatePost;
         }
         public override void Execute(object parameter)
         {
-            _CreatPost.Invoke();
-            _CloseWindow.Invoke();
+            if (_CreatPost.Invoke())
+            {
+                _CloseWindow.Invoke();
+            }
         }
     }
 }

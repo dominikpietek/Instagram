@@ -1,4 +1,4 @@
-﻿using Instagram.Services;
+﻿using Instagram.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,8 +18,8 @@ namespace Instagram.Commands
         }
         public override void Execute(object parameter)
         {
-            Logout.RestartAutomaticLogin();
-            Logout.CloseWindowAndShowStartUpWindow(_CloseWindow);
+            LogoutRepository.RestartAutomaticLoginAsync();
+            LogoutRepository.CloseWindowAndShowStartUpWindow(_CloseWindow);
         }
     }
 }

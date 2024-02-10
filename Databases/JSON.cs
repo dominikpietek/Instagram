@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -16,21 +17,27 @@ namespace Instagram.Databases
     public class JSON<JSONModel>
     {
         private string _fileName;
-        private string _hardPath = @"C:\Programs\Instagram\Instagram\Databases\";
+        private readonly string _hardPath;
         private string _path;
         public JSON(string fileName)
         {
             _fileName = fileName;
+            _hardPath = ConfigurationManager.AppSettings.Get("DatabasesPath");
             _path = $"{_hardPath}{_fileName}.json";
         }
-        public JSONModel Get<JSONModel>()
+        public async Task<JSONModel> GetAsync<JSONModel>()
         {
             return JsonConvert.DeserializeObject<JSONModel>(File.ReadAllText(_path));
         }
-        public void Save(JSONModel model)
+        public async Task SaveAsync(JSONModel model)
         {
             string serializedModel = JsonConvert.SerializeObject(model);
             File.WriteAllText(_path, serializedModel);
+        }
+        public async Task<bool> GetDarkModeAsync()
+        {
+            var jsonModel = await GetAsync<UserDataModel>();
+            return jsonModel.DarkMode;
         }
     }
 }

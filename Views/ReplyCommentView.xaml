@@ -58,7 +58,7 @@
         <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2">
             <Label Content="{Binding PublicationDate}" Margin="0 0 20 0"/>
             <Label Content="{Binding LikesNumber, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 20 0"/>
-            <Button Margin="0 0 20 0" Padding="6" Command="{Binding LikeButton}" Style="{DynamicResource redButton}">
+            <Button Margin="0 0 20 0" Padding="6" Command="{Binding LikeButton}" Style="{DynamicResource redButton}" Cursor="Hand">
                 <Button.Content>
                     <Image Source="{Binding LikeIconPath}"/>
                 </Button.Content>

@@ -25,12 +25,16 @@ namespace Instagram.Databases
         public DbSet<Friend> Friends { get; set; }
         public DbSet<UserLiked> UsersLiked { get; set; }
         public DbSet<CommentResponse> CommentResponses { get; set; }
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //string connectionString = ConfigurationManager.ConnectionStrings["MainDb"].ConnectionString.ToString();
-            string connectionString = "Server=DESKTOP-KKCA33K;Database=InstagramDb;Trusted_Connection=True;TrustServerCertificate=True;";
-            optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings["MainDb"].ConnectionString);
+        }
+        //public InstagramDbContext(DbContextOptions<InstagramDbContext> options) : base(options)
+        //{
+        //}
+        public InstagramDbContext(string name)
+        {
+                
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

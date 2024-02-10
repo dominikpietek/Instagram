@@ -8,8 +8,8 @@ namespace Instagram.Commands
 {
     public class AcceptRequestCommand : CommandBase
     {
-        private Action _AddFriend;
-        public AcceptRequestCommand(Action AddFriend)
+        private Func<Task> _AddFriend;
+        public AcceptRequestCommand(Func<Task> AddFriend)
         {
             _AddFriend = AddFriend;
         }

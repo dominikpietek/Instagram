@@ -9,8 +9,8 @@ namespace Instagram.Commands
 {
     public class DeclineRequestCommand : CommandBase
     {
-        private Action _RemoveFriend;
-        public DeclineRequestCommand(Action RemoveFriend)
+        private Func<Task> _RemoveFriend;
+        public DeclineRequestCommand(Func<Task> RemoveFriend)
         {
             _RemoveFriend = RemoveFriend;
         }

@@ -1,5 +1,8 @@
 ﻿using Instagram.Databases;
+using Instagram.Interfaces;
+using Instagram.JSONModels;
 using Instagram.Models;
+using Instagram.Repositories;
 using Instagram.Views;
 using System;
 using System.Collections.Generic;
@@ -24,35 +27,68 @@ namespace Instagram.Components
     /// </summary>
     public partial class HomeUserControl : UserControl
     {
-        public static DependencyProperty HomeSourceProperty = DependencyProperty.Register("HomeSource", typeof(ObservableCollection<PostView>), typeof(HomeUserControl), new PropertyMetadata(new ObservableCollection<PostView>()));
+        public static DependencyProperty HomeSourceProperty = 
+            DependencyProperty.Register("HomeSource", typeof(ObservableCollection<PostView>), typeof(HomeUserControl), new PropertyMetadata(new ObservableCollection<PostView>()));
         public ObservableCollection<PostView> HomeSource 
         { 
             get { return (ObservableCollection<PostView>)GetValue(HomeSourceProperty); }
             set { SetValue(HomeSourceProperty, value); } 
         }
+        public static DependencyProperty IsThereMorePostsProperty =
+            DependencyProperty.Register("IsThereMorePosts", typeof(bool), typeof(HomeUserControl), new PropertyMetadata(true));
+        public bool IsThereMorePosts
+        {
+            get { return (bool)GetValue(IsThereMorePostsProperty); }
+            set { SetValue(IsThereMorePostsProperty, value); }
+        }
         private ObservableCollection<PostView> _postsSection;
         private int _userId;
+        private IPostRepository _postRepository;
+        private int _loadedPosts;
         public HomeUserControl(int userId)
         {
+            ChangeHomeThemeAsync();
+            _loadedPosts = 10;
+            _postRepository = new PostRepository(new InstagramDbContext("MainDb"));
             DataContext = this;
             InitializeComponent();
             _userId = userId;
             ShowPosts();
             HomeSource = _postsSection;
         }
-        private void ShowPosts()
+        private async Task ChangeHomeThemeAsync()
         {
-            // start from end
-            // show friends's posts too
-            // load more posts button
+            JSON<UserDataModel> userJSON = new JSON<UserDataModel>("UserData");
+            ChangeHomeTheme(await userJSON.GetDarkModeAsync());
+        }
+        public async Task ShowPosts()
+        {
             _postsSection = new ObservableCollection<PostView>();
-            using (var _db = new InstagramDbContext())
+            var posts = await _postRepository.GetAllPostsWithAllDataToShowAsync();
+            IsThereMorePosts = posts.Count <= _loadedPosts ? false : true;
+            posts.Reverse();
+            foreach (var post in posts)
             {
-                foreach (Post post in _db.Posts.Where(p => !p.OnlyForFriends).Take(10))
-                {
-                    _postsSection.Add(new PostView(post, _userId, ShowPosts));
-                }
+                _postsSection.Add(new PostView(post, _userId, ShowPosts));
             }
+            _postsSection.Take(_loadedPosts);
+        }
+        public void ChangeHomeTheme(bool isDarkMode)
+        {
+            this.Resources.MergedDictionaries.Clear();
+            string resourceName = isDarkMode ? "DarkModeHomeDictionary" : "BrightModeDictionary";
+            ResourceDictionary resourceDictionary = new ResourceDictionary() { Source = new Uri(string.Format("ResourceDictionaries/{0}.xaml", resourceName), UriKind.Relative) };
+            this.Resources.MergedDictionaries.Add(resourceDictionary);
+            foreach (var post in HomeSource)
+            {
+                post.ChangePostTheme(isDarkMode);
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            _loadedPosts += 10;
+            ShowPosts();
         }
     }
 }

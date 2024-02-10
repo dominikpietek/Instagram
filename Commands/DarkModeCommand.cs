@@ -12,17 +12,23 @@ namespace Instagram.Commands
     public class DarkModeCommand : CommandBase
     {
         private Action<bool> _ChangeTheme;
+        private bool _isDarkMode;
         public DarkModeCommand(Action<bool> ChangeTheme)
         {
             _ChangeTheme = ChangeTheme;
         }
         public override void Execute(object parameter)
         {
+            ChangeDarkModeAsync();
+            _ChangeTheme.Invoke(_isDarkMode);
+        }
+        private async Task ChangeDarkModeAsync()
+        {
             JSON<UserDataModel> userJSON = new JSON<UserDataModel>("UserData");
-            UserDataModel userJSONModel = userJSON.Get<UserDataModel>();
+            UserDataModel userJSONModel = await userJSON.GetAsync<UserDataModel>();
             userJSONModel.DarkMode ^= true;
-            userJSON.Save(userJSONModel);
-            _ChangeTheme.Invoke(userJSONModel.DarkMode);
+            _isDarkMode = userJSONModel.DarkMode;
+            await userJSON.SaveAsync(userJSONModel);
         }
     }
 }

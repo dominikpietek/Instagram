@@ -24,5 +24,12 @@ namespace Instagram.Components
         {
             InitializeComponent();
         }
+        public void ChangeProfileTheme(bool isDarkMode)
+        {
+            this.Resources.MergedDictionaries.Clear();
+            string resourceName = isDarkMode ? "DarkModeDictionary" : "BrightModeDictionary";
+            ResourceDictionary resourceDictionary = new ResourceDictionary() { Source = new Uri(string.Format("ResourceDictionaries/{0}.xaml", resourceName), UriKind.Relative) };
+            this.Resources.MergedDictionaries.Add(resourceDictionary);
+        }
     }
 }

@@ -8,6 +8,14 @@
         xmlns:components="clr-namespace:Instagram.Components"
         mc:Ignorable="d"
         Title="CreateAccountWindowView" Height="820" Width="300" ResizeMode="NoResize">
+    <Window.Resources>
+        <ControlTemplate x:Key="validationTemplate">
+            <StackPanel>
+                <AdornedElementPlaceholder/>
+                <TextBlock Foreground="Red" FontSize="10" Text="{Binding ErrorContent}"/>
+            </StackPanel>
+        </ControlTemplate>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="30"/>
@@ -81,6 +89,9 @@
                     </Binding.ValidationRules>
                 </Binding>
             </components:PasswordBoxUserControl.Password>
+            <components:PasswordBoxUserControl.BackgroundColour>
+                <Binding Path="BackgroundColour" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay"/>
+            </components:PasswordBoxUserControl.BackgroundColour>
             <components:PasswordBoxUserControl.ToolTip>
                 <Label Content="Enter your password"/>
             </components:PasswordBoxUserControl.ToolTip>
@@ -94,6 +105,9 @@
                     </Binding.ValidationRules>
                 </Binding>
             </components:PasswordBoxUserControl.Password>
+            <components:PasswordBoxUserControl.BackgroundColour>
+                <Binding Path="BackgroundColour" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay"/>
+            </components:PasswordBoxUserControl.BackgroundColour>
             <components:PasswordBoxUserControl.ToolTip>
                 <Label Content="Enter your password"/>
             </components:PasswordBoxUserControl.ToolTip>
@@ -125,7 +139,11 @@
             </TextBox.ToolTip>
         </TextBox>
         <Label Content="BIRTHDATE:" Grid.Column="1" Grid.Row="21"/>
-        <DatePicker Grid.Column="1" Grid.Row="22" SelectedDate="{Binding Birthdate, UpdateSourceTrigger=PropertyChanged}" Padding="7" VerticalAlignment="Center" x:Name="birthdateBox" Height="40"/>
+        <DatePicker Grid.Column="1" Grid.Row="22" Padding="7" VerticalAlignment="Center" x:Name="birthdateBox" Height="40">
+            <DatePicker.SelectedDate>
+                <Binding Path="Birthdate" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay"/>
+            </DatePicker.SelectedDate>
+        </DatePicker>
         <Label Content="SELECT PROFILE PHOTO:" Grid.Column="1" Grid.Row="23"/>
         <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="25">
             <Label Content="DEFAULT PHOTO:" HorizontalAlignment="Left" VerticalAlignment="Center"/>

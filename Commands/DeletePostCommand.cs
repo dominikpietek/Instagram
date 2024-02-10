@@ -12,15 +12,15 @@ namespace Instagram.Commands
     public class DeletePostCommand : CommandBase
     {
         private Post _post;
-        private Action _ShowPosts;
-        public DeletePostCommand(Post post, Action ShowPosts)
+        private Func<Task> _ShowPosts;
+        public DeletePostCommand(Post post, Func<Task> ShowPosts)
         {
             _post = post;
             _ShowPosts = ShowPosts;
         }
         public override void Execute(object parameter)
         {
-            using(var db = new InstagramDbContext())
+            using(var db = new InstagramDbContext("MainDb"))
             {
                 db.Posts.Remove(_post);
                 db.SaveChanges();

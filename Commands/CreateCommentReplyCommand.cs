@@ -8,8 +8,8 @@ namespace Instagram.Commands
 {
     public class CreateCommentReplyCommand : CommandBase
     {
-        private Action _CreateNewReply;
-        public CreateCommentReplyCommand(Action CreateNewReply)
+        private Func<Task> _CreateNewReply;
+        public CreateCommentReplyCommand(Func<Task> CreateNewReply)
         {
             _CreateNewReply = CreateNewReply;
         }

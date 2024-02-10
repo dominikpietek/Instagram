@@ -27,5 +27,12 @@ namespace Instagram.Views
             InitializeComponent();
             DataContext = new ReplyCommentViewModel(commentResponse, userId);
         }
+        public void ChangeCommentTheme(bool isDarkMode)
+        {
+            this.Resources.MergedDictionaries.Clear();
+            string resourceName = isDarkMode ? "DarkModeDictionary" : "BrightModeDictionary";
+            ResourceDictionary resourceDictionary = new ResourceDictionary() { Source = new Uri(string.Format("ResourceDictionaries/{0}.xaml", resourceName), UriKind.Relative) };
+            this.Resources.MergedDictionaries.Add(resourceDictionary);
+        }
     }
 }

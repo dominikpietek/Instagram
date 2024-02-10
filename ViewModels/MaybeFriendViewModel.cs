@@ -5,6 +5,7 @@ using Instagram.Models;
 using Instagram.Services;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,15 +17,21 @@ namespace Instagram.ViewModels
 {
     public class MaybeFriendViewModel : ViewModelBase
     {
+        #region Resources
+        private string _path;
+        public BitmapImage ProfilePhoto { get; set; }
+        public string AddUserIconPath { get; set; }
+        #endregion
+        #region Commands
         public ICommand CheckProfileButton { get; set; }
         public ICommand AddUserButton { get; set; }
-        public BitmapImage ProfilePhoto { get; set; }
+        #endregion
         public string Nickname { get; set; }
-        public string AddUserIconPath { get; set; } = @"C:\Programs\Instagram\Instagram\Resources\plusIcon.png";
+        public int userId;
         public FriendDto _friendDto;
         private Action<InstagramDbContext, int> _LoadMaybeFriends;
+        #region OnPropertyChangeProperties
         private bool _IsInvitationSent = false;
-        public int userId;
         public bool IsInvitationSent
         {
             get { return _IsInvitationSent; }
@@ -34,14 +41,23 @@ namespace Instagram.ViewModels
                 OnPropertyChanged(nameof(IsInvitationSent));
             }
         }
+        #endregion
         public MaybeFriendViewModel(FriendDto friendDto, int userId, Action<InstagramDbContext, int> LoadMaybeFriends)
         {
-            _friendDto = friendDto;
+            #region CommandInstances
             CheckProfileButton = new ShowProfileCommand();
             AddUserButton = new SendInvitationCommand(ChangeInvitationStatus);
+            #endregion
+            _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
+            InitResources();
+            _friendDto = friendDto;
             BindDtoToData();
             this.userId = userId;
             _LoadMaybeFriends = LoadMaybeFriends;
+        }
+        private void InitResources()
+        {
+            AddUserIconPath = $"{_path}plusIcon.png";
         }
         private void BindDtoToData()
         {
@@ -51,28 +67,33 @@ namespace Instagram.ViewModels
         private void ChangeInvitationStatus()
         {
             IsInvitationSent ^= true;
-            SentInvitation();
+            SentInvitationAsync();
             // remove isInvitationSent
             // and change image sent or unsent invitation
         }
-        private void SentInvitation()
+        private async Task SentInvitationAsync()
         {
-            using (var db = new InstagramDbContext())
+            var ChangeDatabaseAsync = async Task () =>
             {
-                if (!db.UserIdSentModels.Any(uism => uism.StoredUserId == _friendDto.Id))
+
+                using (var db = new InstagramDbContext("MainDb"))
                 {
-                    db.Users.First(u => u.Id == userId).SentFriendRequests.Add(new UserIdSentModel()
+                    if (!db.UserIdSentModels.Any(uism => uism.StoredUserId == _friendDto.Id))
                     {
-                        StoredUserId = _friendDto.Id
-                    });
-                    db.Users.First(u => u.Id == _friendDto.Id).GotFriendRequests.Add(new UserIdGotModel()
-                    {
-                        StoredUserId = userId
-                    });
-                    db.SaveChanges();
-                    _LoadMaybeFriends.Invoke(db, userId);
+                        db.Users.First(u => u.Id == userId).SentFriendRequests.Add(new UserIdSentModel()
+                        {
+                            StoredUserId = _friendDto.Id
+                        });
+                        db.Users.First(u => u.Id == _friendDto.Id).GotFriendRequests.Add(new UserIdGotModel()
+                        {
+                            StoredUserId = userId
+                        });
+                        db.SaveChanges();
+                        _LoadMaybeFriends.Invoke(db, userId);
+                    }
                 }
-            }
+            };
+            await ChangeDatabaseAsync.Invoke();
         }
     }
 }

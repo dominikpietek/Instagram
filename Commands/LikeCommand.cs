@@ -27,7 +27,7 @@ namespace Instagram.Commands
         }
         public override void Execute(object parameter)
         {
-            using (var db = new InstagramDbContext())
+            using (var db = new InstagramDbContext("MainDb"))
             {
                 bool addOrRemove;
                 int likesNumber = 0;

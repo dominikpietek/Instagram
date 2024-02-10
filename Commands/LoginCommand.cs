@@ -8,8 +8,8 @@ namespace Instagram.Commands
 {
     public class LoginCommand : CommandBase
     {
-        private Action _Login;
-        public LoginCommand(Action Login)
+        private Func<Task> _Login;
+        public LoginCommand(Func<Task> Login)
         {
             _Login = Login;
         }

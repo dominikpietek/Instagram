@@ -11,13 +11,12 @@ namespace Instagram.Models
         public int Id { get; set; }
         public User User { get; set; }
         public int UserId { get; set; }
-        public string? Description { get; set; }
-        public string? Location { get; set; }
+        public string Description { get; set; }
+        public string Location { get; set; }
         public PostImage Image { get; set; }
         public List<Comment> Comments { get; set; } = new List<Comment>();
         public int Likes { get; set; }
         public DateTime PublicationDate { get; set; }
-        public bool OnlyForFriends { get; set; }
         public new List<Tag> Tags { get; set; } = new List<Tag>();
      }
 }

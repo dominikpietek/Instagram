@@ -4,15 +4,26 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Instagram.Views"
+        xmlns:validations="clr-namespace:Instagram.Validations"
         mc:Ignorable="d"
-        Title="CreateNewPostWindowView" Width="310" Height="1000">
+        Title="CreateNewPostWindowView" Width="310" Height="800">
+    <Window.Resources>
+        <ControlTemplate x:Key="validationTemplate">
+            <StackPanel>
+                <AdornedElementPlaceholder/>
+                <TextBlock Foreground="Red" FontSize="10" Text="{Binding ErrorContent}"/>
+            </StackPanel>
+        </ControlTemplate>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="270"/>
             <RowDefinition Height="30"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="70"/>
+            <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="30"/>
@@ -29,25 +40,74 @@
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Row="1" Grid.Column="1">
             <Button  Height="40" Content="IMPORT IMAGE" Command="{Binding OpenImageButton}"/>
-            <MediaElement Source="{Binding ImageSource}"/>
-            <!-- make drag and drop image -->
+            <Image Source="{Binding ImageSource, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Stretch="Fill"/>
         </StackPanel>
-        <Label Grid.Row="3" Grid.Column="1" Content="DESCRIPTION:"/>
-        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"/>
-        <DockPanel Grid.Row="6" Grid.Column="1">
-            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                <Label>
-                    <Label.Content>ONLY FOR FRIENDS:</Label.Content>
-                    <Label.ToolTip>
-                        <Label>When it is checked only friends can see your activities!</Label>
-                    </Label.ToolTip>
-                </Label>
-                <RadioButton Margin="0 7" IsChecked="{Binding OnlyForFriends, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-            </StackPanel>
-            <TextBox Width="80" DockPanel.Dock="Right" Margin="20 0 0 0" Text="{Binding Location}"/>
-        </DockPanel>
-        <Label Grid.Row="8" Grid.Column="1" Content="TAGS:"/>
-        <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding Tags, UpdateSourceTrigger=PropertyChanged}"/>
-        <Button Grid.Row="11" Grid.Column="1" Content="SUBMIT" Command="{Binding SubmitCreatingNewPost}"/>
+        <Label Grid.Row="2" Grid.Column="1" Content="{Binding ImageErrorMessage, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Foreground="Red"/>
+        <Label Grid.Row="4" Grid.Column="1" Content="DESCRIPTION:"/>
+        <TextBox Grid.Row="5" Grid.Column="1" x:Name="description" Validation.ErrorTemplate="{StaticResource validationTemplate}">
+            <TextBox.Text>
+                <Binding Path="Description" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay">
+                    <Binding.ValidationRules>
+                        <validations:DescriptionValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <Label Grid.Row="7" Grid.Column="1">
+            <Label.Content>LOCATION:</Label.Content>
+            <Label.ToolTip>
+                <Label>Where you did that photo?</Label>
+            </Label.ToolTip>
+        </Label>
+        <TextBox Grid.Row="8" Grid.Column="1" Validation.ErrorTemplate="{StaticResource validationTemplate}" x:Name="location" VerticalContentAlignment="Center">
+            <TextBox.Text>
+                <Binding Path="Location" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay">
+                    <Binding.ValidationRules>
+                        <validations:LocationValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <Label Grid.Row="10" Grid.Column="1" Content="TAGS:"/>
+        <TextBox Grid.Row="11" Grid.Column="1" Validation.ErrorTemplate="{StaticResource validationTemplate}" x:Name="tags">
+            <TextBox.Text>
+                <Binding Path="Tags" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay">
+                    <Binding.ValidationRules>
+                        <validations:TagsValidationRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <Button Grid.Row="13" Grid.Column="1" Content="SUBMIT" Command="{Binding SubmitCreatingNewPost}">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="IsEnabled" Value="False"/>
+                    <Setter Property="Cursor" Value="Arrow"/>
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Path=(Validation.HasError), ElementName=description}" Value="False"/>
+                                <Condition Binding="{Binding Path=(Validation.HasError), ElementName=location}" Value="False"/>
+                                <Condition Binding="{Binding Path=(Validation.HasError), ElementName=tags}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="IsEnabled" Value="True"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                        </MultiDataTrigger>
+                        <DataTrigger Binding="{Binding Description}" Value="{x:Null}">
+                            <Setter Property="IsEnabled" Value="False"/>
+                            <Setter Property="Cursor" Value="Arrow"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Location}" Value="{x:Null}">
+                            <Setter Property="IsEnabled" Value="False"/>
+                            <Setter Property="Cursor" Value="Arrow"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Tags}" Value="{x:Null}">
+                            <Setter Property="IsEnabled" Value="False"/>
+                            <Setter Property="Cursor" Value="Arrow"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
     </Grid>
 </Window>

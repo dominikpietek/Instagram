@@ -23,29 +23,39 @@ namespace Instagram.Views
         public LoginOrRegisterWindowView()
         {
             InitializeComponent();
-            DataContext = new LoginOrRegisterWindowViewModel(CloseWindow, FocusOnLogin, FocusOnPassword, IsLoginButtonUsable, ChangeLoginTheme);
+            DataContext = new LoginOrRegisterWindowViewModel(CloseWindow, FocusOnLogin, FocusOnPassword, IsLoginButtonUsable, ChangeLoginTheme, WhichOneIsFocused);
         }
-        private void CloseWindow()
+        public void CloseWindow()
         {
             this.Close();
         }
-        private void FocusOnLogin()
+        public int WhichOneIsFocused()
+        {
+            if (!this.emailNicknameBox.IsKeyboardFocusWithin && !this.passwordBox.IsKeyboardFocusWithin)
+            {
+                return 0;
+            }
+            return this.emailNicknameBox.IsKeyboardFocusWithin ? 1 : 2;
+        }
+        public void FocusOnLogin()
         {
             this.emailNicknameBox.Focusable = true;
             this.emailNicknameBox.Focus();
+            this.emailNicknameBox.ForceCursor = true;
             Keyboard.Focus(this.emailNicknameBox);
         }
-        private void FocusOnPassword()
+        public void FocusOnPassword()
         {
             this.passwordBox.Focusable = true;
             this.passwordBox.Focus();
+            this.passwordBox.ForceCursor = true;
             Keyboard.Focus(this.passwordBox);
         }
-        private bool IsLoginButtonUsable()
+        public bool IsLoginButtonUsable()
         {
             return this.loginButton.IsEnabled;
         }
-        private void ChangeLoginTheme(bool isDarkMode)
+        public void ChangeLoginTheme(bool isDarkMode)
         {
             this.Resources.MergedDictionaries.Clear();
             string resourceName = isDarkMode ? "DarkModeDictionary" : "BrightModeDictionary";

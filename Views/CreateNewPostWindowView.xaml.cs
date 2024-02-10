@@ -27,15 +27,22 @@ namespace Instagram.Views
         {
             _ShowPosts = ShowPosts;
             InitializeComponent();
-            DataContext = new CreatePostViewModel(CloseWindow, user);
+            DataContext = new CreatePostViewModel(CloseWindow, user, ChangeCreatePostTheme);
         }
         public void CloseWindow()
         {
-            using (var db = new InstagramDbContext())
+            using (var db = new InstagramDbContext("MainDb"))
             {
                 _ShowPosts.Invoke();
             }
             this.Close();
+        }
+        public void ChangeCreatePostTheme(bool isDarkMode)
+        {
+            this.Resources.MergedDictionaries.Clear();
+            string resourceName = isDarkMode ? "DarkModeDictionary" : "BrightModeDictionary";
+            ResourceDictionary resourceDictionary = new ResourceDictionary() { Source = new Uri(string.Format("ResourceDictionaries/{0}.xaml", resourceName), UriKind.Relative) };
+            this.Resources.MergedDictionaries.Add(resourceDictionary);
         }
     }
 }

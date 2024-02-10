@@ -10,8 +10,8 @@ namespace Instagram.Commands
 {
     public class CommentCreateCommand : CommandBase
     {
-        private Action _CreateNewComment;
-        public CommentCreateCommand(Action CreateNewComment)
+        private Func<Task> _CreateNewComment;
+        public CommentCreateCommand(Func<Task> CreateNewComment)
         {
             _CreateNewComment = CreateNewComment;
         }

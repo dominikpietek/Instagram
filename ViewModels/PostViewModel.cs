@@ -1,12 +1,15 @@
 ﻿using Instagram.Commands;
 using Instagram.Databases;
+using Instagram.JSONModels;
 using Instagram.Models;
 using Instagram.Services;
+using Instagram.Validations;
 using Instagram.Views;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,17 +22,18 @@ namespace Instagram.ViewModels
 {
     public class PostViewModel : ViewModelBase
     {
-        private Post _post;
+        #region Resources
+        private readonly string _path;
         public BitmapImage ProfilePhotoSource { get; set; }
         public BitmapImage PostPhotoSource { get; set; }
-        public string LikeIconPath { get; set; } = @"C:\Programs\Instagram\Instagram\Resources\likeIcon.png";
-        public string CommentIconPath { get; set; } = @"C:\Programs\Instagram\Instagram\Resources\commentIcon.png";
-        public string MessageIconPath { get; set; } = @"C:\Programs\Instagram\Instagram\Resources\messageIcon.png";
-        public string TrashIconPath { get; set; } = @"C:\Programs\Instagram\Instagram\Resources\trashIcon.png";
-        public string ShowMoreIconPath { get; set; } = @"C:\Programs\Instagram\Instagram\Resources\showMoreIcon.png";
-        public string ShowLessIconPath { get; set; } = @"C:\Programs\Instagram\Instagram\Resources\showLessIcon.png";
-        private int _actualUserId;
-        private bool _IsPostYour;
+        public string LikeIconPath { get; set; }
+        public string CommentIconPath { get; set; }
+        public string MessageIconPath { get; set; }
+        public string TrashIconPath { get; set; }
+        public string ShowMoreIconPath { get; set; }
+        public string ShowLessIconPath { get; set; }
+        #endregion
+        #region OnPropertyChangeProperties
         private bool _IsCommentClickedToCreate = false;
         public bool IsCommentClickedToCreate 
         { 
@@ -69,6 +73,16 @@ namespace Instagram.ViewModels
                 OnPropertyChanged(nameof(LikesNumber));
             }
         }
+        private string _Description;
+        public string Description
+        {
+            get { return _Description; }
+            set
+            {
+                _Description = value;
+                OnPropertyChanged(nameof(Description));
+            }
+        }
         private string _CommentsNumber;
         public string CommentsNumber 
         {
@@ -99,9 +113,19 @@ namespace Instagram.ViewModels
                 OnPropertyChanged(nameof(IsPostLiked));
             }
         }
-        //add round profile photo not square
-        public string ProfileName { get; set; }
-        public string Location { get; set; }
+        private string _Tags;
+        public string Tags
+        {
+            get
+            {
+                return _Tags;
+            }
+            set
+            {
+                _Tags = value;
+                OnPropertyChanged(nameof(Tags));
+            }
+        }
         private ObservableCollection<CommentView> _CommentsSection;
         public ObservableCollection<CommentView> CommentsSection
         {
@@ -115,6 +139,8 @@ namespace Instagram.ViewModels
                 OnPropertyChanged(nameof(CommentsSection));
             } 
         }
+        #endregion
+        #region Commands
         public ICommand MoreComments { get; set; }
         public ICommand LessComments { get; set; }
         public ICommand LikeButton { get; set; }
@@ -122,32 +148,74 @@ namespace Instagram.ViewModels
         public ICommand MessageButton { get; set; }
         public ICommand CreateComment { get; set; }
         public ICommand DeletePost { get; set; }
-        public PostViewModel(Post post, int actualUserId, Action ShowPosts)
+        #endregion
+        //add round profile photo not square
+        #region NormalProperties
+        public string ProfileName { get; set; }
+        public string Location { get; set; }
+        #endregion
+        private Post _post;
+        private int _actualUserId;
+        private bool _IsPostYour;
+        private bool _isDarkMode;
+        public PostViewModel(Post post, int actualUserId, Func<Task> ShowPosts)
         {
+            #region PrivatePropertiesAssignment
             _post = post;
             _actualUserId = actualUserId;
-            MoreComments = new ShowMoreLessCommentsCommand(ShowMoreLessCommentsChange);
-            LessComments = new ShowMoreLessCommentsCommand(ShowMoreLessCommentsChange);
+            _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
+            #endregion
+            LoadDataFromDatabaseAsync();
+            InitResources();
+            #region CommandsInstances
+            MoreComments = new ShowMoreLessCommentsCommand(ShowMoreLessCommentsChangeAsync, ChangeTheme);
+            LessComments = new ShowMoreLessCommentsCommand(ShowMoreLessCommentsChangeAsync, ChangeTheme);
             LikeButton = new LikeCommand(LikedThingsEnum.Post, actualUserId, post.Id, UpdateLikesNumber, ChangeIsPostLiked);
             CommentButton = new CommentButtonCommand(UpdateIsCommentClickedToCreateValue);
-            CreateComment = new CommentCreateCommand(CreateNewComment);
+            CreateComment = new CommentCreateCommand(CreateNewCommentAsync);
             MessageButton = new OpenCommunicatorWindowCommand();
             DeletePost = new DeletePostCommand(post, ShowPosts);
-            LoadDataFromDatabase();
+            #endregion
         }
-        private void LoadDataFromDatabase()
+        private void InitResources()
         {
-            using (var db = new InstagramDbContext())
+            LikeIconPath = $"{_path}likeIcon.png";
+            CommentIconPath = $"{_path}commentIcon.png";
+            MessageIconPath = $"{_path}messageIcon.png";
+            TrashIconPath = $"{_path}trashIcon.png";
+            ShowMoreIconPath = $"{_path}showMoreIcon.png";
+            ShowLessIconPath = $"{_path}showLessIcon.png";
+        }
+        private string ConvertTagsToString(InstagramDbContext db)
+        {
+            var tagsStringList = db.Tags.Where(t => t.PostId == _post.Id).Select(p => p.Text).ToList();
+            string converted = "";
+            foreach (var tag in tagsStringList)
             {
-                ProfilePhotoSource = ConvertImage.FromByteArray(db.ProfileImages.First(p => p.UserId == _post.UserId).ImageBytes);
-                ProfileName = db.Users.First(p => p.Id == _post.UserId).Nickname;
-                PostPhotoSource = ConvertImage.FromByteArray(db.PostImages.First(p => p.PostId == _post.Id).ImageBytes);
-                Location = _post.Location == null ? "" : _post.Location;
-                _IsPostYour = _post.UserId == _actualUserId ? true : false;
-                UpdateCommentsNumber(db.Comments.Where(c => c.PostId == _post.Id).ToList().Count);
-                ChangeIsPostLiked(db.UsersLiked.Where(u => u.UserThatLikedId == _actualUserId && u.LikedThingId == _post.Id && (int)u.LikedThing == (int)LikedThingsEnum.Post).ToList().Count());
-                UpdateLikesNumber(_post.Likes);
+                converted = $"{converted} #{tag}";
             }
+            return converted;
+        }
+        private async Task LoadDataFromDatabaseAsync()
+        {
+            var LoadFromDatabaseAsync = async Task () =>
+            {
+
+                using (var db = new InstagramDbContext("MainDb"))
+                {
+                    ProfilePhotoSource = ConvertImage.FromByteArray(db.ProfileImages.First(p => p.UserId == _post.UserId).ImageBytes);
+                    ProfileName = db.Users.First(p => p.Id == _post.UserId).Nickname;
+                    PostPhotoSource = ConvertImage.FromByteArray(db.PostImages.First(p => p.PostId == _post.Id).ImageBytes);
+                    Tags = ConvertTagsToString(db);
+                    Description = _post.Description;
+                    Location = _post.Location == null ? "" : _post.Location;
+                    _IsPostYour = _post.UserId == _actualUserId ? true : false;
+                    UpdateCommentsNumber(db.Comments.Where(c => c.PostId == _post.Id).ToList().Count);
+                    ChangeIsPostLiked(db.UsersLiked.Where(u => u.UserThatLikedId == _actualUserId && u.LikedThingId == _post.Id && (int)u.LikedThing == (int)LikedThingsEnum.Post).ToList().Count());
+                    UpdateLikesNumber(_post.Likes);
+                }
+            };
+            await LoadFromDatabaseAsync.Invoke();
         }
         private void UpdateCommentsNumber(int commentsNumber)
         {
@@ -158,6 +226,22 @@ namespace Instagram.ViewModels
             LikesNumber = $"{newLikesNumber} LIKES";
             _post.Likes = newLikesNumber;
         }
+        private async Task GetDarkModeFromJsonFileAsync()
+        {
+            var json = new JSON<UserDataModel>("UserData");
+            _isDarkMode = await json.GetDarkModeAsync();
+        }
+        public void ChangeTheme()
+        {
+            GetDarkModeFromJsonFileAsync();
+            if (CommentsSection != null)
+            {
+                foreach (var comment in CommentsSection)
+                {
+                    comment.ChangeCommentTheme(_isDarkMode);
+                }
+            }
+        }
         public void UpdateComments(InstagramDbContext db)
         {
             CommentsSection = new ObservableCollection<CommentView>();
@@ -167,37 +251,46 @@ namespace Instagram.ViewModels
             }
             UpdateCommentsNumber(_CommentsSection.Count());
         }
-        public void ShowMoreLessCommentsChange()
+        public async Task ShowMoreLessCommentsChangeAsync()
         {
             ShowMoreComments ^= true;
             if (ShowMoreComments)
             {
-                using (var db = new InstagramDbContext())
+                var UpdateDatabaseAsync = async Task () =>
                 {
-                    UpdateComments(db);
-                }
+                    using (var db = new InstagramDbContext("MainDb"))
+                    {
+                        UpdateComments(db);
+                    }
+                };
+                await UpdateDatabaseAsync.Invoke();
             }
         }
         public void UpdateIsCommentClickedToCreateValue()
         {
             IsCommentClickedToCreate ^= true;
         }
-        public void CreateNewComment()
+        public async Task CreateNewCommentAsync()
         {
-            using (var db = new InstagramDbContext())
+            var UpdateDatabaseAsync = async Task () =>
             {
-                db.Posts.Where(p => p.Id == _post.Id).ToList().ForEach(p => {
-                    p.Comments.Add(new Comment()
+                using (var db = new InstagramDbContext("MainDb"))
+                {
+                    db.Posts.Where(p => p.Id == _post.Id).ToList().ForEach(p =>
                     {
-                        AuthorId = _actualUserId,
-                        Content = _CommentContent,
-                        Likes = 0,
-                        PublicationDate = DateTime.Now
+                        p.Comments.Add(new Comment()
+                        {
+                            AuthorId = _actualUserId,
+                            Content = _CommentContent,
+                            Likes = 0,
+                            PublicationDate = DateTime.Now
+                        });
                     });
-                });
-                db.SaveChanges();
-                UpdateComments(db);
-            }
+                    db.SaveChanges();
+                    UpdateComments(db);
+                }
+            };
+            await UpdateDatabaseAsync.Invoke();
             IsCommentClickedToCreate = false;
         }
         public void ChangeIsPostLiked(int isUserLikedCount)

@@ -1,5 +1,6 @@
 ﻿using Instagram.Databases;
 using Instagram.DTOs;
+using Instagram.JSONModels;
 using Instagram.Models;
 using Instagram.Services;
 using Instagram.Views;
@@ -39,26 +40,30 @@ namespace Instagram.Components
         {
             _userId = userId;
             InitializeComponent();
-            GetUsersFromDb();
+            GetUsersFromDbAsync();
             CreateFriendsInMessenger();
         }
-        private void GetUsersFromDb()
+        private async Task GetUsersFromDbAsync()
         {
-            using (var db = new InstagramDbContext())
+            var GetUsersFromDatabaseAsync = async Task () =>
             {
-                _friendsFromDb = new ObservableCollection<FriendDto>();
-                List<Friend> friends = db.Friends.Where(f => f.UserId == _userId).ToList();
-                foreach (Friend friend in friends)
+                using (var db = new InstagramDbContext("MainDb"))
                 {
-                    _friendsFromDb.Add(new FriendDto()
+                    _friendsFromDb = new ObservableCollection<FriendDto>();
+                    List<Friend> friends = db.Friends.Where(f => f.UserId == _userId).ToList();
+                    foreach (Friend friend in friends)
                     {
-                        Id = friend.FriendId,
-                        Nickname = db.Users.First(u => u.Id == friend.FriendId).Nickname,
-                        ProfilePhoto = db.ProfileImages.First(pi => pi.UserId == friend.FriendId),
-                        LastMessage = "not done yet :("
-                    });
+                        _friendsFromDb.Add(new FriendDto()
+                        {
+                            Id = friend.FriendId,
+                            Nickname = db.Users.First(u => u.Id == friend.FriendId).Nickname,
+                            ProfilePhoto = db.ProfileImages.First(pi => pi.UserId == friend.FriendId),
+                            LastMessage = "not done yet :("
+                        });
+                    }
                 }
-            }
+            };
+            await GetUsersFromDatabaseAsync.Invoke();
         }
         private void CreateFriendsInMessenger()
         {
@@ -68,6 +73,13 @@ namespace Instagram.Components
                 friendsModels.Add(new FriendInMessengerView(friend) {});
             }
             MessengerSource = friendsModels;
+        }
+        public void ChangeMessengerTheme(bool isDarkMode)
+        {
+            this.Resources.MergedDictionaries.Clear();
+            string resourceName = isDarkMode ? "DarkModeDictionary" : "BrightModeDictionary";
+            ResourceDictionary resourceDictionary = new ResourceDictionary() { Source = new Uri(string.Format("ResourceDictionaries/{0}.xaml", resourceName), UriKind.Relative) };
+            this.Resources.MergedDictionaries.Add(resourceDictionary);
         }
     }
 }

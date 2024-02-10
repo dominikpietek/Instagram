@@ -92,10 +92,6 @@ C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FriendInMessenger
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FriendInMessengerView.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\MaybeFriendView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\MaybeFriendView.baml
-C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\xunit.abstractions.dll
-C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\xunit.assert.dll
-C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\xunit.core.dll
-C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\xunit.execution.dotnet.dll
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FriendRequestView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FriendRequestView.baml
 C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\Microsoft.Extensions.DependencyModel.dll
@@ -106,3 +102,5 @@ C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\runtimes\browser\lib\ne
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\ResourceDictionaries\DarkModeDictionary.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\ResourceDictionaries\BrightModeDictionary.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\ResourceDictionaries\ButtonValidationDictionary.baml
+C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\Instagram.dll.config
+C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\ResourceDictionaries\DarkModeHomeDictionary.baml

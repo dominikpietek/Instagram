@@ -21,7 +21,6 @@ namespace Instagram.Services
                     "Passwords are not the same!", "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
-                // do not open new window !!!!!!!
             }
         }
     }

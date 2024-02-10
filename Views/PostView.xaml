@@ -27,7 +27,8 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -55,18 +56,7 @@
                 <Label Content="{Binding ProfileName}"/>
             </StackPanel>
         </DockPanel>
-        <Label Grid.Row="1" Content="{Binding Location}">
-            <Label.Style>
-                <Style TargetType="Label">
-                    <Setter Property="Visibility" Value="Visible"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Location}" Value="">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Label.Style>
-        </Label>
+        <Label Grid.Row="1" Content="{Binding Location}"/>
         <Image Grid.Row="2" Source="{Binding PostPhotoSource}" x:Name="img"/>
         <StackPanel Orientation="Horizontal" Grid.Row="3">
             <Button Width="auto" Grid.Column="0" Padding="10" Command="{Binding LikeButton}" Style="{DynamicResource redButton}" >
@@ -89,7 +79,11 @@
             <Label Content="{Binding LikesNumber, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
             <Label Content="{Binding CommentsNumber, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Grid.Row="5" Height="60">
+        <StackPanel Orientation="Vertical" Grid.Row="5">
+            <Label Content="{Binding Description}" Margin="0 0 0 20"/>
+            <Label Content="{Binding Tags}" Margin="0 0 0 10"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="6" Height="60">
             <StackPanel.Style>
                 <Style TargetType="StackPanel">
                     <Setter Property="Visibility" Value="Visible"/>
@@ -102,7 +96,7 @@
             </StackPanel.Style>
             <Image Source="{Binding ProfilePhotoSource}"/>
             <TextBox Text="{Binding CommentContent, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" TextWrapping="Wrap" Width="350"/>
-            <Button Content="CREATE" Command="{Binding CreateComment}" Padding="10">
+            <Button Content="CREATE" Command="{Binding CreateComment}" Padding="10" Cursor="Hand">
                 <Button.Style>
                     <Style TargetType="Button">
                         <Setter Property="IsEnabled" Value="True"/>
@@ -115,7 +109,7 @@
                 </Button.Style>
             </Button>
         </StackPanel>
-        <StackPanel Grid.Row="6">
+        <StackPanel Grid.Row="7">
             <ScrollViewer MaxHeight="200">
                 <ScrollViewer.Style>
                     <Style TargetType="ScrollViewer">

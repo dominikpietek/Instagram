@@ -23,11 +23,18 @@ namespace Instagram.Views
         public CreateAccountWindowView()
         {
             InitializeComponent();
-            DataContext = new CreateAccountWindowViewModel(CloseWindow);
+            DataContext = new CreateAccountWindowViewModel(CloseWindow, ChangeRegisterTheme);
         }
         public void CloseWindow()
         {
             this.Close();
+        }
+        public void ChangeRegisterTheme(bool isDarkMode)
+        {
+            this.Resources.MergedDictionaries.Clear();
+            string resourceName = isDarkMode ? "DarkModeDictionary" : "BrightModeDictionary";
+            ResourceDictionary resourceDictionary = new ResourceDictionary() { Source = new Uri(string.Format("ResourceDictionaries/{0}.xaml", resourceName), UriKind.Relative) };
+            this.Resources.MergedDictionaries.Add(resourceDictionary);
         }
     }
 }

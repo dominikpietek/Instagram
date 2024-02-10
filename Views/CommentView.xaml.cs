@@ -22,10 +22,20 @@ namespace Instagram.Views
     /// </summary>
     public partial class CommentView : UserControl
     {
+        private CommentViewModel _ViewModel;
         public CommentView(Comment comment, int userId)
         {
             InitializeComponent();
-            DataContext = new CommentViewModel(comment, userId);
+            _ViewModel = new CommentViewModel(comment, userId);
+            DataContext = _ViewModel;
+        }
+        public void ChangeCommentTheme(bool isDarkMode)
+        {
+            this.Resources.MergedDictionaries.Clear();
+            string resourceName = isDarkMode ? "DarkModeDictionary" : "BrightModeDictionary";
+            ResourceDictionary resourceDictionary = new ResourceDictionary() { Source = new Uri(string.Format("ResourceDictionaries/{0}.xaml", resourceName), UriKind.Relative) };
+            this.Resources.MergedDictionaries.Add(resourceDictionary);
+            _ViewModel.ChangeTheme();
         }
     }
 }

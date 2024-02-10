@@ -123,9 +123,11 @@
             <StackPanel x:Name="MainContainer" Background="White"/>
         </ScrollViewer>
         <StackPanel Orientation="Vertical" Grid.Row="2" Grid.Column="2" Grid.RowSpan="3">
-            <Label Content="Friend requests"/>
+            <!--<Label Content="Friend requests:"/>-->
+            <Label Content="{Binding FriendRequestMessage, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
             <ItemsControl ItemsSource="{Binding FriendRequestSection, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-            <Label Content="New users, maybe you know them?"/>
+            <!--<Label Content="New users, maybe you know them?:"/>-->
+            <Label Content="{Binding MaybeFriendsMessage, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
             <ItemsControl ItemsSource="{Binding MaybeFriendsSection, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
         </StackPanel>
         <Button Grid.Column="2" Grid.Row="5" Content="Create New Post" Command="{Binding CreateNewPost}" Cursor="Hand"/>

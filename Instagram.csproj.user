@@ -72,6 +72,9 @@
     <Page Update="ResourceDictionaries\DarkModeDictionary.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="ResourceDictionaries\DarkModeHomeDictionary.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Themes\Generic.xaml">
       <SubType>Designer</SubType>
     </Page>
