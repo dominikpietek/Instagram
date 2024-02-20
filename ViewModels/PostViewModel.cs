@@ -201,19 +201,19 @@ namespace Instagram.ViewModels
             var LoadFromDatabaseAsync = async Task () =>
             {
 
-                using (var db = new InstagramDbContext("MainDb"))
-                {
-                    ProfilePhotoSource = ConvertImage.FromByteArray(db.ProfileImages.First(p => p.UserId == _post.UserId).ImageBytes);
-                    ProfileName = db.Users.First(p => p.Id == _post.UserId).Nickname;
-                    PostPhotoSource = ConvertImage.FromByteArray(db.PostImages.First(p => p.PostId == _post.Id).ImageBytes);
-                    Tags = ConvertTagsToString(db);
-                    Description = _post.Description;
-                    Location = _post.Location == null ? "" : _post.Location;
-                    _IsPostYour = _post.UserId == _actualUserId ? true : false;
-                    UpdateCommentsNumber(db.Comments.Where(c => c.PostId == _post.Id).ToList().Count);
-                    ChangeIsPostLiked(db.UsersLiked.Where(u => u.UserThatLikedId == _actualUserId && u.LikedThingId == _post.Id && (int)u.LikedThing == (int)LikedThingsEnum.Post).ToList().Count());
-                    UpdateLikesNumber(_post.Likes);
-                }
+                //using (var db = new InstagramDbContext("MainDb"))
+                //{
+                //    ProfilePhotoSource = ConvertImage.FromByteArray(db.ProfileImages.First(p => p.UserId == _post.UserId).ImageBytes);
+                //    ProfileName = db.Users.First(p => p.Id == _post.UserId).Nickname;
+                //    PostPhotoSource = ConvertImage.FromByteArray(db.PostImages.First(p => p.PostId == _post.Id).ImageBytes);
+                //    Tags = ConvertTagsToString(db);
+                //    Description = _post.Description;
+                //    Location = _post.Location == null ? "" : _post.Location;
+                //    _IsPostYour = _post.UserId == _actualUserId ? true : false;
+                //    UpdateCommentsNumber(db.Comments.Where(c => c.PostId == _post.Id).ToList().Count);
+                //    ChangeIsPostLiked(db.UsersLiked.Where(u => u.UserThatLikedId == _actualUserId && u.LikedThingId == _post.Id && (int)u.LikedThing == (int)LikedThingsEnum.Post).ToList().Count());
+                //    UpdateLikesNumber(_post.Likes);
+                //}
             };
             await LoadFromDatabaseAsync.Invoke();
         }
@@ -258,10 +258,10 @@ namespace Instagram.ViewModels
             {
                 var UpdateDatabaseAsync = async Task () =>
                 {
-                    using (var db = new InstagramDbContext("MainDb"))
-                    {
-                        UpdateComments(db);
-                    }
+                    //using (var db = new InstagramDbContext("MainDb"))
+                    //{
+                    //    UpdateComments(db);
+                    //}
                 };
                 await UpdateDatabaseAsync.Invoke();
             }
@@ -274,21 +274,21 @@ namespace Instagram.ViewModels
         {
             var UpdateDatabaseAsync = async Task () =>
             {
-                using (var db = new InstagramDbContext("MainDb"))
-                {
-                    db.Posts.Where(p => p.Id == _post.Id).ToList().ForEach(p =>
-                    {
-                        p.Comments.Add(new Comment()
-                        {
-                            AuthorId = _actualUserId,
-                            Content = _CommentContent,
-                            Likes = 0,
-                            PublicationDate = DateTime.Now
-                        });
-                    });
-                    db.SaveChanges();
-                    UpdateComments(db);
-                }
+                //using (var db = new InstagramDbContext("MainDb"))
+                //{
+                //    db.Posts.Where(p => p.Id == _post.Id).ToList().ForEach(p =>
+                //    {
+                //        p.Comments.Add(new Comment()
+                //        {
+                //            AuthorId = _actualUserId,
+                //            Content = _CommentContent,
+                //            Likes = 0,
+                //            PublicationDate = DateTime.Now
+                //        });
+                //    });
+                //    db.SaveChanges();
+                //    UpdateComments(db);
+                //}
             };
             await UpdateDatabaseAsync.Invoke();
             IsCommentClickedToCreate = false;

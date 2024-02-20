@@ -2,8 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Instagram.Views"
-             xmlns:components="clr-namespace:Instagram.Components"
-             StartupUri="Views/LoginOrRegisterWindowView.xaml">
+             xmlns:components="clr-namespace:Instagram.Components">
+    <!--StartupUri="Views/LoginOrRegisterWindowView.xaml"-->
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

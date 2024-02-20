@@ -11,5 +11,6 @@ namespace Instagram.JSONModels
         public string RememberedEmailNickname { get; set; }
         public DateTime LastLogin { get; set; }
         public bool DarkMode { get; set; }
+        public int UserId { get; set; }
     }
 }

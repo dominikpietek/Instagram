@@ -1,4 +1,6 @@
-﻿using Instagram.Models;
+﻿using Instagram.Databases;
+using Instagram.Models;
+using Instagram.StartupHelpers;
 using Instagram.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -21,10 +23,12 @@ namespace Instagram.Views
     /// </summary>
     public partial class FeedView : Window
     {
-        public FeedView(User user, Action<bool> ChangeLoginTheme)
+        public FeedView(
+            InstagramDbContext db, 
+            IAbstractFactory<CreateNewPostWindowView> newPostFactory)
         {
             InitializeComponent();
-            DataContext = new FeedViewModel(user, CloseWindow, MainContainer, ChangeLoginTheme, ChangeFeedTheme);
+            DataContext = new FeedViewModel(CloseWindow, MainContainer, ChangeFeedTheme, db, newPostFactory);
         }
         private void CloseWindow()
         {

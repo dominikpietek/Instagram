@@ -13,9 +13,9 @@ namespace Instagram.Repositories
     public class RegisterRepository
     {
         private InstagramDbContext _db;
-        public RegisterRepository()
+        public RegisterRepository(InstagramDbContext db)
         {
-            _db = new InstagramDbContext("MainDb");
+            _db = db;
         }
         public bool ValidateData(string firstPassword, string secondPassword, string email, string nickname)
         {

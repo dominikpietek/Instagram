@@ -49,7 +49,7 @@ namespace Instagram.Components
         {
             ChangeHomeThemeAsync();
             _loadedPosts = 10;
-            _postRepository = new PostRepository(new InstagramDbContext("MainDb"));
+            //_postRepository = new PostRepository(new InstagramDbContext());
             DataContext = this;
             InitializeComponent();
             _userId = userId;

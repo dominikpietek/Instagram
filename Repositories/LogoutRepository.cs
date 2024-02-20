@@ -21,8 +21,8 @@ namespace Instagram.Repositories
         }
         public static void CloseWindowAndShowStartUpWindow(Action CloseWindow)
         {
-            Window startUpWindow = new LoginOrRegisterWindowView();
-            startUpWindow.Show();
+            //Window startUpWindow = new LoginOrRegisterWindowView();
+            //startUpWindow.Show();
             CloseWindow.Invoke();
         }
     }

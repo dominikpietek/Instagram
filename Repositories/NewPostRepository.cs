@@ -14,11 +14,11 @@ namespace Instagram.Repositories
     {
         public static void Create(int userId, Post post)
         {
-            using (var db = new InstagramDbContext("MainDb"))
-            {
-                db.Users.Where(u => u.Id == userId).ToList().ForEach(u => u.Posts.Add(post));
-                db.SaveChanges();
-            }
+            //using (var db = new InstagramDbContext("MainDb"))
+            //{
+            //    db.Users.Where(u => u.Id == userId).ToList().ForEach(u => u.Posts.Add(post));
+            //    db.SaveChanges();
+            //}
             MessageBox.Show("Post created!");
         }
     }

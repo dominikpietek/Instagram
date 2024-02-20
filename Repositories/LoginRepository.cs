@@ -3,6 +3,7 @@ using Instagram.JSONModels;
 using Instagram.Models;
 using Instagram.SendingEmails;
 using Instagram.Services;
+using Instagram.StartupHelpers;
 using Instagram.Views;
 using System;
 using System.Collections.Generic;
@@ -14,76 +15,74 @@ using System.Windows.Controls;
 
 namespace Instagram.Repositories
 {
-    public static class LoginRepository
+    public class LoginRepository
     {
-        public static async Task AutomaticLoginAsync(string emailNickname, Action CloseWindow, Action<bool> ChangeTheme)
+        private readonly InstagramDbContext _db;
+        private readonly IAbstractFactory<FeedView> _factory;
+
+        public LoginRepository(InstagramDbContext db, IAbstractFactory<FeedView> factory)
         {
-            using (var db = new InstagramDbContext("MainDb"))
+            _db = db;
+            _factory = factory;
+        }
+        public async Task AutomaticLoginAsync(string emailNickname, Action CloseWindow, Action<bool> ChangeTheme)
+        {
+            IsInDatabaseRepository isInDatabase = new IsInDatabaseRepository(_db, emailNickname);
+            if (isInDatabase.CheckLogin("Email or Nickname doesn't exist!"))
             {
-                IsInDatabaseRepository isInDatabase = new IsInDatabaseRepository(db, emailNickname);
-                if (isInDatabase.CheckLogin("Email or Nickname doesn't exist!"))
+                User user = GetUser(emailNickname);
+                JSON<UserDataModel> userJSON = new JSON<UserDataModel>("UserData");
+                UserDataModel userJSONModel = await userJSON.GetAsync<UserDataModel>();
+                userJSONModel.RememberedEmailNickname = emailNickname;
+                userJSONModel.LastLogin = DateTime.Now;
+                userJSONModel.UserId = user.Id;
+                await userJSON.SaveAsync(userJSONModel);
+                //_factory.CreateFeed(user, ChangeTheme).Show();
+                _factory.Create().Show();
+                CloseWindow.Invoke();
+            }
+        }
+        public async Task CheckWithDatabaseAsync(string password, string emailNickname, Action CloseWindow, bool rememberMe, Action<bool> ChangeTheme)
+        {
+            IsInDatabaseRepository isInDatabase = new IsInDatabaseRepository(_db, emailNickname);
+            if (isInDatabase.CheckLogin("Email or Nickname doesn't exist!"))
+            {
+                User user = GetUser(emailNickname);
+                if (user.Password == Hash.HashString(password))
                 {
-                    User user;
-                    if (emailNickname.Contains('@'))
+                    JSON<UserDataModel> userJSON = new JSON<UserDataModel>("UserData");
+                    UserDataModel userJSONModel = await userJSON.GetAsync<UserDataModel>();
+                    if (rememberMe)
                     {
-                        user = db.Users.First(u => u.EmailAdress == emailNickname);
+                        userJSONModel.RememberedEmailNickname = emailNickname;
+                        userJSONModel.LastLogin = DateTime.Now;
                     }
                     else
                     {
-                        user = db.Users.First(u => u.Nickname == emailNickname);
+                        userJSONModel.RememberedEmailNickname = string.Empty;
                     }
-                    JSON<UserDataModel> userJSON = new JSON<UserDataModel>("UserData");
-                    UserDataModel userJSONModel = await userJSON.GetAsync<UserDataModel>();
-                    userJSONModel.RememberedEmailNickname = emailNickname;
-                    userJSONModel.LastLogin = DateTime.Now;
                     await userJSON.SaveAsync(userJSONModel);
-                    Window feedWindow = new FeedView(user, ChangeTheme);
-                    feedWindow.Show();
+                    //_factory.CreateFeed(user, ChangeTheme).Show();
+                    _factory.Create().Show();
                     CloseWindow.Invoke();
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "Wrong password!", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
-        public static async Task CheckWithDatabaseAsync(string password, string emailNickname, Action CloseWindow, bool rememberMe, Action<bool> ChangeTheme)
+        private User GetUser(string emailNickname)
         {
-            using (var db = new InstagramDbContext("MainDb"))
+            if (emailNickname.Contains('@'))
             {
-                IsInDatabaseRepository isInDatabase = new IsInDatabaseRepository(db, emailNickname);
-                if (isInDatabase.CheckLogin("Email or Nickname doesn't exist!"))
-                {
-                    User user;
-                    if (emailNickname.Contains('@'))
-                    {
-                        user = db.Users.First(u => u.EmailAdress == emailNickname);
-                    }
-                    else
-                    {
-                        user = db.Users.First(u => u.Nickname == emailNickname);
-                    }
-                    if (user.Password == Hash.HashString(password))
-                    {
-                        JSON<UserDataModel> userJSON = new JSON<UserDataModel>("UserData");
-                        UserDataModel userJSONModel = await userJSON.GetAsync<UserDataModel>();
-                        if (rememberMe)
-                        {
-                            userJSONModel.RememberedEmailNickname = emailNickname;
-                            userJSONModel.LastLogin = DateTime.Now;
-                        }
-                        else
-                        {
-                            userJSONModel.RememberedEmailNickname = string.Empty;
-                        }
-                        await userJSON.SaveAsync(userJSONModel);
-                        Window feedWindow = new FeedView(user, ChangeTheme);
-                        feedWindow.Show();
-                        CloseWindow.Invoke();
-                    }
-                    else
-                    {
-                        MessageBox.Show(
-                            "Wrong password!", "Error",
-                            MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }
+                return  _db.Users.First(u => u.EmailAdress == emailNickname);
+            }
+            else
+            {
+                return _db.Users.First(u => u.Nickname == emailNickname);
             }
         }
     }

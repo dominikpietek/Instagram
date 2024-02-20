@@ -1,40 +1,46 @@
 ﻿using Instagram.Databases;
-using Instagram.Interfaces;
-using Instagram.Repositories;
+using Instagram.StartupHelpers;
 using Instagram.ViewModels;
 using Instagram.Views;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace Instagram
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
-        public readonly IServiceProvider serviceProvider;
+        public static IHost? AppHost { get; private set; }
         public App()
         {
             string connectionString = ConfigurationManager.ConnectionStrings["MainDb"].ConnectionString;
-            //serviceProvider = new ServiceCollection()
-            //    .AddDbContext<InstagramDbContext>(options => options.UseSqlServer(connectionString))
-            //    .AddTransient<IPostRepository, PostRepository>()
-            //    .AddTransient<LoginOrRegisterWindowViewModel>()
-            //    .BuildServiceProvider();
+            AppHost = Host.CreateDefaultBuilder()
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddSingleton<LoginOrRegisterWindowView>();
+                    services.AddFormFactory<CreateAccountWindowView>();
+                    services.AddFormFactory<LoginOrRegisterWindowView>();
+                    services.AddFormFactory<FeedView>();
+                    services.AddDbContext<InstagramDbContext>(options => options.UseSqlServer(connectionString));
+                })
+                .Build();
         }
-        protected void OnStartUp(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
+            await AppHost!.StartAsync();
+
+            var startupForm = AppHost.Services.GetRequiredService<LoginOrRegisterWindowView>();
+            startupForm.Show();
+
             base.OnStartup(e);
-            //var window = serviceProvider.GetRequiredService<LoginOrRegisterWindowViewModel>();
-            
+        }
+        protected override async void OnExit(ExitEventArgs e)
+        {
+            await AppHost!.StopAsync();
+            base.OnExit(e);
         }
     }
 }

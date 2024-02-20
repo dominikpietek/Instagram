@@ -31,10 +31,10 @@ namespace Instagram.Views
         }
         public void CloseWindow()
         {
-            using (var db = new InstagramDbContext("MainDb"))
-            {
-                _ShowPosts.Invoke();
-            }
+            //using (var db = new InstagramDbContext("MainDb"))
+            //{
+            //    _ShowPosts.Invoke();
+            //}
             this.Close();
         }
         public void ChangeCreatePostTheme(bool isDarkMode)

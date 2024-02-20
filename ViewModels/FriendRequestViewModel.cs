@@ -64,24 +64,24 @@ namespace Instagram.ViewModels
             var GetFromDatabaseAsync = async Task () =>
             {
 
-                using (var db = new InstagramDbContext("MainDb"))
-                {
-                    if (!db.Users.First(u => u.Id == _userId).Friends.Select(f => f.FriendId).Contains(_friendDto.Id))
-                    {
-                        db.Users.First(u => u.Id == _userId).Friends.Add(new Friend()
-                        {
-                            UserId = _userId,
-                            FriendId = _friendDto.Id
-                        });
-                        db.Users.First(u => u.Id == _friendDto.Id).Friends.Add(new Friend()
-                        {
-                            UserId = _friendDto.Id,
-                            FriendId = _userId
-                        });
-                        db.SaveChanges();
-                        await RemoveFriendAsync();
-                    }
-                }
+                //using (var db = new InstagramDbContext("MainDb"))
+                //{
+                //    if (!db.Users.First(u => u.Id == _userId).Friends.Select(f => f.FriendId).Contains(_friendDto.Id))
+                //    {
+                //        db.Users.First(u => u.Id == _userId).Friends.Add(new Friend()
+                //        {
+                //            UserId = _userId,
+                //            FriendId = _friendDto.Id
+                //        });
+                //        db.Users.First(u => u.Id == _friendDto.Id).Friends.Add(new Friend()
+                //        {
+                //            UserId = _friendDto.Id,
+                //            FriendId = _userId
+                //        });
+                //        db.SaveChanges();
+                //        await RemoveFriendAsync();
+                //    }
+                //}
             };
             await GetFromDatabaseAsync.Invoke();
         }
@@ -89,19 +89,19 @@ namespace Instagram.ViewModels
         {
             var RemoveFromDatabase = async Task () =>
             {
-                using (var db = new InstagramDbContext("MainDb"))
-                {
-                    if (!db.Users.First(u => u.Id == _userId).GotFriendRequests.Select(gfr => gfr.Id).Contains(_friendDto.Id))
-                    {
-                        UserIdGotModel userIdGotModel = db.UserIdGotModels.First(uigm => uigm.UserId == _userId && uigm.StoredUserId == _friendDto.Id);
-                        db.UserIdGotModels.Remove(userIdGotModel);
-                        UserIdSentModel userIdSentModel = db.UserIdSentModels.First(uigm => uigm.UserId == _friendDto.Id && uigm.StoredUserId == _userId);
-                        db.UserIdSentModels.Remove(userIdSentModel);
-                        db.SaveChanges();
-                        _LoadFriendRequest.Invoke(db, _userId);
-                        // rename those two functions
-                    }
-                }
+                //using (var db = new InstagramDbContext("MainDb"))
+                //{
+                //    if (!db.Users.First(u => u.Id == _userId).GotFriendRequests.Select(gfr => gfr.Id).Contains(_friendDto.Id))
+                //    {
+                //        UserIdGotModel userIdGotModel = db.UserIdGotModels.First(uigm => uigm.UserId == _userId && uigm.StoredUserId == _friendDto.Id);
+                //        db.UserIdGotModels.Remove(userIdGotModel);
+                //        UserIdSentModel userIdSentModel = db.UserIdSentModels.First(uigm => uigm.UserId == _friendDto.Id && uigm.StoredUserId == _userId);
+                //        db.UserIdSentModels.Remove(userIdSentModel);
+                //        db.SaveChanges();
+                //        _LoadFriendRequest.Invoke(db, _userId);
+                //        // rename those two functions
+                //    }
+                //}
             };
             await RemoveFromDatabase.Invoke();
         }

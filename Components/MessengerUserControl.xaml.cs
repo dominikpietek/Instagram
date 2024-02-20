@@ -47,21 +47,21 @@ namespace Instagram.Components
         {
             var GetUsersFromDatabaseAsync = async Task () =>
             {
-                using (var db = new InstagramDbContext("MainDb"))
-                {
-                    _friendsFromDb = new ObservableCollection<FriendDto>();
-                    List<Friend> friends = db.Friends.Where(f => f.UserId == _userId).ToList();
-                    foreach (Friend friend in friends)
-                    {
-                        _friendsFromDb.Add(new FriendDto()
-                        {
-                            Id = friend.FriendId,
-                            Nickname = db.Users.First(u => u.Id == friend.FriendId).Nickname,
-                            ProfilePhoto = db.ProfileImages.First(pi => pi.UserId == friend.FriendId),
-                            LastMessage = "not done yet :("
-                        });
-                    }
-                }
+                //using (var db = new InstagramDbContext("MainDb"))
+                //{
+                //    _friendsFromDb = new ObservableCollection<FriendDto>();
+                //    List<Friend> friends = db.Friends.Where(f => f.UserId == _userId).ToList();
+                //    foreach (Friend friend in friends)
+                //    {
+                //        _friendsFromDb.Add(new FriendDto()
+                //        {
+                //            Id = friend.FriendId,
+                //            Nickname = db.Users.First(u => u.Id == friend.FriendId).Nickname,
+                //            ProfilePhoto = db.ProfileImages.First(pi => pi.UserId == friend.FriendId),
+                //            LastMessage = "not done yet :("
+                //        });
+                //    }
+                //}
             };
             await GetUsersFromDatabaseAsync.Invoke();
         }

@@ -1,4 +1,6 @@
-﻿using Instagram.ViewModels;
+﻿using Instagram.Databases;
+using Instagram.StartupHelpers;
+using Instagram.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,10 +22,10 @@ namespace Instagram.Views
     /// </summary>
     public partial class CreateAccountWindowView : Window
     {
-        public CreateAccountWindowView()
+        public CreateAccountWindowView(InstagramDbContext db, IAbstractFactory<LoginOrRegisterWindowView> factory)
         {
             InitializeComponent();
-            DataContext = new CreateAccountWindowViewModel(CloseWindow, ChangeRegisterTheme);
+            DataContext = new CreateAccountWindowViewModel(CloseWindow, ChangeRegisterTheme, db, factory);
         }
         public void CloseWindow()
         {

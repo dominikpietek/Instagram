@@ -27,53 +27,53 @@ namespace Instagram.Commands
         }
         public override void Execute(object parameter)
         {
-            using (var db = new InstagramDbContext("MainDb"))
-            {
-                bool addOrRemove;
-                int likesNumber = 0;
-                var likes = db.UsersLiked.Where(u => (u.UserThatLikedId == _userId && u.LikedThingId == _likedThingId && (int)u.LikedThing == (int)_LikedThing)).ToList();
-                if (likes.Count() == 0)
-                {
-                    addOrRemove = true;
-                    db.UsersLiked.Add(new UserLiked()
-                    {
-                        LikedThing = _LikedThing,
-                        LikedThingId= _likedThingId,
-                        UserThatLikedId = _userId
-                    });
-                }
-                else
-                {
-                    addOrRemove = false;
-                    db.UsersLiked.Remove(likes[0]);
-                }
-                switch (_LikedThing)
-                {
-                    case LikedThingsEnum.Post:
-                        likesNumber =
-                            addOrRemove 
-                            ? db.Posts.First(p => p.Id == _likedThingId).Likes++ + 1
-                            : db.Posts.First(p => p.Id == _likedThingId).Likes-- - 1;
-                        break;
-                    case LikedThingsEnum.Comment:
-                        likesNumber = 
-                            addOrRemove
-                            ? db.Comments.First(c => c.Id == _likedThingId).Likes++ + 1
-                            : db.Comments.First(c => c.Id == _likedThingId).Likes-- - 1;
-                        break;
-                    case LikedThingsEnum.CommentResponse:
-                        likesNumber = 
-                            addOrRemove
-                            ? db.CommentResponses.First(cr => cr.Id == _likedThingId).Likes++ + 1
-                            : db.CommentResponses.First(cr => cr.Id == _likedThingId).Likes-- - 1;
-                        break;
-                    default:
-                        break;
-                }
-                db.SaveChanges();
-                _UpdateLikesNumber.Invoke(likesNumber);
-                _ChangeIsUserLiked.Invoke(likes.Count() == 0 ? 1 : 0);
-            }
+            //using (var db = new InstagramDbContext("MainDb"))
+            //{
+            //    bool addOrRemove;
+            //    int likesNumber = 0;
+            //    var likes = db.UsersLiked.Where(u => (u.UserThatLikedId == _userId && u.LikedThingId == _likedThingId && (int)u.LikedThing == (int)_LikedThing)).ToList();
+            //    if (likes.Count() == 0)
+            //    {
+            //        addOrRemove = true;
+            //        db.UsersLiked.Add(new UserLiked()
+            //        {
+            //            LikedThing = _LikedThing,
+            //            LikedThingId= _likedThingId,
+            //            UserThatLikedId = _userId
+            //        });
+            //    }
+            //    else
+            //    {
+            //        addOrRemove = false;
+            //        db.UsersLiked.Remove(likes[0]);
+            //    }
+            //    switch (_LikedThing)
+            //    {
+            //        case LikedThingsEnum.Post:
+            //            likesNumber =
+            //                addOrRemove 
+            //                ? db.Posts.First(p => p.Id == _likedThingId).Likes++ + 1
+            //                : db.Posts.First(p => p.Id == _likedThingId).Likes-- - 1;
+            //            break;
+            //        case LikedThingsEnum.Comment:
+            //            likesNumber = 
+            //                addOrRemove
+            //                ? db.Comments.First(c => c.Id == _likedThingId).Likes++ + 1
+            //                : db.Comments.First(c => c.Id == _likedThingId).Likes-- - 1;
+            //            break;
+            //        case LikedThingsEnum.CommentResponse:
+            //            likesNumber = 
+            //                addOrRemove
+            //                ? db.CommentResponses.First(cr => cr.Id == _likedThingId).Likes++ + 1
+            //                : db.CommentResponses.First(cr => cr.Id == _likedThingId).Likes-- - 1;
+            //            break;
+            //        default:
+            //            break;
+            //    }
+            //    db.SaveChanges();
+            //    _UpdateLikesNumber.Invoke(likesNumber);
+            //    _ChangeIsUserLiked.Invoke(likes.Count() == 0 ? 1 : 0);
+            //}
         }
     }
 }

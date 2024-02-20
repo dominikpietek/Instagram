@@ -3,6 +3,8 @@ using Instagram.Databases;
 using Instagram.JSONModels;
 using Instagram.Models;
 using Instagram.Repositories;
+using Instagram.StartupHelpers;
+using Instagram.Views;
 using Newtonsoft.Json;
 using System;
 using System.CodeDom;
@@ -82,8 +84,21 @@ namespace Instagram.ViewModels
         private Func<int> _WhichOneIsFocused;
         private Func<bool> _IsLoginButtonUsable;
         private Action<bool> _ChangeTheme;
+        private IAbstractFactory<CreateAccountWindowView> _accountFactory;
+        private IAbstractFactory<FeedView> _feedFactory;
+        private LoginRepository _loginRepository;
+        private InstagramDbContext _db;
         #endregion
-        public LoginOrRegisterWindowViewModel(Action CloseWindow, Action FocusOnLogin, Action FocusOnPassword, Func<bool> IsLoginButtonUsable, Action<bool> ChangeTheme, Func<int> WhichOneIsFocused)
+        public LoginOrRegisterWindowViewModel(
+            Action CloseWindow, 
+            Action FocusOnLogin, 
+            Action FocusOnPassword, 
+            Func<bool> IsLoginButtonUsable, 
+            Action<bool> ChangeTheme, 
+            Func<int> WhichOneIsFocused, 
+            IAbstractFactory<CreateAccountWindowView> accountFactory,
+            IAbstractFactory<FeedView> feedFactory,
+            InstagramDbContext db)
         {
             #region PrivatePropertiesAssignment
             _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
@@ -93,10 +108,14 @@ namespace Instagram.ViewModels
             _FocusOnLogin = FocusOnLogin;
             _FocusOnPassword = FocusOnPassword;
             _WhichOneIsFocused = WhichOneIsFocused;
+            _accountFactory = accountFactory;
+            _feedFactory = feedFactory;
+            _db = db;
+            _loginRepository = new LoginRepository(_db, _feedFactory);
             #endregion
             #region CommandInstances
             LoginButton = new LoginCommand(LoginClickAsync);
-            CreateAccountOpenWindowButton = new CreateAccountOpenWindowButtonCommand(_CloseWindow);
+            CreateAccountOpenWindowButton = new CreateAccountOpenWindowButtonCommand(_CloseWindow, _accountFactory);
             GoToNextBoxCommand = new GoToNextBoxCommand(ChangeBoxIndex);
             #endregion
             ReadJsonConfigFileAndApplyThemeAsync();
@@ -110,7 +129,7 @@ namespace Instagram.ViewModels
                 _EmailNickname = userJSONModel.RememberedEmailNickname;
                 if (userJSONModel.LastLogin.AddHours(2) >= DateTime.Now)
                 {
-                    await LoginRepository.AutomaticLoginAsync(_EmailNickname, _CloseWindow, _ChangeTheme);
+                    await _loginRepository.AutomaticLoginAsync(_EmailNickname, _CloseWindow, _ChangeTheme);
                 }
                 RememberMe = true;
             }
@@ -162,7 +181,7 @@ namespace Instagram.ViewModels
         }
         public async Task LoginClickAsync()
         {
-            await LoginRepository.CheckWithDatabaseAsync(_Password, _EmailNickname, _CloseWindow, RememberMe, _ChangeTheme);
+            await _loginRepository.CheckWithDatabaseAsync(_Password, _EmailNickname, _CloseWindow, RememberMe, _ChangeTheme);
         }
     }
 }

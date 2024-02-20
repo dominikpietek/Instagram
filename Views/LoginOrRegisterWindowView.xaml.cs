@@ -1,7 +1,10 @@
-﻿using Instagram.ViewModels;
+﻿using Instagram.Databases;
+using Instagram.StartupHelpers;
+using Instagram.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,16 +23,19 @@ namespace Instagram.Views
     /// </summary>
     public partial class LoginOrRegisterWindowView : Window
     {
-        public LoginOrRegisterWindowView()
+        public LoginOrRegisterWindowView(
+            IAbstractFactory<CreateAccountWindowView> accountFactory,
+            IAbstractFactory<FeedView> feedFactory,
+            InstagramDbContext db)
         {
             InitializeComponent();
-            DataContext = new LoginOrRegisterWindowViewModel(CloseWindow, FocusOnLogin, FocusOnPassword, IsLoginButtonUsable, ChangeLoginTheme, WhichOneIsFocused);
+            DataContext = new LoginOrRegisterWindowViewModel(CloseWindow, FocusOnLogin, FocusOnPassword, IsLoginButtonUsable, ChangeLoginTheme, WhichOneIsFocused, accountFactory, feedFactory, db);
         }
-        public void CloseWindow()
+        private void CloseWindow()
         {
             this.Close();
         }
-        public int WhichOneIsFocused()
+        private int WhichOneIsFocused()
         {
             if (!this.emailNicknameBox.IsKeyboardFocusWithin && !this.passwordBox.IsKeyboardFocusWithin)
             {
@@ -37,25 +43,26 @@ namespace Instagram.Views
             }
             return this.emailNicknameBox.IsKeyboardFocusWithin ? 1 : 2;
         }
-        public void FocusOnLogin()
+        private void FocusOnLogin()
         {
-            this.emailNicknameBox.Focusable = true;
-            this.emailNicknameBox.Focus();
-            this.emailNicknameBox.ForceCursor = true;
-            Keyboard.Focus(this.emailNicknameBox);
+            FocusOn(this.emailNicknameBox);
         }
-        public void FocusOnPassword()
+        private void FocusOnPassword()
         {
-            this.passwordBox.Focusable = true;
-            this.passwordBox.Focus();
-            this.passwordBox.ForceCursor = true;
-            Keyboard.Focus(this.passwordBox);
+            FocusOn(this.passwordBox);
         }
-        public bool IsLoginButtonUsable()
+        private void FocusOn(Control control)
+        {
+            control.Focusable = true;
+            control.Focus();
+            control.ForceCursor = true;
+            Keyboard.Focus(control);
+        }
+        private bool IsLoginButtonUsable()
         {
             return this.loginButton.IsEnabled;
         }
-        public void ChangeLoginTheme(bool isDarkMode)
+        private void ChangeLoginTheme(bool isDarkMode)
         {
             this.Resources.MergedDictionaries.Clear();
             string resourceName = isDarkMode ? "DarkModeDictionary" : "BrightModeDictionary";

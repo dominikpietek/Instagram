@@ -190,13 +190,13 @@ namespace Instagram.ViewModels
                 ShowMoreLessButtonContent = showLessIconSource;
                 var GetDataFromDatabaseAsync = async Task () =>
                 {
-                    using (var db = new InstagramDbContext("MainDb"))
-                    {
-                        foreach (CommentResponse cm in db.CommentResponses.Where(c => c.CommentId == _comment.Id).ToList())
-                        {
-                            CommentResponses.Add(new ReplyCommentView(cm, _userId));
-                        }
-                    }
+                    //using (var db = new InstagramDbContext("MainDb"))
+                    //{
+                    //    foreach (CommentResponse cm in db.CommentResponses.Where(c => c.CommentId == _comment.Id).ToList())
+                    //    {
+                    //        CommentResponses.Add(new ReplyCommentView(cm, _userId));
+                    //    }
+                    //}
                 };
                 await GetDataFromDatabaseAsync.Invoke();
                 showMoreCommentResponses = false;
@@ -212,26 +212,26 @@ namespace Instagram.ViewModels
         {
             var GetDataFromDatabaseAsync = async Task () =>
             {
-                using (var db = new InstagramDbContext("MainDb"))
-                {
-                    // do it easier
-                    User profile = db.Users.First(u => u.Id == _comment.AuthorId);
-                    CommentProfileName = profile.Nickname;
-                    ProfileImage profilePhoto = db.ProfileImages.First(p => p.UserId == profile.Id);
-                    CommentProfilePhotoSource = ConvertImage.FromByteArray(profilePhoto.ImageBytes);
-                    CommentText = _comment.Content;
-                    PublicationDate = _comment.PublicationDate;
-                    UpdateLikesNumber(_comment.Likes);
-                    ProfileImage userReplyCommentPhoto = db.ProfileImages.First(pi => pi.Id == _userId);
-                    ReplyProfilePhotoSource = ConvertImage.FromByteArray(userReplyCommentPhoto.ImageBytes);
-                    AreAnyComments = db.CommentResponses.Where(c => c.CommentId == _comment.Id).ToList().Count() > 0 ? true : false;
-                    ShowMoreLessButtonContent = showMoreIconSource;
-                    ChangeIsUserLiked(db.UsersLiked.Where(u => (
-                        u.UserThatLikedId == _userId &&
-                        u.LikedThingId == _comment.Id &&
-                        (int)u.LikedThing == (int)LikedThingsEnum.Comment
-                        )).ToList().Count());
-                }
+                //using (var db = new InstagramDbContext("MainDb"))
+                //{
+                //    // do it easier
+                //    User profile = db.Users.First(u => u.Id == _comment.AuthorId);
+                //    CommentProfileName = profile.Nickname;
+                //    ProfileImage profilePhoto = db.ProfileImages.First(p => p.UserId == profile.Id);
+                //    CommentProfilePhotoSource = ConvertImage.FromByteArray(profilePhoto.ImageBytes);
+                //    CommentText = _comment.Content;
+                //    PublicationDate = _comment.PublicationDate;
+                //    UpdateLikesNumber(_comment.Likes);
+                //    ProfileImage userReplyCommentPhoto = db.ProfileImages.First(pi => pi.Id == _userId);
+                //    ReplyProfilePhotoSource = ConvertImage.FromByteArray(userReplyCommentPhoto.ImageBytes);
+                //    AreAnyComments = db.CommentResponses.Where(c => c.CommentId == _comment.Id).ToList().Count() > 0 ? true : false;
+                //    ShowMoreLessButtonContent = showMoreIconSource;
+                //    ChangeIsUserLiked(db.UsersLiked.Where(u => (
+                //        u.UserThatLikedId == _userId &&
+                //        u.LikedThingId == _comment.Id &&
+                //        (int)u.LikedThing == (int)LikedThingsEnum.Comment
+                //        )).ToList().Count());
+                //}
             };
             await GetDataFromDatabaseAsync.Invoke();
         }
@@ -259,19 +259,19 @@ namespace Instagram.ViewModels
         {
             var CreateReplyAsync = async Task () =>
             {
-                using (var db = new InstagramDbContext("MainDb"))
-                {
-                    db.Comments.First(c => c.Id == _comment.Id).CommentResponses.Add(new CommentResponse()
-                    {
-                        AuthorId = _userId,
-                        Content = _ReplyCommentContent,
-                        Likes = 0,
-                        PublicationDate = DateTime.Now
-                    });
-                    db.SaveChanges();
-                    clicked = false;
-                    LoadResponsesToCommentAsync();
-                }
+                //using (var db = new InstagramDbContext("MainDb"))
+                //{
+                //    db.Comments.First(c => c.Id == _comment.Id).CommentResponses.Add(new CommentResponse()
+                //    {
+                //        AuthorId = _userId,
+                //        Content = _ReplyCommentContent,
+                //        Likes = 0,
+                //        PublicationDate = DateTime.Now
+                //    });
+                //    db.SaveChanges();
+                //    clicked = false;
+                //    LoadResponsesToCommentAsync();
+                //}
             };
             await CreateReplyAsync.Invoke();
             ChangeReplyClickedStatus();

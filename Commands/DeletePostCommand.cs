@@ -20,12 +20,12 @@ namespace Instagram.Commands
         }
         public override void Execute(object parameter)
         {
-            using(var db = new InstagramDbContext("MainDb"))
-            {
-                db.Posts.Remove(_post);
-                db.SaveChanges();
-                _ShowPosts.Invoke();
-            }
+            //using(var db = new InstagramDbContext())
+            //{
+            //    db.Posts.Remove(_post);
+            //    db.SaveChanges();
+            //    _ShowPosts.Invoke();
+            //}
         }
     }
 }

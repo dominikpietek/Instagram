@@ -4,6 +4,7 @@ using Instagram.JSONModels;
 using Instagram.Models;
 using Instagram.Repositories;
 using Instagram.Services;
+using Instagram.StartupHelpers;
 using Instagram.Views;
 using System;
 using System.Collections.Generic;
@@ -111,20 +112,28 @@ namespace Instagram.ViewModels
             }
         }
         #endregion
+        #region PrivateProperties
         private readonly string _path;
         private string _ProfilePhotoSource { get; set; }
         private Action _CloseWindow;
         private Action<bool> _ChangeTheme;
+        private readonly InstagramDbContext _db;
+        private readonly IAbstractFactory<LoginOrRegisterWindowView> _factory;
+        #endregion
         #region Commands
         public ICommand ReturnToLoginPageButton { get; set; }
         public ICommand OpenImageButton { get; set; }
         public ICommand CreateAccountButton { get; set; }
         #endregion
-        public CreateAccountWindowViewModel(Action CloseWindow, Action<bool> ChangeTheme)
+        public CreateAccountWindowViewModel(Action CloseWindow, Action<bool> ChangeTheme, InstagramDbContext db, IAbstractFactory<LoginOrRegisterWindowView> factory)
         {
+            #region PrivetPropertiesAssignement
             _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
             _ChangeTheme = ChangeTheme;
+            _db = db;
+            _factory = factory;
             _CloseWindow = CloseWindow;
+            #endregion
             InitResourcesAsync();
             #region CommandsInstances
             ReturnToLoginPageButton = new ReturnToLoginPageButtonCommand(CloseWindowAndOpenLoginWindow);
@@ -140,15 +149,14 @@ namespace Instagram.ViewModels
             BackgroundColour = isDarkMode ? "#CBC8CC" : "white";
             _ChangeTheme(isDarkMode);
         }
-        public void OnLoadingImage(string imagePath)
+        private void OnLoadingImage(string imagePath)
         {
             _ProfilePhotoSource = imagePath;
             OpenImageButtonContent = "PHOTO LOADED";
         }
         public void CloseWindowAndOpenLoginWindow()
         {
-            Window loginWindow = new LoginOrRegisterWindowView();
-            loginWindow.Show();
+            _factory.Create().Show();
             _CloseWindow.Invoke();
         }
         private User CreateNewUser()
@@ -169,9 +177,9 @@ namespace Instagram.ViewModels
             };
             return newUser;
         }
-        public bool AddingUserToDatabase()
+        private bool AddingUserToDatabase()
         {
-            RegisterRepository register = new RegisterRepository();
+            RegisterRepository register = new RegisterRepository(_db);
             if (register.ValidateData(_FirstPassword, _SecondPassword, _Email, _Nickname))
             {
                 User newUser = CreateNewUser();

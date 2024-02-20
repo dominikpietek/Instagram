@@ -76,22 +76,22 @@ namespace Instagram.ViewModels
             var ChangeDatabaseAsync = async Task () =>
             {
 
-                using (var db = new InstagramDbContext("MainDb"))
-                {
-                    if (!db.UserIdSentModels.Any(uism => uism.StoredUserId == _friendDto.Id))
-                    {
-                        db.Users.First(u => u.Id == userId).SentFriendRequests.Add(new UserIdSentModel()
-                        {
-                            StoredUserId = _friendDto.Id
-                        });
-                        db.Users.First(u => u.Id == _friendDto.Id).GotFriendRequests.Add(new UserIdGotModel()
-                        {
-                            StoredUserId = userId
-                        });
-                        db.SaveChanges();
-                        _LoadMaybeFriends.Invoke(db, userId);
-                    }
-                }
+                //using (var db = new InstagramDbContext("MainDb"))
+                //{
+                //    if (!db.UserIdSentModels.Any(uism => uism.StoredUserId == _friendDto.Id))
+                //    {
+                //        db.Users.First(u => u.Id == userId).SentFriendRequests.Add(new UserIdSentModel()
+                //        {
+                //            StoredUserId = _friendDto.Id
+                //        });
+                //        db.Users.First(u => u.Id == _friendDto.Id).GotFriendRequests.Add(new UserIdGotModel()
+                //        {
+                //            StoredUserId = userId
+                //        });
+                //        db.SaveChanges();
+                //        _LoadMaybeFriends.Invoke(db, userId);
+                //    }
+                //}
             };
             await ChangeDatabaseAsync.Invoke();
         }

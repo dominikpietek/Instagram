@@ -91,21 +91,21 @@ namespace Instagram.ViewModels
             var LoadFromDatabaseAsync = async Task () =>
             {
 
-                using (var db = new InstagramDbContext("MainDb"))
-                {
-                    User profile = db.Users.First(u => u.Id == _commentResponse.AuthorId);
-                    CommentProfileName = profile.Nickname;
-                    ProfileImage profilePhoto = db.ProfileImages.First(p => p.UserId == profile.Id);
-                    CommentProfilePhotoSource = ConvertImage.FromByteArray(profilePhoto.ImageBytes);
-                    CommentText = _commentResponse.Content;
-                    PublicationDate = _commentResponse.PublicationDate;
-                    UpdateLikesNumber(_commentResponse.Likes);
-                    ChangeIsUserLiked(db.UsersLiked.Where(u => (
-                        u.UserThatLikedId == _userId &&
-                        u.LikedThingId == _commentResponse.Id &&
-                        (int)u.LikedThing == (int)LikedThingsEnum.CommentResponse
-                        )).ToList().Count());
-                }
+                //using (var db = new InstagramDbContext("MainDb"))
+                //{
+                //    User profile = db.Users.First(u => u.Id == _commentResponse.AuthorId);
+                //    CommentProfileName = profile.Nickname;
+                //    ProfileImage profilePhoto = db.ProfileImages.First(p => p.UserId == profile.Id);
+                //    CommentProfilePhotoSource = ConvertImage.FromByteArray(profilePhoto.ImageBytes);
+                //    CommentText = _commentResponse.Content;
+                //    PublicationDate = _commentResponse.PublicationDate;
+                //    UpdateLikesNumber(_commentResponse.Likes);
+                //    ChangeIsUserLiked(db.UsersLiked.Where(u => (
+                //        u.UserThatLikedId == _userId &&
+                //        u.LikedThingId == _commentResponse.Id &&
+                //        (int)u.LikedThing == (int)LikedThingsEnum.CommentResponse
+                //        )).ToList().Count());
+                //}
             };
             await LoadFromDatabaseAsync.Invoke();
         }

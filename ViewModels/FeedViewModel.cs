@@ -5,6 +5,7 @@ using Instagram.DTOs;
 using Instagram.JSONModels;
 using Instagram.Models;
 using Instagram.Services;
+using Instagram.StartupHelpers;
 using Instagram.Views;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -114,8 +115,8 @@ namespace Instagram.ViewModels
             }
         }
         #endregion
+        #region PrivateProperties
         private User _user;
-        private InstagramDbContext _db { get; set; }
         private StackPanel _feedViewMainContainer;
         private Action<bool> _ChangeLoginTheme;
         private Action<bool> _ChangeFeedTheme;
@@ -125,17 +126,27 @@ namespace Instagram.ViewModels
         private bool _isProfileUCCreated = false;
         private MessengerUserControl _messengerUserControl;
         private bool _isMessengerUCCreated = false;
-        public FeedViewModel(User user, Action CloseWindow, StackPanel feedViewMainContainer, Action<bool> ChangeLoginTheme, Action<bool> ChangeFeedTheme)
+        private InstagramDbContext _db;
+        private IAbstractFactory<CreateNewPostWindowView> _newPostFactory;
+        #endregion
+        public FeedViewModel(
+            Action CloseWindow, 
+            StackPanel feedViewMainContainer, 
+            Action<bool> ChangeFeedTheme, 
+            InstagramDbContext db,
+            IAbstractFactory<CreateNewPostWindowView> newPostFactory)
         {
             #region PrivatePropertiesAssignment
-            _user = user;
+            _user = GetUser();
             _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
             _feedViewMainContainer = feedViewMainContainer;
             _ChangeLoginTheme = ChangeLoginTheme;
             _ChangeFeedTheme = ChangeFeedTheme;
+            _db = db;
+            _newPostFactory = newPostFactory;
             #endregion
             #region CommandsInstances
-            CreateNewPost = new CreateNewPostOpenWindowCommand(user, ShowPosts);
+            CreateNewPost = new CreateNewPostOpenWindowCommand(_user, ShowPosts);
             LogoutButton = new LogoutCommand(CloseWindow);
             HomeButton = new ChangeMainContainerContentCommand(ShowPosts);
             MessengerButton = new ChangeMainContainerContentCommand(ShowMessenger);
@@ -147,6 +158,12 @@ namespace Instagram.ViewModels
             LoadThemeColourFromJsonFileAsync();
             ShowPosts();
             LoadEverythingFromDatabaseAsync();
+        }
+        private async User GetUser()
+        {
+            JSON<UserDataModel> userJSON = new JSON<UserDataModel>("UserData");
+            UserDataModel userJSONModel = await userJSON.GetAsync<UserDataModel>();
+            return userJSONModel;
         }
         private void InitResources()
         {
@@ -189,12 +206,12 @@ namespace Instagram.ViewModels
         {
             var LoadFromDatabaseAsync = async Task () =>
             {
-                using (_db = new InstagramDbContext("MainDb"))
-                {
-                    LoadProfilePhoto();
-                    ShowStories(_db);
-                    LoadFriendRequest(_db, _user.Id);
-                }
+                //using (_db = new InstagramDbContext("MainDb"))
+                //{
+                //    LoadProfilePhoto();
+                //    ShowStories(_db);
+                //    LoadFriendRequest(_db, _user.Id);
+                //}
             };
             await LoadFromDatabaseAsync.Invoke();
         }
