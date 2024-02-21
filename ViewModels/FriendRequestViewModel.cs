@@ -31,9 +31,9 @@ namespace Instagram.ViewModels
         #endregion
         public string Nickname { get; set; }
         private FriendDto _friendDto;
-        private Action<InstagramDbContext, int> _LoadFriendRequest;
+        private Action<int> _LoadFriendRequest;
         private int _userId;
-        public FriendRequestViewModel(FriendDto friendDto, int userId, Action<InstagramDbContext, int> LoadFriendRequest)
+        public FriendRequestViewModel(FriendDto friendDto, int userId, Action<int> LoadFriendRequest)
         {
             #region CommandsInstances
             CheckProfileButton = new ShowProfileCommand();

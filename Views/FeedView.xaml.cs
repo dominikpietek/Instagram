@@ -25,10 +25,11 @@ namespace Instagram.Views
     {
         public FeedView(
             InstagramDbContext db, 
-            IAbstractFactory<CreateNewPostWindowView> newPostFactory)
+            IAbstractFactory<CreateNewPostWindowView> newPostFactory,
+            IAbstractFactory<LoginOrRegisterWindowView> loginFactory)
         {
             InitializeComponent();
-            DataContext = new FeedViewModel(CloseWindow, MainContainer, ChangeFeedTheme, db, newPostFactory);
+            DataContext = new FeedViewModel(CloseWindow, MainContainer, ChangeFeedTheme, db, newPostFactory, loginFactory);
         }
         private void CloseWindow()
         {

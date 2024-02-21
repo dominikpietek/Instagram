@@ -2,8 +2,10 @@
 using Instagram.Components;
 using Instagram.Databases;
 using Instagram.DTOs;
+using Instagram.Interfaces;
 using Instagram.JSONModels;
 using Instagram.Models;
+using Instagram.Repositories;
 using Instagram.Services;
 using Instagram.StartupHelpers;
 using Instagram.Views;
@@ -128,26 +130,38 @@ namespace Instagram.ViewModels
         private bool _isMessengerUCCreated = false;
         private InstagramDbContext _db;
         private IAbstractFactory<CreateNewPostWindowView> _newPostFactory;
+        private IAbstractFactory<LoginOrRegisterWindowView> _loginFactory;
+        private IUserRepository _userRepository;
+        private IStoryRepository _storyRepository;
+        private IUserIdGotSentModelRepository _userIdGotModelRepository;
+        private IUserIdGotSentModelRepository _userIdSentModelRepository;
+        private IFriendRepository _friendRepository;
         #endregion
         public FeedViewModel(
             Action CloseWindow, 
             StackPanel feedViewMainContainer, 
             Action<bool> ChangeFeedTheme, 
             InstagramDbContext db,
-            IAbstractFactory<CreateNewPostWindowView> newPostFactory)
+            IAbstractFactory<CreateNewPostWindowView> newPostFactory,
+            IAbstractFactory<LoginOrRegisterWindowView> loginFactory)
         {
             #region PrivatePropertiesAssignment
-            _user = GetUser();
+            _db = db;
+            _userRepository = new UserRepository(_db);
+            _storyRepository = new StoryRepository(_db);
+            _userIdGotModelRepository = new UserIdGotSentModelsRepository<UserIdGotModel>(_db);
+            _userIdSentModelRepository = new UserIdGotSentModelsRepository<UserIdSentModel>(_db);
+            _friendRepository = new FriendRepository(_db);
+            _user = GetUser.FromDbAndFile(_userRepository).Result;
             _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
             _feedViewMainContainer = feedViewMainContainer;
-            _ChangeLoginTheme = ChangeLoginTheme;
             _ChangeFeedTheme = ChangeFeedTheme;
-            _db = db;
             _newPostFactory = newPostFactory;
+            _loginFactory = loginFactory;
             #endregion
             #region CommandsInstances
-            CreateNewPost = new CreateNewPostOpenWindowCommand(_user, ShowPosts);
-            LogoutButton = new LogoutCommand(CloseWindow);
+            CreateNewPost = new CreateNewPostOpenWindowCommand(_newPostFactory);
+            LogoutButton = new LogoutCommand(CloseWindow, _loginFactory);
             HomeButton = new ChangeMainContainerContentCommand(ShowPosts);
             MessengerButton = new ChangeMainContainerContentCommand(ShowMessenger);
             ProfileButton = new ChangeMainContainerContentCommand(ShowProfile);
@@ -158,12 +172,6 @@ namespace Instagram.ViewModels
             LoadThemeColourFromJsonFileAsync();
             ShowPosts();
             LoadEverythingFromDatabaseAsync();
-        }
-        private async User GetUser()
-        {
-            JSON<UserDataModel> userJSON = new JSON<UserDataModel>("UserData");
-            UserDataModel userJSONModel = await userJSON.GetAsync<UserDataModel>();
-            return userJSONModel;
         }
         private void InitResources()
         {
@@ -204,35 +212,26 @@ namespace Instagram.ViewModels
         }
         private async Task LoadEverythingFromDatabaseAsync()
         {
-            var LoadFromDatabaseAsync = async Task () =>
-            {
-                //using (_db = new InstagramDbContext("MainDb"))
-                //{
-                //    LoadProfilePhoto();
-                //    ShowStories(_db);
-                //    LoadFriendRequest(_db, _user.Id);
-                //}
-            };
-            await LoadFromDatabaseAsync.Invoke();
-        }
-        private void LoadProfilePhoto()
-        {
-            var profilePhoto = _db.ProfileImages.First(p => p.UserId == _user.Id);
-            ProfilePhotoSource = ConvertImage.FromByteArray(profilePhoto.ImageBytes);
+            ProfilePhotoSource = ConvertImage.FromByteArray(_user.ProfilePhoto.ImageBytes);
+            ShowStories();
+            LoadFriendRequest(_user.Id);
         }
         private void ShowSomethingInMainBox(UserControl userControl)
         {
             _feedViewMainContainer.Children.Clear();
             _feedViewMainContainer.Children.Add(userControl);
         }
-        private void ShowStories(InstagramDbContext db)
+        private void ShowStories()
         {
-            //List<Friend> variable = db.Users.Where(u => u.Id == _user.Id).Include(u => u.Friends).SelectMany(u => u.Friends).ToList();
-            //StoriesSection = ;
+            StoriesSection = new ObservableCollection<StoryView>();
+            foreach (var story in _storyRepository.GetAllStoriesAsync().Result)
+            {
+                StoriesSection.Add(new StoryView(story));
+            }
         }
         private void ShowPosts()
         {
-            _homeUserControl = new HomeUserControl(_user.Id);
+            _homeUserControl = new HomeUserControl(_user.Id, _db);
             ShowSomethingInMainBox(_homeUserControl);
             _isHomeUCCreated = true;
         }
@@ -248,15 +247,9 @@ namespace Instagram.ViewModels
             ShowSomethingInMainBox(_messengerUserControl);
             _isMessengerUCCreated = true;
         }
-        private void LoadMaybeFriends(InstagramDbContext db, int userId)
+        private void LoadMaybeFriends(int userId)
         {
-            List<int> userFriendsIds = db.Friends.Where(f => f.UserId == userId).Select(f => f.FriendId).ToList();
-            List<int> sentRequestPeople = db.UserIdSentModels.Where(uism => uism.UserId == userId).Select(uism => uism.StoredUserId).ToList();
-            List<User> probablyFriendsAfterSelection = db.Users.Where(u =>
-                u.Id != userId &&
-                !userFriendsIds.Contains(u.Id) &&
-                !sentRequestPeople.Contains(u.Id)
-                ).ToList();
+            List<User> probablyFriendsAfterSelection = _userRepository.GetAllNotFriendsUsersAsync(userId, _friendRepository, _userIdSentModelRepository).Result;
             probablyFriendsAfterSelection = probablyFriendsAfterSelection.TakeLast(7).ToList();
             MaybeFriendsSection = new ObservableCollection<MaybeFriendView>() {};
             foreach (User user in probablyFriendsAfterSelection)
@@ -265,7 +258,7 @@ namespace Instagram.ViewModels
                 { 
                     Id = user.Id,
                     Nickname = user.Nickname,
-                    ProfilePhoto = db.ProfileImages.First(pi => pi.Id == user.Id)
+                    ProfilePhoto = user.ProfilePhoto
                 }, userId, LoadMaybeFriends) { });
             }
             if (MaybeFriendsSection.Count == 0)
@@ -273,24 +266,25 @@ namespace Instagram.ViewModels
                 MaybeFriendsMessage = "There is no new users :(";
             }
         }
-        private void LoadFriendRequest(InstagramDbContext db, int userId)
+        private void LoadFriendRequest(int userId)
         {
-            FriendRequestSection = new ObservableCollection<FriendRequestView>() { };
-            List<int> gotRequestPeopleIds = db.UserIdGotModels.Where(uigm => uigm.UserId == userId).Select(uigm => uigm.StoredUserId).ToList();
+            FriendRequestSection = new ObservableCollection<FriendRequestView>();
+            List<int> gotRequestPeopleIds = _userIdGotModelRepository.GetAllAsync(userId).Result;
             foreach (int userThatSentRequestId in gotRequestPeopleIds)
             {
+                User user = _userRepository.GetUserWithPhotoAndRequestsAsync(userThatSentRequestId).Result;
                 FriendRequestSection.Add(new FriendRequestView(new FriendDto()
                 {
                     Id = userThatSentRequestId,
-                    ProfilePhoto = db.ProfileImages.First(pi => pi.UserId == userThatSentRequestId),
-                    Nickname = db.Users.First(u => u.Id == userThatSentRequestId).Nickname,
-                }, userId, LoadFriendRequest) { });
+                    ProfilePhoto = user.ProfilePhoto,
+                    Nickname = user.Nickname,
+                }, userId, LoadFriendRequest));
                 if (FriendRequestSection.Count == 7)
                 {
                     break;
                 }
             }
-            LoadMaybeFriends(db, _user.Id);
+            LoadMaybeFriends(_user.Id);
             if (FriendRequestSection.Count == 0)
             {
                 FriendRequestMessage = "No friend requests :(";

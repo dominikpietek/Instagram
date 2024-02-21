@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Instagram.Models
 {
-    public class UserIdSentModel : UserIdAbstractModel
+    public abstract class UserIdAbstractModel
     {
         public int Id { get; set; }
         public User User { get; set; }

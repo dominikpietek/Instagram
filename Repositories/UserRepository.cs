@@ -45,11 +45,24 @@ namespace Instagram.Repositories
             _db.Users.Update(user);
             return await SaveChangesAsync();
         }
+
         public async Task<bool> AddUserAsync(User user)
         {
             await _db.Users.AddAsync(user);
             return await SaveChangesAsync();
         }
+
+        public async Task<List<User>> GetAllNotFriendsUsersAsync(int userId, IFriendRepository friendRepository, IUserIdGotSentModelRepository userIdSentModelRepository)
+        {
+            List<int> userFriendsIds = await friendRepository.GetAllUserFriendsIdAsync(userId);
+            List<int> sentRequestPeople = await userIdSentModelRepository.GetAllAsync(userId);
+            return await _db.Users.Where(u =>
+                u.Id != userId &&
+                !userFriendsIds.Contains(u.Id) &&
+                !sentRequestPeople.Contains(u.Id)
+                ).Include(u => u.ProfilePhoto).ToListAsync();
+        }
+
         public async Task<bool> SaveChangesAsync()
         {
             var save = await _db.SaveChangesAsync();

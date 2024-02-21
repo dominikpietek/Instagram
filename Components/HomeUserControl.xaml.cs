@@ -45,11 +45,12 @@ namespace Instagram.Components
         private int _userId;
         private IPostRepository _postRepository;
         private int _loadedPosts;
-        public HomeUserControl(int userId)
+        private InstagramDbContext _db;
+        public HomeUserControl(int userId, InstagramDbContext db)
         {
+            _db = db;
             ChangeHomeThemeAsync();
             _loadedPosts = 10;
-            //_postRepository = new PostRepository(new InstagramDbContext());
             DataContext = this;
             InitializeComponent();
             _userId = userId;
@@ -69,7 +70,7 @@ namespace Instagram.Components
             posts.Reverse();
             foreach (var post in posts)
             {
-                _postsSection.Add(new PostView(post, _userId, ShowPosts));
+                _postsSection.Add(new PostView(post, _userId, ShowPosts, _db));
             }
             _postsSection.Take(_loadedPosts);
         }

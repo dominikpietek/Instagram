@@ -1,5 +1,5 @@
 ﻿using Instagram.Databases;
-using Instagram.Models;
+using Instagram.Enums;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
@@ -16,8 +16,8 @@ namespace Instagram.Commands
         private int _userId;
         private int _likedThingId;
         private Action<int> _UpdateLikesNumber;
-        private Action<int> _ChangeIsUserLiked;
-        public LikeCommand(LikedThingsEnum LikedThing, int userId, int likedThingId, Action<int> UpdateLikesNumber, Action<int> ChangeIsUserLiked)
+        private Action<bool> _ChangeIsUserLiked;
+        public LikeCommand(LikedThingsEnum LikedThing, int userId, int likedThingId, Action<int> UpdateLikesNumber, Action<bool> ChangeIsUserLiked)
         {
             _LikedThing = LikedThing;
             _userId = userId;

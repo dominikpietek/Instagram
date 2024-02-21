@@ -125,7 +125,11 @@ namespace Instagram.ViewModels
         public ICommand OpenImageButton { get; set; }
         public ICommand CreateAccountButton { get; set; }
         #endregion
-        public CreateAccountWindowViewModel(Action CloseWindow, Action<bool> ChangeTheme, InstagramDbContext db, IAbstractFactory<LoginOrRegisterWindowView> factory)
+        public CreateAccountWindowViewModel(
+            Action CloseWindow, 
+            Action<bool> ChangeTheme, 
+            InstagramDbContext db, 
+            IAbstractFactory<LoginOrRegisterWindowView> factory)
         {
             #region PrivetPropertiesAssignement
             _path = ConfigurationManager.AppSettings.Get("ResourcesPath");

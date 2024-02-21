@@ -29,7 +29,7 @@ namespace Instagram.ViewModels
         public string Nickname { get; set; }
         public int userId;
         public FriendDto _friendDto;
-        private Action<InstagramDbContext, int> _LoadMaybeFriends;
+        private Action<int> _LoadMaybeFriends;
         #region OnPropertyChangeProperties
         private bool _IsInvitationSent = false;
         public bool IsInvitationSent
@@ -42,7 +42,7 @@ namespace Instagram.ViewModels
             }
         }
         #endregion
-        public MaybeFriendViewModel(FriendDto friendDto, int userId, Action<InstagramDbContext, int> LoadMaybeFriends)
+        public MaybeFriendViewModel(FriendDto friendDto, int userId, Action<int> LoadMaybeFriends)
         {
             #region CommandInstances
             CheckProfileButton = new ShowProfileCommand();

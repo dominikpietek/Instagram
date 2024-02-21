@@ -1,5 +1,6 @@
 ﻿using Instagram.Commands;
 using Instagram.Databases;
+using Instagram.Enums;
 using Instagram.JSONModels;
 using Instagram.Models;
 using Instagram.Services;
@@ -154,16 +155,20 @@ namespace Instagram.ViewModels
         public string ProfileName { get; set; }
         public string Location { get; set; }
         #endregion
+        #region PrivateProperties
         private Post _post;
         private int _actualUserId;
         private bool _IsPostYour;
         private bool _isDarkMode;
-        public PostViewModel(Post post, int actualUserId, Func<Task> ShowPosts)
+        private InstagramDbContext _db;
+        #endregion
+        public PostViewModel(Post post, int actualUserId, Func<Task> ShowPosts, InstagramDbContext db)
         {
             #region PrivatePropertiesAssignment
             _post = post;
             _actualUserId = actualUserId;
             _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
+            _db = db;
             #endregion
             LoadDataFromDatabaseAsync();
             InitResources();
@@ -247,7 +252,7 @@ namespace Instagram.ViewModels
             CommentsSection = new ObservableCollection<CommentView>();
             foreach (var comment in db.Posts.Where(p => p.Id == _post.Id).SelectMany(p => p.Comments))
             {
-                CommentsSection.Add(new CommentView(comment, _actualUserId));
+                CommentsSection.Add(new CommentView(comment, _actualUserId, _db));
             }
             UpdateCommentsNumber(_CommentsSection.Count());
         }
@@ -293,9 +298,9 @@ namespace Instagram.ViewModels
             await UpdateDatabaseAsync.Invoke();
             IsCommentClickedToCreate = false;
         }
-        public void ChangeIsPostLiked(int isUserLikedCount)
+        public void ChangeIsPostLiked(bool isUserLikedCount)
         {
-            if (isUserLikedCount == 1)
+            if (isUserLikedCount)
             {
                 IsPostLiked = true;
             }

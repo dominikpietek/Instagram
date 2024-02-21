@@ -23,7 +23,7 @@ namespace Instagram.Views
     /// </summary>
     public partial class MaybeFriendView : UserControl
     {
-        public MaybeFriendView(FriendDto friendDto, int userId, Action<InstagramDbContext, int> LoadMaybeFriends)
+        public MaybeFriendView(FriendDto friendDto, int userId, Action<int> LoadMaybeFriends)
         {
             DataContext = new MaybeFriendViewModel(friendDto, userId, LoadMaybeFriends);
             InitializeComponent();

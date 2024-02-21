@@ -1,4 +1,6 @@
 ﻿using Instagram.Repositories;
+using Instagram.StartupHelpers;
+using Instagram.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,16 +12,20 @@ namespace Instagram.Commands
 {
     public class LogoutCommand : CommandBase
     {
-        private Action _CloseWindow;
-        public LogoutCommand(Action CloseWindow)
+        private readonly Action _CloseWindow;
+        private readonly IAbstractFactory<LoginOrRegisterWindowView> _loginFactory;
+
+        public LogoutCommand(Action CloseWindow, IAbstractFactory<LoginOrRegisterWindowView> loginFactory)
         {
 
             _CloseWindow = CloseWindow;
+            _loginFactory = loginFactory;
         }
         public override void Execute(object parameter)
         {
-            LogoutRepository.RestartAutomaticLoginAsync();
-            LogoutRepository.CloseWindowAndShowStartUpWindow(_CloseWindow);
+            var logoutRepository = new LogoutRepository();
+            logoutRepository.RestartAutomaticLoginAsync();
+            logoutRepository.CloseWindowAndShowStartUpWindow(_CloseWindow, _loginFactory);
         }
     }
 }

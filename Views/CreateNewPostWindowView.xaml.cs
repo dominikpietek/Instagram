@@ -22,19 +22,14 @@ namespace Instagram.Views
     /// </summary>
     public partial class CreateNewPostWindowView : Window
     {
-        private Action _ShowPosts;
-        public CreateNewPostWindowView(User user, Action ShowPosts)
+        public CreateNewPostWindowView(InstagramDbContext db)
         {
-            _ShowPosts = ShowPosts;
             InitializeComponent();
-            DataContext = new CreatePostViewModel(CloseWindow, user, ChangeCreatePostTheme);
+            DataContext = new CreatePostViewModel(CloseWindow, ChangeCreatePostTheme, db);
         }
         public void CloseWindow()
         {
-            //using (var db = new InstagramDbContext("MainDb"))
-            //{
-            //    _ShowPosts.Invoke();
-            //}
+            // show posts recall
             this.Close();
         }
         public void ChangeCreatePostTheme(bool isDarkMode)

@@ -23,7 +23,7 @@ namespace Instagram.Views
     /// </summary>
     public partial class FriendRequestView : UserControl
     {
-        public FriendRequestView(FriendDto friendDto, int userId, Action<InstagramDbContext, int> LoadFriendRequest)
+        public FriendRequestView(FriendDto friendDto, int userId, Action<int> LoadFriendRequest)
         {
             this.DataContext = new FriendRequestViewModel(friendDto, userId, LoadFriendRequest) { };
             InitializeComponent();

@@ -24,10 +24,10 @@ namespace Instagram.Views
     public partial class PostView : UserControl
     {
         private PostViewModel _ViewModel;
-        public PostView(Post post, int actualUserId, Func<Task> ShowPosts)
+        public PostView(Post post, int actualUserId, Func<Task> ShowPosts, InstagramDbContext db)
         {
             InitializeComponent();
-            _ViewModel = new PostViewModel(post, actualUserId, ShowPosts);
+            _ViewModel = new PostViewModel(post, actualUserId, ShowPosts, db);
             DataContext = _ViewModel;
         }
         public void ChangePostTheme(bool isDarkMode)

@@ -1,5 +1,6 @@
 ﻿using Instagram.Commands;
 using Instagram.Databases;
+using Instagram.Interfaces;
 using Instagram.JSONModels;
 using Instagram.Models;
 using Instagram.Repositories;
@@ -73,15 +74,25 @@ namespace Instagram.ViewModels
         public ICommand SubmitCreatingNewPost { get; set; }
         public ICommand OpenImageButton { get; set; }
         #endregion
+        #region PrivateProperties
         private Action _CloseWindow;
         private User _user;
         private Action<bool> _ChangeTheme;
         private string _path;
-        public CreatePostViewModel(Action CloseWindow, User user, Action<bool> ChangeTheme)
+        private InstagramDbContext _db;
+        private IUserRepository _userRepository;
+        private IPostRepository _postRepository;
+        #endregion
+        public CreatePostViewModel(Action CloseWindow, Action<bool> ChangeTheme, InstagramDbContext db)
         {
+            #region PrivatePropertiesAssignement
+            _db = db;
+            _userRepository = new UserRepository(_db);
+            _postRepository = new PostRepository(_db);
             _CloseWindow = CloseWindow;
-            _user = user;
+            _user = GetUser.FromDbAndFile(_userRepository).Result;
             _ChangeTheme = ChangeTheme;
+            #endregion
             InitResourcesAsync();
             #region CommandsInstances
             SubmitCreatingNewPost = new SubmitCreatingNewPostCommand(CloseWindow, CreatePost);
@@ -132,8 +143,7 @@ namespace Instagram.ViewModels
                 PublicationDate = DateTime.Now,
                 Tags = ModifyTagsStringToList()
             };
-            _user.Posts.Add(post);
-            NewPostRepository.Create(_user.Id, post);
+            _postRepository.AddPostAsync(post);
             return true;
         }
     }

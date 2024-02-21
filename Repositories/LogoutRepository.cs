@@ -1,5 +1,6 @@
 ﻿using Instagram.Databases;
 using Instagram.JSONModels;
+using Instagram.StartupHelpers;
 using Instagram.Views;
 using System;
 using System.Collections.Generic;
@@ -10,19 +11,18 @@ using System.Windows;
 
 namespace Instagram.Repositories
 {
-    public static class LogoutRepository
+    public class LogoutRepository
     {
-        public static async Task RestartAutomaticLoginAsync()
+        public async Task RestartAutomaticLoginAsync()
         {
             JSON<UserDataModel> userJSON = new JSON<UserDataModel>("UserData");
             UserDataModel userJSONModel = await userJSON.GetAsync<UserDataModel>();
             userJSONModel.LastLogin = DateTime.MinValue;
             await userJSON.SaveAsync(userJSONModel);
         }
-        public static void CloseWindowAndShowStartUpWindow(Action CloseWindow)
+        public void CloseWindowAndShowStartUpWindow(Action CloseWindow, IAbstractFactory<LoginOrRegisterWindowView> loginFactory)
         {
-            //Window startUpWindow = new LoginOrRegisterWindowView();
-            //startUpWindow.Show();
+            loginFactory.Create().Show();
             CloseWindow.Invoke();
         }
     }

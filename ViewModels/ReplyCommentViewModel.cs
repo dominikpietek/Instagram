@@ -1,5 +1,6 @@
 ﻿using Instagram.Commands;
 using Instagram.Databases;
+using Instagram.Enums;
 using Instagram.Models;
 using Instagram.Services;
 using System;
@@ -114,9 +115,9 @@ namespace Instagram.ViewModels
             LikesNumber = $"{likesNumber} LIKES";
             _commentResponse.Likes = likesNumber;
         }
-        public void ChangeIsUserLiked(int isUserLikedCount)
+        public void ChangeIsUserLiked(bool isUserLikedCount)
         {
-            if (isUserLikedCount == 0)
+            if (!isUserLikedCount)
             {
                 IsUserLiked = true;
             }

@@ -1,4 +1,5 @@
-﻿using Instagram.Models;
+﻿using Instagram.Databases;
+using Instagram.Models;
 using Instagram.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -23,10 +24,10 @@ namespace Instagram.Views
     public partial class CommentView : UserControl
     {
         private CommentViewModel _ViewModel;
-        public CommentView(Comment comment, int userId)
+        public CommentView(Comment comment, int userId, InstagramDbContext db)
         {
             InitializeComponent();
-            _ViewModel = new CommentViewModel(comment, userId);
+            _ViewModel = new CommentViewModel(comment, userId, db);
             DataContext = _ViewModel;
         }
         public void ChangeCommentTheme(bool isDarkMode)

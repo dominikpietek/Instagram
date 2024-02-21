@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Instagram.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +21,7 @@ namespace Instagram.Views
     /// </summary>
     public partial class StoryView : UserControl
     {
-        public StoryView()
+        public StoryView(Story story)
         {
             InitializeComponent();
         }

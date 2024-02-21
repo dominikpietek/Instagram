@@ -1,5 +1,6 @@
 ﻿using Instagram.Databases;
 using Instagram.Models;
+using Instagram.StartupHelpers;
 using Instagram.Views;
 using System;
 using System.Collections.Generic;
@@ -12,17 +13,15 @@ namespace Instagram.Commands
 {
     class CreateNewPostOpenWindowCommand : CommandBase
     {
-        private User _user;
-        private Action _ShowPosts;
-        public CreateNewPostOpenWindowCommand(User user, Action ShowPosts)
+        private readonly IAbstractFactory<CreateNewPostWindowView> _newPostFactory;
+
+        public CreateNewPostOpenWindowCommand(IAbstractFactory<CreateNewPostWindowView> newPostFactory)
         {
-            _user = user;
-            _ShowPosts = ShowPosts;
+            _newPostFactory = newPostFactory;
         }
         public override void Execute(object parameter)
         {
-            Window createNewPostWindow = new CreateNewPostWindowView(_user, _ShowPosts);
-            createNewPostWindow.Show();
+            _newPostFactory.Create().Show();
         }
     }
 }
