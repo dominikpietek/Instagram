@@ -9,14 +9,11 @@ using Instagram.Repositories;
 using Instagram.Services;
 using Instagram.StartupHelpers;
 using Instagram.Views;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -120,17 +117,16 @@ namespace Instagram.ViewModels
         #region PrivateProperties
         private User _user;
         private StackPanel _feedViewMainContainer;
-        private Action<bool> _ChangeLoginTheme;
-        private Action<bool> _ChangeFeedTheme;
         private HomeUserControl _homeUserControl;
         private bool _isHomeUCCreated = false;
         private ProfileUserControl _profileUserControl;
         private bool _isProfileUCCreated = false;
         private MessengerUserControl _messengerUserControl;
         private bool _isMessengerUCCreated = false;
-        private InstagramDbContext _db;
+        private ResourceDictionary _resources;
         private IAbstractFactory<CreateNewPostWindowView> _newPostFactory;
         private IAbstractFactory<LoginOrRegisterWindowView> _loginFactory;
+        private InstagramDbContext _db;
         private IUserRepository _userRepository;
         private IStoryRepository _storyRepository;
         private IUserIdGotSentModelRepository _userIdGotModelRepository;
@@ -138,12 +134,12 @@ namespace Instagram.ViewModels
         private IFriendRepository _friendRepository;
         #endregion
         public FeedViewModel(
-            Action CloseWindow, 
-            StackPanel feedViewMainContainer, 
-            Action<bool> ChangeFeedTheme, 
-            InstagramDbContext db,
+            Action CloseWindow,
+            StackPanel feedViewMainContainer,
+            ResourceDictionary resources,
             IAbstractFactory<CreateNewPostWindowView> newPostFactory,
-            IAbstractFactory<LoginOrRegisterWindowView> loginFactory)
+            IAbstractFactory<LoginOrRegisterWindowView> loginFactory,
+            InstagramDbContext db)
         {
             #region PrivatePropertiesAssignment
             _db = db;
@@ -152,10 +148,9 @@ namespace Instagram.ViewModels
             _userIdGotModelRepository = new UserIdGotSentModelsRepository<UserIdGotModel>(_db);
             _userIdSentModelRepository = new UserIdGotSentModelsRepository<UserIdSentModel>(_db);
             _friendRepository = new FriendRepository(_db);
-            _user = GetUser.FromDbAndFile(_userRepository).Result;
             _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
             _feedViewMainContainer = feedViewMainContainer;
-            _ChangeFeedTheme = ChangeFeedTheme;
+            _resources = resources;
             _newPostFactory = newPostFactory;
             _loginFactory = loginFactory;
             #endregion
@@ -169,13 +164,18 @@ namespace Instagram.ViewModels
             SendEmailsButton = new SendEmailsCommand();
             #endregion
             InitResources();
-            LoadThemeColourFromJsonFileAsync();
+            InitAsync();
+        }
+        private async void InitAsync()
+        {
+            //await LoadThemeColourFromJsonFileAsync();
+            //_user = await GetUser.FromDbAndFileAsync(_userRepository);
+            //await LoadEverythingFromDatabaseAsync();
             ShowPosts();
-            LoadEverythingFromDatabaseAsync();
         }
         private void InitResources()
         {
-            ChooseLogo(IsDarkModeOn);
+            LogoPath = ChangeTheme.ChangeLogo(_path, IsDarkModeOn);
             LogoutPath = $"{_path}logoutIcon.png";
             MessageIconPath = $"{_path}messageIcon.png";
             HomeIconPath = $"{_path}homeIcon.png";
@@ -183,25 +183,13 @@ namespace Instagram.ViewModels
             FriendRequestMessage = "Friend requests:";
             MaybeFriendsMessage = "New users, maybe you know them?:";
         }
-        private void ChooseLogo(bool isDarkMode)
+        public void ChangeThemes(bool isDarkMode)
         {
-            if (isDarkMode)
-            {
-                LogoPath = $"{_path}/darkLogo.png";
-            }
-            else
-            {
-                LogoPath = $"{_path}/logo.png";
-            }
-        }
-        private void ChangeThemes(bool isDarkMode)
-        {
-            _ChangeLoginTheme.Invoke(isDarkMode);
-            _ChangeFeedTheme.Invoke(isDarkMode);
-            if (_isHomeUCCreated) _homeUserControl.ChangeHomeTheme(isDarkMode);
+            ChangeTheme.Change(_resources);
+            LogoPath = ChangeTheme.ChangeLogo(_path, isDarkMode);
+            if (_isHomeUCCreated) _homeUserControl.ChangeHomeTheme();
             if (_isProfileUCCreated) _profileUserControl.ChangeProfileTheme(isDarkMode);
             if (_isMessengerUCCreated) _messengerUserControl.ChangeMessengerTheme(isDarkMode);
-            ChooseLogo(isDarkMode);
         }
         private async Task LoadThemeColourFromJsonFileAsync()
         {
@@ -213,25 +201,26 @@ namespace Instagram.ViewModels
         private async Task LoadEverythingFromDatabaseAsync()
         {
             ProfilePhotoSource = ConvertImage.FromByteArray(_user.ProfilePhoto.ImageBytes);
-            ShowStories();
-            LoadFriendRequest(_user.Id);
+            LoadFriendRequestAsync(_user.Id);
+            //ShowStoriesAsync();
         }
         private void ShowSomethingInMainBox(UserControl userControl)
         {
             _feedViewMainContainer.Children.Clear();
             _feedViewMainContainer.Children.Add(userControl);
         }
-        private void ShowStories()
+        private async void ShowStoriesAsync()
         {
             StoriesSection = new ObservableCollection<StoryView>();
-            foreach (var story in _storyRepository.GetAllStoriesAsync().Result)
+            var stories = await _storyRepository.GetAllStoriesAsync();
+            foreach (var story in stories)
             {
                 StoriesSection.Add(new StoryView(story));
             }
         }
         private void ShowPosts()
         {
-            _homeUserControl = new HomeUserControl(_user.Id, _db);
+            _homeUserControl = new HomeUserControl(_db);
             ShowSomethingInMainBox(_homeUserControl);
             _isHomeUCCreated = true;
         }
@@ -247,9 +236,9 @@ namespace Instagram.ViewModels
             ShowSomethingInMainBox(_messengerUserControl);
             _isMessengerUCCreated = true;
         }
-        private void LoadMaybeFriends(int userId)
+        private async void LoadMaybeFriendsAsync(int userId)
         {
-            List<User> probablyFriendsAfterSelection = _userRepository.GetAllNotFriendsUsersAsync(userId, _friendRepository, _userIdSentModelRepository).Result;
+            List<User> probablyFriendsAfterSelection = await _userRepository.GetAllNotFriendsUsersAsync(userId, _friendRepository, _userIdSentModelRepository);
             probablyFriendsAfterSelection = probablyFriendsAfterSelection.TakeLast(7).ToList();
             MaybeFriendsSection = new ObservableCollection<MaybeFriendView>() {};
             foreach (User user in probablyFriendsAfterSelection)
@@ -259,32 +248,32 @@ namespace Instagram.ViewModels
                     Id = user.Id,
                     Nickname = user.Nickname,
                     ProfilePhoto = user.ProfilePhoto
-                }, userId, LoadMaybeFriends) { });
+                }, userId, LoadMaybeFriendsAsync) { });
             }
             if (MaybeFriendsSection.Count == 0)
             {
                 MaybeFriendsMessage = "There is no new users :(";
             }
         }
-        private void LoadFriendRequest(int userId)
+        private async void LoadFriendRequestAsync(int userId)
         {
             FriendRequestSection = new ObservableCollection<FriendRequestView>();
-            List<int> gotRequestPeopleIds = _userIdGotModelRepository.GetAllAsync(userId).Result;
+            List<int> gotRequestPeopleIds = await _userIdGotModelRepository.GetAllAsync(userId);
             foreach (int userThatSentRequestId in gotRequestPeopleIds)
             {
-                User user = _userRepository.GetUserWithPhotoAndRequestsAsync(userThatSentRequestId).Result;
+                User user = await _userRepository.GetUserWithPhotoAndRequestsAsync(userThatSentRequestId);
                 FriendRequestSection.Add(new FriendRequestView(new FriendDto()
                 {
                     Id = userThatSentRequestId,
                     ProfilePhoto = user.ProfilePhoto,
                     Nickname = user.Nickname,
-                }, userId, LoadFriendRequest));
+                }, userId, LoadFriendRequestAsync));
                 if (FriendRequestSection.Count == 7)
                 {
                     break;
                 }
             }
-            LoadMaybeFriends(_user.Id);
+            LoadMaybeFriendsAsync(_user.Id);
             if (FriendRequestSection.Count == 0)
             {
                 FriendRequestMessage = "No friend requests :(";

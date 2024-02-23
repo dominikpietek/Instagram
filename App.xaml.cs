@@ -22,6 +22,7 @@ namespace Instagram
                 {
                     services.AddSingleton<LoginOrRegisterWindowView>();
                     services.AddFormFactory<CreateAccountWindowView>();
+                    services.AddFormFactory<CreateNewPostWindowView>();
                     services.AddFormFactory<LoginOrRegisterWindowView>();
                     services.AddFormFactory<FeedView>();
                     services.AddDbContext<InstagramDbContext>(options => options.UseSqlServer(connectionString));

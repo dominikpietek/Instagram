@@ -14,7 +14,7 @@
         <ItemsControl ItemsSource="{Binding HomeSource, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Background="White">
         </ItemsControl>
         <Label Grid.Row="1" Content="No more Posts!" VerticalContentAlignment="Center" Cursor="Hand"/>
-        <Button Grid.Row="1" Click="Button_Click">
+        <Button Grid.Row="1" Command="{Binding LoadMore}">
             <Button.Content>
                 LOAD MORE
             </Button.Content>

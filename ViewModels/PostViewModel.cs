@@ -162,20 +162,18 @@ namespace Instagram.ViewModels
         private bool _isDarkMode;
         private InstagramDbContext _db;
         #endregion
-        public PostViewModel(Post post, int actualUserId, Func<Task> ShowPosts, InstagramDbContext db)
+        public PostViewModel(Post post, Func<Task> ShowPosts)
         {
             #region PrivatePropertiesAssignment
             _post = post;
-            _actualUserId = actualUserId;
             _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
-            _db = db;
             #endregion
             LoadDataFromDatabaseAsync();
             InitResources();
             #region CommandsInstances
             MoreComments = new ShowMoreLessCommentsCommand(ShowMoreLessCommentsChangeAsync, ChangeTheme);
             LessComments = new ShowMoreLessCommentsCommand(ShowMoreLessCommentsChangeAsync, ChangeTheme);
-            LikeButton = new LikeCommand(LikedThingsEnum.Post, actualUserId, post.Id, UpdateLikesNumber, ChangeIsPostLiked);
+            //LikeButton = new LikeCommand(LikedThingsEnum.Post, actualUserId, post.Id, UpdateLikesNumber, ChangeIsPostLiked);
             CommentButton = new CommentButtonCommand(UpdateIsCommentClickedToCreateValue);
             CreateComment = new CommentCreateCommand(CreateNewCommentAsync);
             MessageButton = new OpenCommunicatorWindowCommand();

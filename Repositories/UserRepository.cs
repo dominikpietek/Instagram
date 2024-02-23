@@ -68,5 +68,15 @@ namespace Instagram.Repositories
             var save = await _db.SaveChangesAsync();
             return save > 0 ? true : false;
         }
+
+        public async Task<User> GetUserByNicknameWithoutIncludesAsync(string nickname)
+        {
+            return await _db.Users.FirstAsync(u => u.Nickname == nickname);
+        }
+
+        public async Task<User> GetUserByEmailWithoutIncludesAsync(string email)
+        {
+            return await _db.Users.FirstAsync(u => u.EmailAdress == email);
+        }
     }
 }

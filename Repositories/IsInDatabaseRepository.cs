@@ -1,5 +1,7 @@
 ﻿using Instagram.Databases;
+using Instagram.Interfaces;
 using Instagram.JSONModels;
+using Instagram.MessageBoxes;
 using Instagram.Models;
 using Instagram.SendingEmails;
 using Instagram.Validations;
@@ -15,18 +17,20 @@ namespace Instagram.Repositories
 {
     public class IsInDatabaseRepository
     {
-        private InstagramDbContext _db;
-        private string _emailNickname;
+        private readonly InstagramDbContext _db;
+        private readonly string _emailNickname;
+        private readonly IUserRepository _userRepository;
         public IsInDatabaseRepository(InstagramDbContext db, string emailNickname)
         {
             _db = db;
             _emailNickname = emailNickname;
+            _userRepository = new UserRepository(db);
         }
         private bool Email()
         {
             try
             {
-                User user = _db.Users.First(u => u.EmailAdress == _emailNickname);
+                _userRepository.GetUserByEmailWithoutIncludesAsync(_emailNickname);
                 return false;
             }
             catch (Exception)
@@ -38,7 +42,7 @@ namespace Instagram.Repositories
         {
             try
             {
-                User user = _db.Users.First(u => u.Nickname == _emailNickname);
+                _userRepository.GetUserByNicknameWithoutIncludesAsync(_emailNickname);
                 return false;
             }
             catch (Exception)
@@ -54,9 +58,7 @@ namespace Instagram.Repositories
             }
             else
             {
-                MessageBox.Show(
-                    errorMessage, "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                CustomMessageBox.Error(errorMessage);
                 return false;
             }
         }
@@ -68,9 +70,7 @@ namespace Instagram.Repositories
             }
             else
             {
-                MessageBox.Show(
-                    errorMessage, "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                CustomMessageBox.Error(errorMessage);
                 return false;
             }
         }
@@ -82,9 +82,7 @@ namespace Instagram.Repositories
             }
             else
             {
-                MessageBox.Show(
-                    errorMessage, "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                CustomMessageBox.Error(errorMessage);
                 return false;
             }
         }

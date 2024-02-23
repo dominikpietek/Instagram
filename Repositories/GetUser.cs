@@ -12,12 +12,16 @@ namespace Instagram.Repositories
 {
     public static class GetUser
     {
-        public static async Task<User> FromDbAndFile(IUserRepository userRepository)
+        public static async Task<User> FromDbAndFileAsync(IUserRepository userRepository)
         {
             JSON<UserDataModel> userJSON = new JSON<UserDataModel>("UserData");
             UserDataModel userJSONModel = await userJSON.GetAsync<UserDataModel>();
-            User user = await userRepository.GetUserWithPhotoAndRequestsAsync(userJSONModel.UserId);
-            return user;
+            return await userRepository.GetUserWithPhotoAndRequestsAsync(userJSONModel.UserId);
+        }
+        public static async Task<UserDataModel> FromFileAsync()
+        {
+            JSON<UserDataModel> userJSON = new JSON<UserDataModel>("UserData");
+            return await userJSON.GetAsync<UserDataModel>();
         }
     }
 }

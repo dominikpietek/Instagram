@@ -3,6 +3,7 @@ using Instagram.Databases;
 using Instagram.JSONModels;
 using Instagram.Models;
 using Instagram.Repositories;
+using Instagram.Services;
 using Instagram.StartupHelpers;
 using Instagram.Views;
 using Newtonsoft.Json;
@@ -79,109 +80,67 @@ namespace Instagram.ViewModels
         #endregion
         #region PrivateProperties
         private Action _CloseWindow;
-        private Action _FocusOnLogin;
-        private Action _FocusOnPassword;
-        private Func<int> _WhichOneIsFocused;
+        private FocusOnController _focusOnController;
         private Func<bool> _IsLoginButtonUsable;
-        private Action<bool> _ChangeTheme;
         private IAbstractFactory<CreateAccountWindowView> _accountFactory;
         private IAbstractFactory<FeedView> _feedFactory;
-        private LoginRepository _loginRepository;
         private InstagramDbContext _db;
+        private LoginRepository _loginRepository;
         #endregion
         public LoginOrRegisterWindowViewModel(
             Action CloseWindow, 
-            Action FocusOnLogin, 
-            Action FocusOnPassword, 
-            Func<bool> IsLoginButtonUsable, 
-            Action<bool> ChangeTheme, 
-            Func<int> WhichOneIsFocused, 
+            FocusOnController focusOnController,
+            Func<bool> IsLoginButtonUsable,
             IAbstractFactory<CreateAccountWindowView> accountFactory,
             IAbstractFactory<FeedView> feedFactory,
             InstagramDbContext db)
         {
             #region PrivatePropertiesAssignment
-            _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
-            _ChangeTheme = ChangeTheme;
+            _path = ConfigurationManager.AppSettings.Get("ResourcesPath")!;
             _IsLoginButtonUsable = IsLoginButtonUsable;
             _CloseWindow = CloseWindow;
-            _FocusOnLogin = FocusOnLogin;
-            _FocusOnPassword = FocusOnPassword;
-            _WhichOneIsFocused = WhichOneIsFocused;
+            _focusOnController = focusOnController;
             _accountFactory = accountFactory;
             _feedFactory = feedFactory;
             _db = db;
-            _loginRepository = new LoginRepository(_db, _feedFactory);
+            _loginRepository = new LoginRepository(_db, _feedFactory, _CloseWindow);
             #endregion
             #region CommandInstances
             LoginButton = new LoginCommand(LoginClickAsync);
             CreateAccountOpenWindowButton = new CreateAccountOpenWindowButtonCommand(_CloseWindow, _accountFactory);
             GoToNextBoxCommand = new GoToNextBoxCommand(ChangeBoxIndex);
             #endregion
-            ReadJsonConfigFileAndApplyThemeAsync();
+            Init();
         }
-        private async Task ReadJsonConfigFileAndApplyThemeAsync()
+
+        private async Task Init()
         {
-            JSON<UserDataModel> userJSON = new JSON<UserDataModel>("UserData");
-            UserDataModel userJSONModel = await userJSON.GetAsync<UserDataModel>();
-            if (userJSONModel.RememberedEmailNickname != string.Empty)
+            VerifyAutoLogin verifyAutoLogin = new VerifyAutoLogin();
+
+            // check auto login
+            if (await verifyAutoLogin.IsAutoLogged())
             {
-                _EmailNickname = userJSONModel.RememberedEmailNickname;
-                if (userJSONModel.LastLogin.AddHours(2) >= DateTime.Now)
-                {
-                    await _loginRepository.AutomaticLoginAsync(_EmailNickname, _CloseWindow, _ChangeTheme);
-                }
-                RememberMe = true;
+                await _loginRepository.AutomaticLoginAsync(verifyAutoLogin.LoginName());
             }
-            ApplyTheme(userJSONModel.DarkMode);
+
+            // assign properties
+            EmailNickname = verifyAutoLogin.LoginName();
+            RememberMe = verifyAutoLogin.IsUserRemembered();
+            LogoPath = ChangeTheme.ChangeLogo(_path, verifyAutoLogin.IsDarkMode());
         }
-        private void ApplyTheme(bool isDarkMode)
-        {
-            BackgroundColour = isDarkMode ? "#CBC8CC" : "white";
-            _ChangeTheme.Invoke(isDarkMode);
-            ChangeLogo(isDarkMode);
-        }
-        private void ChangeLogo(bool isDarkMode)
-        {
-            if (isDarkMode)
-            {
-                LogoPath = $"{_path}darkLogo.png";
-            }
-            else
-            {
-                LogoPath = $"{_path}logo.png";
-            }
-        }
+
         public void ChangeBoxIndex()
         {
-            int whichOneIsFocused = _WhichOneIsFocused.Invoke();
-            if (whichOneIsFocused == 0)
+            bool loginOrNot = _focusOnController.WantToLoginOrChangeBoxIndex(_IsLoginButtonUsable);
+            if (loginOrNot)
             {
-                _FocusOnLogin();
-                return;
-            }
-            if (whichOneIsFocused == 1) 
-            {
-                _FocusOnPassword();
-                return;
-            }
-            if (whichOneIsFocused == 2)
-            {
-                if (_IsLoginButtonUsable.Invoke())
-                {
-                    LoginClickAsync();
-                    return;
-                }
-                else
-                {
-                    _FocusOnLogin();
-                    return;
-                }
+                LoginClickAsync();
             }
         }
+
         public async Task LoginClickAsync()
         {
-            await _loginRepository.CheckWithDatabaseAsync(_Password, _EmailNickname, _CloseWindow, RememberMe, _ChangeTheme);
+            await _loginRepository.CheckWithDatabaseAsync(_Password, _EmailNickname, RememberMe);
         }
     }
 }

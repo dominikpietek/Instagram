@@ -90,7 +90,7 @@ namespace Instagram.ViewModels
             _userRepository = new UserRepository(_db);
             _postRepository = new PostRepository(_db);
             _CloseWindow = CloseWindow;
-            _user = GetUser.FromDbAndFile(_userRepository).Result;
+            _user = GetUser.FromDbAndFileAsync(_userRepository).Result;
             _ChangeTheme = ChangeTheme;
             #endregion
             InitResourcesAsync();
