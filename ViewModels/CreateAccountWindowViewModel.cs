@@ -1,5 +1,6 @@
 ﻿using Instagram.Commands;
 using Instagram.Databases;
+using Instagram.Interfaces;
 using Instagram.JSONModels;
 using Instagram.Models;
 using Instagram.Repositories;
@@ -117,7 +118,7 @@ namespace Instagram.ViewModels
         private string _ProfilePhotoSource { get; set; }
         private Action _CloseWindow;
         private Action<bool> _ChangeTheme;
-        private readonly InstagramDbContext _db;
+        private readonly RegisterRepository _registerRepository;
         private readonly IAbstractFactory<LoginOrRegisterWindowView> _factory;
         #endregion
         #region Commands
@@ -127,14 +128,14 @@ namespace Instagram.ViewModels
         #endregion
         public CreateAccountWindowViewModel(
             Action CloseWindow, 
-            Action<bool> ChangeTheme, 
-            InstagramDbContext db, 
+            Action<bool> ChangeTheme,  
+            InstagramDbContext db,
             IAbstractFactory<LoginOrRegisterWindowView> factory)
         {
             #region PrivetPropertiesAssignement
             _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
             _ChangeTheme = ChangeTheme;
-            _db = db;
+            _registerRepository = new RegisterRepository(db);
             _factory = factory;
             _CloseWindow = CloseWindow;
             #endregion
@@ -181,15 +182,14 @@ namespace Instagram.ViewModels
             };
             return newUser;
         }
-        private bool AddingUserToDatabase()
+        private async Task<bool> AddingUserToDatabase()
         {
-            RegisterRepository register = new RegisterRepository(_db);
-            if (register.ValidateData(_FirstPassword, _SecondPassword, _Email, _Nickname))
+            if (await _registerRepository.ValidateData(_FirstPassword, _SecondPassword, _Email, _Nickname))
             {
                 User newUser = CreateNewUser();
                 try
                 {
-                    register.AddUser(newUser);
+                    await _registerRepository.AddUserAsync(newUser);
                     MessageBox.Show("Account created succesfully!");
                     return true;
                 }

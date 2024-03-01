@@ -1,42 +1,25 @@
 ﻿using Instagram.Databases;
 using Instagram.Models;
+using Instagram.StartupHelpers;
 using Instagram.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Instagram.Views
 {
-    /// <summary>
-    /// Interaction logic for CommentView.xaml
-    /// </summary>
     public partial class CommentView : UserControl
     {
-        private CommentViewModel _ViewModel;
-        public CommentView(Comment comment, int userId, InstagramDbContext db)
+        private readonly InstagramDbContext _db;
+        private readonly IAbstractFactory<ReplyCommentView> _replyCommentFactory;
+
+        public CommentView(InstagramDbContext db, IAbstractFactory<ReplyCommentView> replyCommentFactory)
         {
             InitializeComponent();
-            _ViewModel = new CommentViewModel(comment, userId, db);
-            DataContext = _ViewModel;
+            _db = db;
+            _replyCommentFactory = replyCommentFactory;
         }
-        public void ChangeCommentTheme(bool isDarkMode)
+        public void AddDataContext(int id)
         {
-            this.Resources.MergedDictionaries.Clear();
-            string resourceName = isDarkMode ? "DarkModeDictionary" : "BrightModeDictionary";
-            ResourceDictionary resourceDictionary = new ResourceDictionary() { Source = new Uri(string.Format("ResourceDictionaries/{0}.xaml", resourceName), UriKind.Relative) };
-            this.Resources.MergedDictionaries.Add(resourceDictionary);
-            _ViewModel.ChangeTheme();
+            DataContext = new CommentViewModel(_db, _replyCommentFactory, id);
         }
     }
 }

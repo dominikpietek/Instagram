@@ -2,6 +2,7 @@
 using Instagram.Enums;
 using Instagram.Interfaces;
 using Instagram.Models;
+using Instagram.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace Instagram.Repositories
         public async Task<bool> AddLikeAsync(UserLiked userLiked)
         {
             await _db.UsersLiked.AddAsync(userLiked);
-            return await SaveChangesAsync();
+            return await SaveChanges.SaveAsync(_db);
         }
 
         public async Task<bool> IsLikedBy(int userThatLikedId, LikedThingsEnum likedThing, int likedThingId)
@@ -31,16 +32,13 @@ namespace Instagram.Repositories
             return await _db.UsersLiked.AnyAsync(ul => ul.UserThatLikedId == userThatLikedId && (int)ul.LikedThing == (int)likedThing && ul.LikedThingId == likedThingId);
         }
 
-        public async Task<bool> RemoveLikeAsync(int id)
+        public async Task<bool> RemoveLikeAsync(int userThatLikedId, LikedThingsEnum likedThing, int likedThingId)
         {
-            _db.UsersLiked.Remove(await _db.UsersLiked.FirstAsync(ul => ul.Id == id));
-            return await SaveChangesAsync();
-        }
-
-        public async Task<bool> SaveChangesAsync()
-        {
-            var save = await _db.SaveChangesAsync();
-            return save > 0 ? true : false;
+            _db.UsersLiked.Remove(await _db.UsersLiked.FirstAsync(ul =>
+                ul.UserThatLikedId == userThatLikedId && 
+                (int)ul.LikedThing == (int)likedThing && 
+                ul.LikedThingId == likedThingId));
+            return await SaveChanges.SaveAsync(_db);
         }
     }
 }

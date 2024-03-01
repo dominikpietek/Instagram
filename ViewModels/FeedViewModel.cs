@@ -132,6 +132,7 @@ namespace Instagram.ViewModels
         private IUserIdGotSentModelRepository _userIdGotModelRepository;
         private IUserIdGotSentModelRepository _userIdSentModelRepository;
         private IFriendRepository _friendRepository;
+        private IAbstractFactory<HomeUserControl> _homeFactory;
         #endregion
         public FeedViewModel(
             Action CloseWindow,
@@ -139,6 +140,7 @@ namespace Instagram.ViewModels
             ResourceDictionary resources,
             IAbstractFactory<CreateNewPostWindowView> newPostFactory,
             IAbstractFactory<LoginOrRegisterWindowView> loginFactory,
+            IAbstractFactory<HomeUserControl> homeFactory,
             InstagramDbContext db)
         {
             #region PrivatePropertiesAssignment
@@ -153,6 +155,7 @@ namespace Instagram.ViewModels
             _resources = resources;
             _newPostFactory = newPostFactory;
             _loginFactory = loginFactory;
+            _homeFactory = homeFactory;
             #endregion
             #region CommandsInstances
             CreateNewPost = new CreateNewPostOpenWindowCommand(_newPostFactory);
@@ -164,15 +167,17 @@ namespace Instagram.ViewModels
             SendEmailsButton = new SendEmailsCommand();
             #endregion
             InitResources();
-            InitAsync();
+            InitWithDbAsync();
         }
-        private async void InitAsync()
+
+        private async Task InitWithDbAsync()
         {
-            //await LoadThemeColourFromJsonFileAsync();
-            //_user = await GetUser.FromDbAndFileAsync(_userRepository);
-            //await LoadEverythingFromDatabaseAsync();
+            _user = await GetUser.FromDbAndFileAsync(_userRepository);
+            await LoadThemeColourFromJsonFileAsync();
+            await LoadEverythingFromDatabaseAsync();
             ShowPosts();
         }
+
         private void InitResources()
         {
             LogoPath = ChangeTheme.ChangeLogo(_path, IsDarkModeOn);
@@ -183,33 +188,36 @@ namespace Instagram.ViewModels
             FriendRequestMessage = "Friend requests:";
             MaybeFriendsMessage = "New users, maybe you know them?:";
         }
+
         public void ChangeThemes(bool isDarkMode)
         {
-            ChangeTheme.Change(_resources);
+            ChangeTheme.ChangeAsync(_resources);
             LogoPath = ChangeTheme.ChangeLogo(_path, isDarkMode);
             if (_isHomeUCCreated) _homeUserControl.ChangeHomeTheme();
             if (_isProfileUCCreated) _profileUserControl.ChangeProfileTheme(isDarkMode);
             if (_isMessengerUCCreated) _messengerUserControl.ChangeMessengerTheme(isDarkMode);
         }
+
         private async Task LoadThemeColourFromJsonFileAsync()
         {
-            JSON<UserDataModel> userJSON = new JSON<UserDataModel>("UserData");
-            bool isDarkMode = await userJSON.GetDarkModeAsync();
-            IsDarkModeOn = isDarkMode;
-            ChangeThemes(isDarkMode);
+            IsDarkModeOn = await ChangeTheme.GetModeAsync();
+            ChangeThemes(IsDarkModeOn);
         }
+
         private async Task LoadEverythingFromDatabaseAsync()
         {
             ProfilePhotoSource = ConvertImage.FromByteArray(_user.ProfilePhoto.ImageBytes);
             LoadFriendRequestAsync(_user.Id);
-            //ShowStoriesAsync();
+            //await ShowStoriesAsync();
         }
+
         private void ShowSomethingInMainBox(UserControl userControl)
         {
             _feedViewMainContainer.Children.Clear();
             _feedViewMainContainer.Children.Add(userControl);
         }
-        private async void ShowStoriesAsync()
+
+        private async Task ShowStoriesAsync()
         {
             StoriesSection = new ObservableCollection<StoryView>();
             var stories = await _storyRepository.GetAllStoriesAsync();
@@ -218,18 +226,21 @@ namespace Instagram.ViewModels
                 StoriesSection.Add(new StoryView(story));
             }
         }
+
         private void ShowPosts()
         {
-            _homeUserControl = new HomeUserControl(_db);
+            _homeUserControl = _homeFactory.Create();
             ShowSomethingInMainBox(_homeUserControl);
             _isHomeUCCreated = true;
         }
+
         private void ShowProfile()
         {
             _profileUserControl = new ProfileUserControl();
             ShowSomethingInMainBox(_profileUserControl);
             _isProfileUCCreated = true;
         }
+
         private void ShowMessenger()
         {
             _messengerUserControl = new MessengerUserControl(_user.Id);

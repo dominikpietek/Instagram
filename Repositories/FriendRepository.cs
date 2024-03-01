@@ -1,6 +1,7 @@
 ﻿using Instagram.Databases;
 using Instagram.Interfaces;
 using Instagram.Models;
+using Instagram.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace Instagram.Repositories
                 {
                     FriendId = userId
                 });
-            return await SaveChangesAsync();
+            return await SaveChanges.SaveAsync(_db);
         }
 
         public async Task<List<int>> GetAllUserFriendsIdAsync(int userId)
@@ -37,13 +38,7 @@ namespace Instagram.Repositories
         {
             await _db.Friends.Where(f => f.UserId == userId).ExecuteDeleteAsync();
             await _db.Friends.Where(f => f.FriendId == friendId).ExecuteDeleteAsync();
-            return await SaveChangesAsync();
-        }
-
-        public async Task<bool> SaveChangesAsync()
-        {
-            var save = await _db.SaveChangesAsync();
-            return save > 0 ? true : false;
+            return await SaveChanges.SaveAsync(_db);
         }
     }
 }

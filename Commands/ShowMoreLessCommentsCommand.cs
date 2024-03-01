@@ -10,18 +10,15 @@ namespace Instagram.Commands
 {
     public class ShowMoreLessCommentsCommand : CommandBase
     {
-        private Func<Task> _ShowMoreLessComments;
-        private Action _ChangeTheme;
+        private readonly Action _ShowMoreLessComments;
 
-        public ShowMoreLessCommentsCommand(Func<Task> ShowMoreLessComments, Action ChangeTheme)
+        public ShowMoreLessCommentsCommand(Action ShowMoreLessComments)
         {
             _ShowMoreLessComments = ShowMoreLessComments;
-            _ChangeTheme = ChangeTheme;
         }
         public override void Execute(object parameter)
         {
             _ShowMoreLessComments.Invoke();
-            _ChangeTheme.Invoke();
         }
     }
 }

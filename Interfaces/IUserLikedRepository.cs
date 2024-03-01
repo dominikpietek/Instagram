@@ -11,8 +11,7 @@ namespace Instagram.Interfaces
     public interface IUserLikedRepository
     {
         Task<bool> AddLikeAsync(UserLiked userLiked);
-        Task<bool> RemoveLikeAsync(int id);
+        Task<bool> RemoveLikeAsync(int userThatLikedId, LikedThingsEnum likedThing, int likedThingId);
         Task<bool> IsLikedBy(int userThatLikedId, LikedThingsEnum likedThing, int likedThingId);
-        Task<bool> SaveChangesAsync();
     }
 }

@@ -11,15 +11,15 @@ namespace Instagram.Services
 {
     public static class ChangeTheme
     {
-        private static async Task<bool> GetMode()
+        public static async Task<bool> GetModeAsync()
         {
             JSON<UserDataModel> json = new JSON<UserDataModel>("UserData");
             return await json.GetDarkModeAsync();
         }
 
-        public static async Task Change(ResourceDictionary resource)
+        public static async Task ChangeAsync(ResourceDictionary resource)
         {
-            string resourceName = await GetMode() ? "DarkModeDictionary" : "BrightModeDictionary";
+            string resourceName = await GetModeAsync() ? "DarkModeDictionary" : "BrightModeDictionary";
             resource.MergedDictionaries.Clear();
             ResourceDictionary resourceDictionary = new ResourceDictionary() { Source = new Uri(string.Format("ResourceDictionaries/{0}.xaml", resourceName), UriKind.Relative) };
             resource.MergedDictionaries.Add(resourceDictionary);

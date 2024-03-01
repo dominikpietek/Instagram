@@ -25,18 +25,19 @@ namespace Instagram.Databases
         public DbSet<Friend> Friends { get; set; }
         public DbSet<UserLiked> UsersLiked { get; set; }
         public DbSet<CommentResponse> CommentResponses { get; set; }
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings["MainDb"].ConnectionString);
-        //}
-        public InstagramDbContext(DbContextOptions<InstagramDbContext> options) : base(options)
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-
+            optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings["MainDb"].ConnectionString);
         }
+        //public InstagramDbContext(DbContextOptions<InstagramDbContext> options) : base(options)
+        //{
+
+        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Comment>().Property(p => p.Likes).HasDefaultValue(0);
+            modelBuilder.Entity<CommentResponse>().Property(p => p.Likes).HasDefaultValue(0);
             modelBuilder.Entity<Post>().Property(p => p.Likes).HasDefaultValue(0);
             modelBuilder.Entity<User>().HasMany(u => u.Posts).WithOne(p => p.User).HasForeignKey(p => p.UserId);
             modelBuilder.Entity<User>().HasMany(u => u.Stories).WithOne(s => s.User).HasForeignKey(s => s.UserId);

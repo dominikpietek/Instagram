@@ -15,7 +15,7 @@
         <Style TargetType="Button" x:Key="redButton" BasedOn="{StaticResource buttonStyle}">
             <Setter Property="Background" Value="Transparent"/>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsUserLiked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Value="False">
+                <DataTrigger Binding="{Binding IsCommentLiked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Value="False">
                     <Setter Property="Background" Value="#FF7F7F"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -44,7 +44,7 @@
                         <Setter Property="Background" Value="Transparent"/>
                         <Setter Property="BorderThickness" Value="0"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsCommentYours}" Value="false">
+                            <DataTrigger Binding="{Binding IsCommentYour}" Value="false">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
                         </Style.Triggers>

@@ -14,7 +14,5 @@ namespace Instagram.Interfaces
         Task<bool> RemoveStoryAsync(int id);
         Task<bool> UpdateStoryAsync(Story story);
         Task<bool> AddStoryAsync(int userId, Story story);
-        Task<bool> SaveChangesAsync();
-
     }
 }

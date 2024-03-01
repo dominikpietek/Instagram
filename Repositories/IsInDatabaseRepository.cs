@@ -17,42 +17,37 @@ namespace Instagram.Repositories
 {
     public class IsInDatabaseRepository
     {
-        private readonly InstagramDbContext _db;
         private readonly string _emailNickname;
-        private readonly IUserRepository _userRepository;
-        public IsInDatabaseRepository(InstagramDbContext db, string emailNickname)
+        public IUserRepository userRepository;
+        public IsInDatabaseRepository(IUserRepository userRepository, string emailNickname)
         {
-            _db = db;
             _emailNickname = emailNickname;
-            _userRepository = new UserRepository(db);
+            this.userRepository = userRepository;
         }
-        private bool Email()
+        private bool ReturnFalseIfUserExists(User user)
         {
-            try
-            {
-                _userRepository.GetUserByEmailWithoutIncludesAsync(_emailNickname);
-                return false;
-            }
-            catch (Exception)
+            if (user.Id == -1)
             {
                 return true;
             }
-        }
-        private bool Nickname()
-        {
-            try
+            else
             {
-                _userRepository.GetUserByNicknameWithoutIncludesAsync(_emailNickname);
                 return false;
             }
-            catch (Exception)
-            {
-                return true;
-            }
         }
-        public bool CheckLogin(string errorMessage)
+        private async Task<bool> EmailAsync()
         {
-            if (!Email() || !Nickname())
+            User user = await userRepository.GetUserByEmailWithoutIncludesAsync(_emailNickname);
+            return ReturnFalseIfUserExists(user);
+        }
+        private async Task<bool> NicknameAsync()
+        {
+            User user = await userRepository.GetUserByNicknameWithoutIncludesAsync(_emailNickname);
+            return ReturnFalseIfUserExists(user);
+        }
+        public async Task<bool> CheckLoginAsync(string errorMessage)
+        {
+            if (!await EmailAsync() || !await NicknameAsync())
             {
                 return true;
             }
@@ -62,9 +57,9 @@ namespace Instagram.Repositories
                 return false;
             }
         }
-        public bool CheckRegisterNickname(string errorMessage)
+        public async Task<bool> CheckRegisterNicknameAsync(string errorMessage)
         {
-            if (Nickname())
+            if (await NicknameAsync())
             {
                 return true;
             }
@@ -74,9 +69,9 @@ namespace Instagram.Repositories
                 return false;
             }
         }
-        public bool CheckRegisterEmail(string errorMessage)
+        public async Task<bool> CheckRegisterEmailAsync(string errorMessage)
         {
-            if (Email())
+            if (await EmailAsync())
             {
                 return true;
             }

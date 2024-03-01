@@ -12,6 +12,5 @@ namespace Instagram.Interfaces
         Task<List<int>> GetAllAsync(int userId);
         Task<bool> AddAsync(UserIdAbstractModel userIdModel);
         Task<bool> RemoveAsync(int id);
-        Task<bool> SaveChangesAsync();
     }
 }

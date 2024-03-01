@@ -15,8 +15,8 @@ namespace Instagram.Interfaces
         Task<bool> AddUserAsync(User user);
         Task<bool> RemoveUserAsync(int id);
         Task<bool> UpdateUserAsync(User user);
-        Task<bool> SaveChangesAsync();
         Task<User> GetUserByNicknameWithoutIncludesAsync(string nickname);
         Task<User> GetUserByEmailWithoutIncludesAsync(string email);
+        Task<User> GetOnlyEssentialDataAsync(int id);
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Instagram.Databases;
 using Instagram.Enums;
+using Instagram.Interfaces;
+using Instagram.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
@@ -12,68 +14,32 @@ namespace Instagram.Commands
 {
     public class LikeCommand : CommandBase
     {
-        private LikedThingsEnum _LikedThing;
-        private int _userId;
-        private int _likedThingId;
-        private Action<int> _UpdateLikesNumber;
-        private Action<bool> _ChangeIsUserLiked;
-        public LikeCommand(LikedThingsEnum LikedThing, int userId, int likedThingId, Action<int> UpdateLikesNumber, Action<bool> ChangeIsUserLiked)
+        private readonly LikedThingsEnum _LikedThing;
+        private readonly int _userId;
+        private readonly int _likedThingId;
+        private readonly IUserLikedRepository _userLikedRepository;
+        private readonly Action<bool> _UpdateLikes;
+        public LikeCommand(LikedThingsEnum LikedThing, int userId, int likedThingId, Action<bool> UpdateLikes, IUserLikedRepository userLikedRepository)
         {
             _LikedThing = LikedThing;
             _userId = userId;
             _likedThingId = likedThingId;
-            _UpdateLikesNumber = UpdateLikesNumber;
-            _ChangeIsUserLiked = ChangeIsUserLiked;
+            _userLikedRepository = userLikedRepository;
+            _UpdateLikes = UpdateLikes;
         }
-        public override void Execute(object parameter)
+        public async override void Execute(object parameter)
         {
-            //using (var db = new InstagramDbContext("MainDb"))
-            //{
-            //    bool addOrRemove;
-            //    int likesNumber = 0;
-            //    var likes = db.UsersLiked.Where(u => (u.UserThatLikedId == _userId && u.LikedThingId == _likedThingId && (int)u.LikedThing == (int)_LikedThing)).ToList();
-            //    if (likes.Count() == 0)
-            //    {
-            //        addOrRemove = true;
-            //        db.UsersLiked.Add(new UserLiked()
-            //        {
-            //            LikedThing = _LikedThing,
-            //            LikedThingId= _likedThingId,
-            //            UserThatLikedId = _userId
-            //        });
-            //    }
-            //    else
-            //    {
-            //        addOrRemove = false;
-            //        db.UsersLiked.Remove(likes[0]);
-            //    }
-            //    switch (_LikedThing)
-            //    {
-            //        case LikedThingsEnum.Post:
-            //            likesNumber =
-            //                addOrRemove 
-            //                ? db.Posts.First(p => p.Id == _likedThingId).Likes++ + 1
-            //                : db.Posts.First(p => p.Id == _likedThingId).Likes-- - 1;
-            //            break;
-            //        case LikedThingsEnum.Comment:
-            //            likesNumber = 
-            //                addOrRemove
-            //                ? db.Comments.First(c => c.Id == _likedThingId).Likes++ + 1
-            //                : db.Comments.First(c => c.Id == _likedThingId).Likes-- - 1;
-            //            break;
-            //        case LikedThingsEnum.CommentResponse:
-            //            likesNumber = 
-            //                addOrRemove
-            //                ? db.CommentResponses.First(cr => cr.Id == _likedThingId).Likes++ + 1
-            //                : db.CommentResponses.First(cr => cr.Id == _likedThingId).Likes-- - 1;
-            //            break;
-            //        default:
-            //            break;
-            //    }
-            //    db.SaveChanges();
-            //    _UpdateLikesNumber.Invoke(likesNumber);
-            //    _ChangeIsUserLiked.Invoke(likes.Count() == 0 ? 1 : 0);
-            //}
+            if(await _userLikedRepository.IsLikedBy(_userId, _LikedThing, _likedThingId))
+            {
+                await _userLikedRepository.RemoveLikeAsync(_userId, _LikedThing, _likedThingId);
+                _UpdateLikes.Invoke(false);
+            }
+            else
+            {
+                UserLiked userLiked = new UserLiked() { LikedThing = _LikedThing, LikedThingId = _likedThingId, UserThatLikedId = _userId };
+                await _userLikedRepository.AddLikeAsync(userLiked);
+                _UpdateLikes.Invoke(true);
+            }
         }
     }
 }

@@ -5,22 +5,24 @@ using Instagram.JSONModels;
 using Instagram.Models;
 using Instagram.Repositories;
 using Instagram.Services;
+using Instagram.StartupHelpers;
+using Instagram.Views;
 using System.Windows.Controls;
 
 namespace Instagram.Components
 {
     public partial class HomeUserControl : UserControl
     {
-        public HomeUserControl(InstagramDbContext db)
+        public HomeUserControl(InstagramDbContext db, IAbstractFactory<PostView> postFactory)
         {
             ChangeHomeTheme();
-            DataContext = new HomeViewModel(db);
+            DataContext = new HomeViewModel(db, postFactory);
             InitializeComponent();
         }
 
-        public void ChangeHomeTheme()
+        public async void ChangeHomeTheme()
         {
-            ChangeTheme.Change(this.Resources);
+            await ChangeTheme.ChangeAsync(this.Resources);
         }
     }
 }

@@ -23,5 +23,10 @@ namespace Instagram.Repositories
             JSON<UserDataModel> userJSON = new JSON<UserDataModel>("UserData");
             return await userJSON.GetAsync<UserDataModel>();
         }
+        public static async Task<int> IdFromFile()
+        {
+            UserDataModel userModel = await GetUser.FromFileAsync();
+            return userModel.UserId;
+        }
     }
 }

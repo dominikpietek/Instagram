@@ -1,4 +1,6 @@
-﻿using Instagram.Databases;
+﻿using Instagram.Components;
+using Instagram.Databases;
+using Instagram.Models;
 using Instagram.StartupHelpers;
 using Instagram.ViewModels;
 using Instagram.Views;
@@ -20,12 +22,16 @@ namespace Instagram
             AppHost = Host.CreateDefaultBuilder()
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddTransient<InstagramDbContext>();
                     services.AddSingleton<LoginOrRegisterWindowView>();
                     services.AddFormFactory<CreateAccountWindowView>();
                     services.AddFormFactory<CreateNewPostWindowView>();
                     services.AddFormFactory<LoginOrRegisterWindowView>();
+                    services.AddFormFactory<HomeUserControl>();
                     services.AddFormFactory<FeedView>();
-                    services.AddDbContext<InstagramDbContext>(options => options.UseSqlServer(connectionString));
+                    services.AddFormFactory<PostView>();
+                    services.AddFormFactory<CommentView>();
+                    services.AddFormFactory<ReplyCommentView>();
                 })
                 .Build();
         }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Instagram.Models
 {
-    public class CommentResponse
+    public class CommentResponse : ModelBase
     {
         public int Id { get; set; }
         public int AuthorId { get; set; }

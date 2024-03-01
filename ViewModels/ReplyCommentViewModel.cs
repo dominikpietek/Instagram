@@ -1,7 +1,9 @@
 ﻿using Instagram.Commands;
 using Instagram.Databases;
 using Instagram.Enums;
+using Instagram.Interfaces;
 using Instagram.Models;
+using Instagram.Repositories;
 using Instagram.Services;
 using System;
 using System.Collections.Generic;
@@ -40,14 +42,14 @@ namespace Instagram.ViewModels
                 OnPropertyChanged(nameof(LikesNumber));
             }
         }
-        private bool _IsUserLiked;
-        public bool IsUserLiked
+        private bool _IsCommentLiked;
+        public bool IsCommentLiked
         {
-            get { return _IsUserLiked; }
+            get { return _IsCommentLiked; }
             set
             {
-                _IsUserLiked = value;
-                OnPropertyChanged(nameof(IsUserLiked));
+                _IsCommentLiked = value;
+                OnPropertyChanged(nameof(IsCommentLiked));
             }
         }
         private bool _IsReplyYours;
@@ -61,70 +63,73 @@ namespace Instagram.ViewModels
             }
         }
         #endregion
-        private int _userId;
-        private CommentResponse _commentResponse;
+        #region PrivateProperties
+        private readonly int _commentId;
+        private CommentResponse _comment;
+        private readonly IBothCommentsRepository<CommentResponse> _commentRepository;
+        private readonly IUserLikedRepository _userLikedRepository;
+        private readonly IUserRepository _userRepository;
+        #endregion
         #region Commands
         public ICommand LikeButton { get; set; }
         public ICommand RemoveButton { get; set; }
         #endregion
-        public ReplyCommentViewModel(CommentResponse commentResponse, int userId)
+        public ReplyCommentViewModel(InstagramDbContext db, int commentId)
         {
             #region PrivatePropertiesAssignment
-            _userId = userId;
-            _commentResponse = commentResponse;
+            _commentId = commentId;
             _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
+            _commentRepository = new BothCommentsRepository<CommentResponse>(db);
+            _userLikedRepository = new UserLikedRepository(db);
+            _userRepository = new UserRepository(db);
             #endregion
-            IsReplyYours = commentResponse.AuthorId == userId ? true : false;
+            LoadDataFromDatabaseAsync();
             #region CommandInstances
-            LikeButton = new LikeCommand(LikedThingsEnum.CommentResponse, commentResponse.AuthorId, commentResponse.CommentId, UpdateLikesNumber, ChangeIsUserLiked);
+            LikeButton = new LikeCommand(LikedThingsEnum.CommentResponse, _comment.AuthorId, _commentId, UpdateLikes, _userLikedRepository);
             RemoveButton = new RemoveCommentCommand();
             #endregion
             InitResources();
-            LoadDataFromDatabaseAsync();
         }
+
+        public void UpdateLikes(bool likedOrRemoved)
+        {
+            if (likedOrRemoved)
+            {
+                IsCommentLiked = true;
+                _comment.Likes += 1;
+            }
+            else
+            {
+                IsCommentLiked = false;
+                _comment.Likes -= 1;
+            }
+            _commentRepository.UpdateCommentAsync(_comment);
+            UpdateLikesNumber(_comment.Likes);
+        }
+
         private void InitResources()
         {
             LikeIconPath = $"{_path}likeIcon.png";
             TrashIconPath = $"{_path}trashIcon.png";
         }
+
         private async Task LoadDataFromDatabaseAsync()
         {
-            var LoadFromDatabaseAsync = async Task () =>
-            {
-
-                //using (var db = new InstagramDbContext("MainDb"))
-                //{
-                //    User profile = db.Users.First(u => u.Id == _commentResponse.AuthorId);
-                //    CommentProfileName = profile.Nickname;
-                //    ProfileImage profilePhoto = db.ProfileImages.First(p => p.UserId == profile.Id);
-                //    CommentProfilePhotoSource = ConvertImage.FromByteArray(profilePhoto.ImageBytes);
-                //    CommentText = _commentResponse.Content;
-                //    PublicationDate = _commentResponse.PublicationDate;
-                //    UpdateLikesNumber(_commentResponse.Likes);
-                //    ChangeIsUserLiked(db.UsersLiked.Where(u => (
-                //        u.UserThatLikedId == _userId &&
-                //        u.LikedThingId == _commentResponse.Id &&
-                //        (int)u.LikedThing == (int)LikedThingsEnum.CommentResponse
-                //        )).ToList().Count());
-                //}
-            };
-            await LoadFromDatabaseAsync.Invoke();
+            _comment = await _commentRepository.GetCommentAsync(_commentId);
+            User user = await _userRepository.GetUserWithPhotoAndRequestsAsync(_comment.AuthorId);
+            int userId = await GetUser.IdFromFile();
+            CommentProfilePhotoSource = ConvertImage.FromByteArray(user.ProfilePhoto.ImageBytes);
+            UpdateLikesNumber(_comment.Likes);
+            IsCommentLiked = await _userLikedRepository.IsLikedBy(userId, LikedThingsEnum.CommentResponse, _commentId);
+            IsReplyYours = userId == _comment.AuthorId ? true : false;
+            CommentText = _comment.Content;
+            PublicationDate = _comment.PublicationDate;
         }
+
         public void UpdateLikesNumber(int likesNumber)
         {
             LikesNumber = $"{likesNumber} LIKES";
-            _commentResponse.Likes = likesNumber;
-        }
-        public void ChangeIsUserLiked(bool isUserLikedCount)
-        {
-            if (!isUserLikedCount)
-            {
-                IsUserLiked = true;
-            }
-            else
-            {
-                IsUserLiked = false;
-            }
+            _comment.Likes = likesNumber;
         }
     }
 }

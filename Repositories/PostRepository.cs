@@ -1,6 +1,7 @@
 ﻿using Instagram.Databases;
 using Instagram.Interfaces;
 using Instagram.Models;
+using Instagram.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -23,35 +24,41 @@ namespace Instagram.Repositories
         public async Task<bool> AddPostAsync(Post post)
         {
             await _db.Posts.AddAsync(post);
-            return await SaveChangesAsync();
+            return await SaveChanges.SaveAsync(_db);
         }
 
         public async Task<List<Post>> GetAllPostsWithAllDataToShowAsync()
         {
             return await _db.Posts
-                .Include(p => p.Tags)
-                .Include(p => p.User)
-                .ThenInclude(u => u.ProfilePhoto)
-                .Include(p => p.Image)
-                .Include(p => p.Comments).ToListAsync();
+            .Include(p => p.Tags)
+            .Include(p => p.User)
+            .ThenInclude(u => u.ProfilePhoto)
+            .Include(p => p.Image)
+            .Include(p => p.Comments).ToListAsync();
+
         }
+
+        public async Task<Post> GetPostWithAllDataAsync(int id)
+        {
+            return _db.Posts
+            .Include(p => p.Tags)
+            .Include(p => p.User)
+            .ThenInclude(u => u.ProfilePhoto)
+            .Include(p => p.Image)
+            .Include(p => p.Comments).First(p => p.Id == id);
+        }
+
         public async Task<bool> RemovePostByIdAsync(int postId)
         {
             var post = await _db.Posts.FirstAsync(p => p.Id == postId);
             _db.Posts.Remove(post);
-            return await SaveChangesAsync();
+            return await SaveChanges.SaveAsync(_db);
         }
 
         public async Task<bool> UpdatePostAsync(Post post)
         {
             _db.Posts.Update(post);
-            return await SaveChangesAsync();
-        }
-
-        public async Task<bool> SaveChangesAsync()
-        {
-            var save = await _db.SaveChangesAsync();
-            return save > 0 ? true : false;
+            return await SaveChanges.SaveAsync(_db);
         }
     }
 }

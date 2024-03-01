@@ -3,14 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Instagram.Views"
-        xmlns:components="clr-namespace:Instagram.Components"
+        xmlns:c="clr-namespace:Instagram.Conventers"
         mc:Ignorable="d"
         Title="FeedView" 
         Height="800" Width="840"
         MinHeight="800" MinWidth="840">
     <Window.Resources>
-        <ResourceDictionary>
+        <c:CenterConverter x:Key="CenterConverter"/>
+        <c:HalfValueConverter x:Key="HalfValueConverter"/>
+        <ResourceDictionary x:Key="dictionary">
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../ResourceDictionaries/ButtonValidationDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
@@ -54,7 +55,8 @@
                         <Style TargetType="Button">
                             <Setter Property="BorderBrush" Value="Transparent"/>
                             <Setter Property="Background" Value="Transparent"/>
-                            <Setter Property="Cursor" Value="Hand"/>                        </Style>
+                            <Setter Property="Cursor" Value="Hand"/>                        
+                        </Style>
                     </Button.Style>
                 </Button>
                 <Button Command="{Binding SearchButton}" HorizontalAlignment="Center" Grid.Column="3" Height="40" Width="200" Grid.Row="1" Cursor="Hand">
@@ -78,7 +80,18 @@
                     </MenuItem>
                     <MenuItem Cursor="Hand" Margin="10 0 0 0">
                         <MenuItem.Header>
-                            <Image Source="{Binding ProfilePhotoSource}"/>
+                            <Ellipse Width="38" Height="38" x:Name="ElipsePhoto">
+                                <Ellipse.Fill>
+                                    <ImageBrush ImageSource="{Binding ProfilePhotoSource}"/>
+                                </Ellipse.Fill>
+                                <Ellipse.Clip>
+                                    <EllipseGeometry 
+                                        RadiusX="{Binding Path=Width, Converter={StaticResource HalfValueConverter}, ElementName=ElipsePhoto}" 
+                                        RadiusY="{Binding Path=Height, Converter={StaticResource HalfValueConverter}, ElementName=ElipsePhoto}"
+                                        Center="{Binding Path=Width, Converter={StaticResource CenterConverter}, ElementName=ElipsePhoto}">
+                                    </EllipseGeometry>
+                                </Ellipse.Clip>
+                            </Ellipse>
                         </MenuItem.Header>
                         <MenuItem Command="{Binding LogoutButton}">
                             <MenuItem.Icon>

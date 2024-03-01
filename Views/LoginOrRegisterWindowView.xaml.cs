@@ -16,7 +16,7 @@ namespace Instagram.Views
             InstagramDbContext db)
         {
             InitializeComponent();
-            ChangeTheme.Change(this.Resources);
+            ChangeTheme.ChangeAsync(this.Resources);
             FocusOnController focusOnController = new FocusOnController(this.emailNicknameBox, this.passwordBox);
             DataContext = new LoginOrRegisterWindowViewModel(
                 CloseWindow,  
@@ -29,10 +29,7 @@ namespace Instagram.Views
 
         public void CloseWindow()
         {
-            if (this.IsActive) 
-            {
-                this.Close();
-            }
+            this.Close();
         }
 
         public bool IsLoginButtonUsable()

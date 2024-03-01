@@ -6,6 +6,7 @@ using Instagram.JSONModels;
 using Instagram.Models;
 using Instagram.Repositories;
 using Instagram.Services;
+using Instagram.StartupHelpers;
 using Instagram.Views;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -29,10 +30,7 @@ namespace Instagram.ViewModels
         public string LikeIconSource { get; set; }
         public string ReplyIconSource { get; set; }
         public string RemoveIconSource { get; set; }
-        private string showMoreIconSource { get; set; }
-        private string showLessIconSource { get; set; }
         public BitmapImage CommentProfilePhotoSource { get; set; }
-        public BitmapImage ReplyProfilePhotoSource { get; set; }
         #endregion
         #region NormalProperties
         public string CommentProfileName { get; set; }
@@ -41,23 +39,25 @@ namespace Instagram.ViewModels
         #endregion
         #region PrivateProperties
         private Comment _comment;
-        private bool showMoreCommentResponses = true;
-        private bool clicked = true;
+        private User _authorUser;
+        private readonly IBothCommentsRepository<CommentResponse> _commentResponseRepository;
+        private readonly IBothCommentsRepository<Comment> _commentRepository;
+        private readonly IUserLikedRepository _userLikedRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IAbstractFactory<ReplyCommentView> _replyCommentFactory;
+        private bool _areCommentsShown = false;
         private int _userId;
-        private bool _isDarkMode;
-        private ICommentResponseRepository _commentResponseRepository;
-        private IUserRepository _userRepository;
-        private IUserLikedRepository _userLikedRepository;
+        private int _commentId;
         #endregion
         #region OnPropertyChangeProperties
-        private bool _IsCommentLiked;
-        public bool IsCommentLiked 
+        private string _ReplyCommentContent;
+        public string ReplyCommentContent
         {
-            get { return _IsCommentLiked; }
+            get { return _ReplyCommentContent; }
             set
             {
-                _IsCommentLiked = value;
-                OnPropertyChanged(nameof(IsCommentLiked));
+                _ReplyCommentContent = value;
+                OnPropertyChanged(nameof(ReplyCommentContent));
             }
         }
         private bool _AreAnyComments;
@@ -80,16 +80,6 @@ namespace Instagram.ViewModels
                 OnPropertyChanged(nameof(ShowMoreLessButtonContent));
             }
         }
-        private string _ReplyCommentContent;
-        public string ReplyCommentContent
-        {
-            get { return _ReplyCommentContent; }
-            set
-            {
-                _ReplyCommentContent = value;
-                OnPropertyChanged(nameof(ReplyCommentContent));
-            }
-        }
         private string _LikesNumber;
         public string LikesNumber 
         {
@@ -100,14 +90,14 @@ namespace Instagram.ViewModels
                 OnPropertyChanged(nameof(LikesNumber));
             }
         }
-        private bool _IsUserLiked;
-        public bool IsUserLiked 
+        private bool _IsCommentLiked;
+        public bool IsCommentLiked 
         {
-            get { return _IsUserLiked; }
+            get { return _IsCommentLiked; }
             set
             {
-                _IsUserLiked = value;
-                OnPropertyChanged(nameof(IsUserLiked));
+                _IsCommentLiked = value;
+                OnPropertyChanged(nameof(IsCommentLiked));
             }
         }
         private bool _IsReplyClicked;
@@ -120,6 +110,16 @@ namespace Instagram.ViewModels
                 OnPropertyChanged(nameof(IsReplyClicked));
             } 
         }
+        private bool _IsCommentYour;
+        public bool IsCommentYour
+        {
+            get { return _IsCommentYour; }
+            set
+            {
+                _IsCommentYour = value;
+                OnPropertyChanged(nameof(IsCommentYour));
+            }
+        }
         private ObservableCollection<ReplyCommentView> _CommentResponses;
         public ObservableCollection<ReplyCommentView> CommentResponses 
         { 
@@ -130,16 +130,6 @@ namespace Instagram.ViewModels
                 OnPropertyChanged(nameof(CommentResponses));
             }
         }
-        private bool _IsCommentYours;
-        public bool IsCommentYours
-        {
-            get { return _IsCommentYours; }
-            set
-            {
-                _IsCommentYours = value;
-                OnPropertyChanged(nameof(IsCommentYours));
-            }
-        }
         #endregion
         #region Commands
         public ICommand LikeButton { get; set; }
@@ -148,117 +138,120 @@ namespace Instagram.ViewModels
         public ICommand CreateCommentReply { get; set; }
         public ICommand ShowMoreLessButton { get; set; }
         #endregion
-        public CommentViewModel(Comment comment, int userId, InstagramDbContext db)
+        public CommentViewModel(InstagramDbContext db, IAbstractFactory<ReplyCommentView> replyCommentFactory, int commentId)
         {
             #region PrivatePropertiesAssignment
-            _comment = comment;
-            _userId = userId;
+            _commentId = commentId;
             _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
-            _commentResponseRepository = new CommentResponseRepository(db);
-            _userRepository = new UserRepository(db);
+            _commentRepository= new BothCommentsRepository<Comment>(db);
+            _commentResponseRepository = new BothCommentsRepository<CommentResponse>(db);
             _userLikedRepository = new UserLikedRepository(db);
+            _userRepository = new UserRepository(db);
+            _replyCommentFactory = replyCommentFactory;
             #endregion
-            IsCommentYours = comment.AuthorId == userId ? true : false;
-            LoadDataFromDatabaseAsync();
+            GetCommentAndUserAsync();
+            GenerateCommentDataAsync();
             InitResources();
             #region CommandsInstances
-            LikeButton = new LikeCommand(LikedThingsEnum.Comment, userId, comment.Id, UpdateLikesNumber, ChangeIsUserLiked);
+            LikeButton = new LikeCommand(LikedThingsEnum.Comment, _userId, _commentId, UpdateLikes, _userLikedRepository);
             ReplyButton = new ReplyToCommentCommand(ChangeReplyClickedStatus);
             RemoveButton = new RemoveCommentCommand();
             CreateCommentReply = new CreateCommentReplyCommand(CreateNewReplyAsync);
-            ShowMoreLessButton = new ShowMoreLessCommentsCommand(LoadResponsesToCommentAsync, ChangeTheme);
+            ShowMoreLessButton = new ShowMoreLessCommentsCommand(ShowMoreLess);
             #endregion
         }
+
         private void InitResources()
         {
             LikeIconSource = $"{_path}likeIcon.png";
             ReplyIconSource = $"{_path}replyIcon.png";
             RemoveIconSource = $"{_path}trashIcon.png";
-            showMoreIconSource = $"{_path}showMoreIcon.png";
-            showLessIconSource = $"{_path}showLessIcon.png";
+            ShowMoreLessButtonContent = $"{_path}showMoreIcon.png";
         }
-        private async Task GetDarkModeFromJsonFileAsync()
+
+        private async Task GetCommentAndUserAsync()
         {
-            var json = new JSON<UserDataModel>("UserData");
-            _isDarkMode = await json.GetDarkModeAsync();
+            _comment = await _commentRepository.GetCommentWithResponsesAsync(_commentId);
+            _authorUser = await _userRepository.GetUserWithPhotoAndRequestsAsync(_comment.AuthorId);
+            _userId = await GetUser.IdFromFile();
         }
-        public void ChangeTheme()
+
+        private async Task GenerateCommentDataAsync()
         {
-            GetDarkModeFromJsonFileAsync();
-            if (CommentResponses != null)
-            {
-                foreach (var comment in CommentResponses)
-                {
-                    comment.ChangeCommentTheme(_isDarkMode);
-                }
-            }
-        }
-        private async Task LoadResponsesToCommentAsync()
-        {
-            CommentResponses = new ObservableCollection<ReplyCommentView>();
-            if (showMoreCommentResponses && clicked)
-            {
-                ShowMoreLessButtonContent = showLessIconSource;
-                foreach (var commentResponse in _comment.CommentResponses)
-                {
-                    CommentResponses.Add(new ReplyCommentView(commentResponse, _userId));
-                }
-                showMoreCommentResponses = false;
-            }
-            else if(clicked)
-            {
-                showMoreCommentResponses = true;
-                ShowMoreLessButtonContent = showMoreIconSource;
-            }
-            clicked = true;
-        }
-        private async void LoadDataFromDatabaseAsync()
-        {
-            User author = await _userRepository.GetUserWithPhotoAndRequestsAsync(_comment.AuthorId);
-            CommentProfileName = author.Nickname;
-            CommentProfilePhotoSource = ConvertImage.FromByteArray(author.ProfilePhoto.ImageBytes);
+            CommentProfilePhotoSource = ConvertImage.FromByteArray(_authorUser.ProfilePhoto.ImageBytes);
+            CommentProfileName = _authorUser.Nickname;
             CommentText = _comment.Content;
-            PublicationDate = _comment.PublicationDate;
-            UpdateLikesNumber(_comment.Likes);
-            User user = await _userRepository.GetUserWithPhotoAndRequestsAsync(_userId);
-            ReplyProfilePhotoSource = ConvertImage.FromByteArray(user.ProfilePhoto.ImageBytes); ;
             AreAnyComments = _comment.CommentResponses.Count() > 0 ? true : false;
-            ShowMoreLessButtonContent = showMoreIconSource;
-            ChangeIsUserLiked(_userLikedRepository.IsLikedBy(_userId, LikedThingsEnum.Comment, _comment.Id).Result);
+            UpdateLikesNumber(_comment.Likes);
+            IsCommentLiked = await _userLikedRepository.IsLikedBy(_userId, LikedThingsEnum.Comment, _commentId);
+            IsCommentYour = _userId == _comment.AuthorId ? true : false;
+            PublicationDate = _comment.PublicationDate;
         }
+
         public void UpdateLikesNumber(int likesNumber)
         {
             LikesNumber = $"{likesNumber} LIKES";
             _comment.Likes = likesNumber;
         }
-        public void ChangeIsUserLiked(bool isUserLikedCount)
+
+        public void UpdateLikes(bool likedOrRemoved)
         {
-            if (!isUserLikedCount) 
+            if (likedOrRemoved)
             {
-                IsUserLiked = true;
+                IsCommentLiked = true;
+                _comment.Likes += 1;
             }
             else
             {
-                IsUserLiked = false;
+                IsCommentLiked = false;
+                _comment.Likes -= 1;
             }
+            _commentRepository.UpdateCommentAsync(_comment);
+            UpdateLikesNumber(_comment.Likes);
         }
+
         public void ChangeReplyClickedStatus()
         {
             IsReplyClicked ^= true;
         }
+
         public async Task CreateNewReplyAsync()
         {
             CommentResponse commentResponse = new CommentResponse()
             {
                 AuthorId = _userId,
-                Content = _ReplyCommentContent,
+                Content = ReplyCommentContent,
                 Likes = 0,
                 PublicationDate = DateTime.Now
             };
-            await _commentResponseRepository.AddCommentResponseAsync(commentResponse);
-            LoadResponsesToCommentAsync();
-            clicked = false;
+            await _commentResponseRepository.AddCommentAsync(commentResponse);
             ChangeReplyClickedStatus();
+        }
+
+        public void ShowMoreLess()
+        {
+            if (!_areCommentsShown)
+            {
+                ShowMoreLessButtonContent = $"{_path}showLessIcon.png";
+                GenerateResponsesAsync();
+            }
+            else
+            {
+                ShowMoreLessButtonContent = $"{_path}showMoreIcon.png";
+                CommentResponses = new ObservableCollection<ReplyCommentView>();
+            }
+            _areCommentsShown ^= true;
+        }
+
+        private async Task GenerateResponsesAsync() 
+        {
+            CommentResponses = new ObservableCollection<ReplyCommentView>();
+            foreach (var commentResponse in _comment.CommentResponses)
+            {
+                ReplyCommentView replyComment = _replyCommentFactory.Create();
+                replyComment.AddDataContext(commentResponse.Id);
+                CommentResponses.Add(replyComment);
+            }
         }
     }
 }

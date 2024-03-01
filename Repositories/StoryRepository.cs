@@ -1,12 +1,14 @@
 ﻿using Instagram.Databases;
 using Instagram.Interfaces;
 using Instagram.Models;
+using Instagram.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Instagram.Repositories
 {
@@ -19,6 +21,14 @@ namespace Instagram.Repositories
         }
         public async Task<List<Story>> GetAllStoriesAsync()
         {
+            try
+            {
+                await _db.Stories.Include(s => s.Image).ToListAsync();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
             return await _db.Stories.Include(s => s.Image).ToListAsync();
         }
 
@@ -30,25 +40,19 @@ namespace Instagram.Repositories
         public async Task<bool> RemoveStoryAsync(int id)
         {
             await _db.Stories.Where(s => s.Id == id).ExecuteDeleteAsync();
-            return await SaveChangesAsync();
+            return await SaveChanges.SaveAsync(_db);
         }
 
         public async Task<bool> UpdateStoryAsync(Story story)
         {
             _db.Stories.Update(story);
-            return await SaveChangesAsync();
+            return await SaveChanges.SaveAsync(_db);
         }
 
         public async Task<bool> AddStoryAsync(int userId, Story story)
         {
             _db.Users.Where(u => u.Id == userId).Include(u => u.Stories).First().Stories.Add(story);
-            return await SaveChangesAsync();
-        }
-
-        public async Task<bool> SaveChangesAsync()
-        {
-            var save = await _db.SaveChangesAsync();
-            return save > 0 ? true : false;
+            return await SaveChanges.SaveAsync(_db);
         }
     }
 }

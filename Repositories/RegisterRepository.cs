@@ -1,4 +1,5 @@
 ﻿using Instagram.Databases;
+using Instagram.Interfaces;
 using Instagram.Models;
 using Instagram.SendingEmails;
 using Instagram.Services;
@@ -12,20 +13,23 @@ namespace Instagram.Repositories
 {
     public class RegisterRepository
     {
-        private InstagramDbContext _db;
+        private readonly InstagramDbContext _db;
+        private readonly IUserRepository _userRepository;
+
         public RegisterRepository(InstagramDbContext db)
         {
             _db = db;
+            _userRepository = new UserRepository(_db);
         }
-        public bool ValidateData(string firstPassword, string secondPassword, string email, string nickname)
+        public async Task<bool> ValidateData(string firstPassword, string secondPassword, string email, string nickname)
         {
             if (EqualPasswords.Equal(firstPassword, secondPassword))
             {
-                IsInDatabaseRepository isInDatabaseEmail = new IsInDatabaseRepository(_db, email);
-                if (isInDatabaseEmail.CheckRegisterEmail("Email is already used!"))
+                IsInDatabaseRepository isInDatabaseEmail = new IsInDatabaseRepository(_userRepository, email);
+                if (await isInDatabaseEmail.CheckRegisterEmailAsync("Email is already used!"))
                 {
-                    IsInDatabaseRepository isInDatabaseNickname = new IsInDatabaseRepository(_db, nickname);
-                    if (isInDatabaseNickname.CheckRegisterNickname("Nickname is already used!"))
+                    IsInDatabaseRepository isInDatabaseNickname = new IsInDatabaseRepository(_userRepository, nickname);
+                    if (await isInDatabaseNickname.CheckRegisterNicknameAsync("Nickname is already used!"))
                     {
                         return true;
                     }
@@ -33,11 +37,9 @@ namespace Instagram.Repositories
             }
             return false;
         }
-        public void AddUser(User user)
+        public async Task AddUserAsync(User user)
         {
-            _db.Users.Add(user);
-            _db.SaveChangesAsync();
-            _db.DisposeAsync();
+            await _userRepository.AddUserAsync(user);
         }
     }
 }

@@ -4,9 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Instagram.Views"
+             xmlns:c="clr-namespace:Instagram.Conventers"
              mc:Ignorable="d" 
              d:DesignWidth="520">
     <UserControl.Resources>
+        <c:HalfValueConverter x:Key="HalfValueConverter"/>
+        <c:CenterConverter x:Key="CenterConverter"/>
         <Style x:Key="buttonStyle" TargetType="Button">
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Background" Value="Transparent"/>
@@ -52,7 +55,18 @@
                 </Button.Content>
             </Button>
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                <Image Source="{Binding ProfilePhotoSource}"/>
+                <Ellipse Width="42" Height="42" x:Name="ElipsePhoto">
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="{Binding ProfilePhotoSource}"/>
+                    </Ellipse.Fill>
+                    <Ellipse.Clip>
+                        <EllipseGeometry 
+                            RadiusX="{Binding Path=Width, Converter={StaticResource HalfValueConverter}, ElementName=ElipsePhoto}" 
+                            RadiusY="{Binding Path=Height, Converter={StaticResource HalfValueConverter}, ElementName=ElipsePhoto}"
+                            Center="{Binding Path=Width, Converter={StaticResource CenterConverter}, ElementName=ElipsePhoto}">
+                        </EllipseGeometry>
+                    </Ellipse.Clip>
+                </Ellipse>
                 <Label Content="{Binding ProfileName}"/>
             </StackPanel>
         </DockPanel>
@@ -94,7 +108,7 @@
                     </Style.Triggers>
                 </Style>
             </StackPanel.Style>
-            <Image Source="{Binding ProfilePhotoSource}"/>
+            <Image Source="{Binding UserProfilePhotoSource}"/>
             <TextBox Text="{Binding CommentContent, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" TextWrapping="Wrap" Width="350"/>
             <Button Content="CREATE" Command="{Binding CreateComment}" Padding="10" Cursor="Hand">
                 <Button.Style>

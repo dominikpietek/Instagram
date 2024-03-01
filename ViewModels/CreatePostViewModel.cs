@@ -75,41 +75,38 @@ namespace Instagram.ViewModels
         public ICommand OpenImageButton { get; set; }
         #endregion
         #region PrivateProperties
-        private Action _CloseWindow;
+        private readonly Action _CloseWindow;
         private User _user;
-        private Action<bool> _ChangeTheme;
-        private string _path;
-        private InstagramDbContext _db;
-        private IUserRepository _userRepository;
-        private IPostRepository _postRepository;
+        private readonly string _path;
+        private readonly IUserRepository _userRepository;
+        private readonly IPostRepository _postRepository;
         #endregion
-        public CreatePostViewModel(Action CloseWindow, Action<bool> ChangeTheme, InstagramDbContext db)
+        public CreatePostViewModel(Action CloseWindow, InstagramDbContext db)
         {
             #region PrivatePropertiesAssignement
-            _db = db;
-            _userRepository = new UserRepository(_db);
-            _postRepository = new PostRepository(_db);
+            _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
+            _userRepository = new UserRepository(db);
+            _postRepository = new PostRepository(db);
             _CloseWindow = CloseWindow;
-            _user = GetUser.FromDbAndFileAsync(_userRepository).Result;
-            _ChangeTheme = ChangeTheme;
             #endregion
-            InitResourcesAsync();
+            InitUser();
+            InitResources();
             #region CommandsInstances
             SubmitCreatingNewPost = new SubmitCreatingNewPostCommand(CloseWindow, CreatePost);
             OpenImageButton = new OpenImageButtonCommand(OnLoadingImage);
             #endregion
         }
+        private async Task InitUser()
+        {
+            _user = await GetUser.FromDbAndFileAsync(_userRepository);
+        }
         public void CloseWindow()
         {
             _CloseWindow.Invoke();
         }
-        private async Task InitResourcesAsync()
+        private void InitResources()
         {
-            _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
             ImageSource = $"{_path}noImageIcon.png";
-            JSON<UserDataModel> userJSON = new JSON<UserDataModel>("UserData");
-            bool isDarkMode = await userJSON.GetDarkModeAsync();
-            _ChangeTheme(isDarkMode);
         }
         public void OnLoadingImage(string imagePath)
         {
@@ -137,6 +134,7 @@ namespace Instagram.ViewModels
             }
             Post post = new Post()
             {
+                UserId = _user.Id,
                 Description = _Description,
                 Location = _Location,
                 Image = new PostImage() { ImageBytes = ConvertImage.ToByteArray(_ImageSource) },

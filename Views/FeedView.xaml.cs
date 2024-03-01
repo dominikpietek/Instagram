@@ -1,4 +1,5 @@
-﻿using Instagram.Databases;
+﻿using Instagram.Components;
+using Instagram.Databases;
 using Instagram.StartupHelpers;
 using Instagram.ViewModels;
 using System;
@@ -11,17 +12,16 @@ namespace Instagram.Views
         public FeedView(
             InstagramDbContext db, 
             IAbstractFactory<CreateNewPostWindowView> newPostFactory,
-            IAbstractFactory<LoginOrRegisterWindowView> loginFactory)
+            IAbstractFactory<LoginOrRegisterWindowView> loginFactory,
+            IAbstractFactory<HomeUserControl> homeFactory)
         {
             InitializeComponent();
-            DataContext = new FeedViewModel(CloseWindow, MainContainer, this.Resources, newPostFactory, loginFactory, db);
+            DataContext = new FeedViewModel(CloseWindow, MainContainer, this.Resources, newPostFactory, loginFactory, homeFactory, db);
         }
+
         public void CloseWindow()
         {
-            if (this.IsActive)
-            {
-                this.Close();
-            }
+            this.Close();
         }
     }
 }

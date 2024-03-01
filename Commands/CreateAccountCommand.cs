@@ -10,16 +10,16 @@ namespace Instagram.Commands
 {
     public class CreateAccountCommand : CommandBase
     {
-        private Func<bool> _AddingUserToDatabase;
+        private Func<Task<bool>> _AddingUserToDatabase;
         private Action _CloseWindowAndOpenLoginWindow;
-        public CreateAccountCommand(Func<bool> AddingUserToDatabase, Action CloseWindowAndOpenLoginWindow)
+        public CreateAccountCommand(Func<Task<bool>> AddingUserToDatabase, Action CloseWindowAndOpenLoginWindow)
         {
             _AddingUserToDatabase = AddingUserToDatabase;
             _CloseWindowAndOpenLoginWindow = CloseWindowAndOpenLoginWindow;
         }
-        public override void Execute(object parameter)
+        public async override void Execute(object parameter)
         {
-            if (_AddingUserToDatabase.Invoke())
+            if (await _AddingUserToDatabase.Invoke())
             {
                 _CloseWindowAndOpenLoginWindow.Invoke();
             }

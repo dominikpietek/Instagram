@@ -1,6 +1,7 @@
 ﻿using Instagram.Databases;
 using Instagram.Interfaces;
 using Instagram.Models;
+using Instagram.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace Instagram.Repositories
         public async Task<bool> AddAsync(UserIdAbstractModel userIdModel)
         {
             await _base.AddAsync((userIdModel as model)!);
-            return await SaveChangesAsync();
+            return await SaveChanges.SaveAsync(_db);
         }
 
         public async Task<List<int>> GetAllAsync(int userId)
@@ -34,13 +35,7 @@ namespace Instagram.Repositories
         public async Task<bool> RemoveAsync(int id)
         {
             _base.Remove(await _base.FirstAsync(b => b.Id == id));
-            return await SaveChangesAsync();
-        }
-
-        public async Task<bool> SaveChangesAsync()
-        {
-            var save = await _db.SaveChangesAsync();
-            return save > 0 ? true : false;
+            return await SaveChanges.SaveAsync(_db);
         }
     }
 }

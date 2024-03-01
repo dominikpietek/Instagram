@@ -52,7 +52,7 @@ namespace Instagram.Views {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/Instagram;V1.0.0.0;component/views/replycommentview.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Instagram;component/views/replycommentview.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Views\ReplyCommentView.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

@@ -1,4 +1,5 @@
 ﻿using Instagram.Databases;
+using Instagram.Interfaces;
 using Instagram.Models;
 using System;
 using System.Collections.Generic;
@@ -11,21 +12,17 @@ namespace Instagram.Commands
 {
     public class DeletePostCommand : CommandBase
     {
-        private Post _post;
-        private Func<Task> _ShowPosts;
-        public DeletePostCommand(Post post, Func<Task> ShowPosts)
+        private readonly int _postId;
+        private readonly IPostRepository _postRepository;
+        public DeletePostCommand(int postId, IPostRepository postRepository)
         {
-            _post = post;
-            _ShowPosts = ShowPosts;
+            _postId = postId;
+            _postRepository = postRepository;
         }
-        public override void Execute(object parameter)
+        public override async void Execute(object parameter)
         {
-            //using(var db = new InstagramDbContext())
-            //{
-            //    db.Posts.Remove(_post);
-            //    db.SaveChanges();
-            //    _ShowPosts.Invoke();
-            //}
+            await _postRepository.RemovePostByIdAsync(_postId);
+            // refresh posts
         }
     }
 }
