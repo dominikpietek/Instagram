@@ -161,6 +161,7 @@ namespace Instagram.ViewModels
         #endregion
         #region PrivateProperties
         private Post _post;
+        private readonly Action _ChangeHomeTheme;
         private readonly IAbstractFactory<CommentView> _commentFactory;
         private readonly IPostRepository _postRepository;
         private readonly IUserRepository _userRepository;
@@ -169,7 +170,7 @@ namespace Instagram.ViewModels
         private readonly int _postId;
         private int _userId;
         #endregion
-        public PostViewModel(InstagramDbContext db, IAbstractFactory<CommentView> commentFactory, int postId)
+        public PostViewModel(InstagramDbContext db, IAbstractFactory<CommentView> commentFactory, int postId, Action ChangeHomeTheme)
         {
             #region PrivatePropertiesAssignment
             _postId = postId;
@@ -178,7 +179,8 @@ namespace Instagram.ViewModels
             _userLikedRepository = new UserLikedRepository(db);
             _commentRepository = new BothCommentsRepository<Comment>(db);
             _userRepository = new UserRepository(db);
-;            _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
+            _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
+            _ChangeHomeTheme = ChangeHomeTheme;
             #endregion
             GetPost();
             GeneratePostData();
@@ -229,10 +231,11 @@ namespace Instagram.ViewModels
 
         private void GenerateComments()
         {
+            Action ChangeTheme = _ChangeHomeTheme;
             foreach (Comment comment in _post.Comments)
             {
                 CommentView commentView = _commentFactory.Create();
-                commentView.AddDataContext(comment.Id);
+                commentView.AddDataContext(comment.Id, ChangeTheme);
                 CommentsSection.Add(commentView);
             }
         }
@@ -256,6 +259,7 @@ namespace Instagram.ViewModels
         public void ShowMoreLessCommentsChange()
         {
             ShowMoreComments ^= true;
+            _ChangeHomeTheme.Invoke();
         }
 
         public void UpdateCommentsNumber(int commentsNumber)

@@ -16,7 +16,7 @@ namespace Instagram.Components
         public HomeUserControl(InstagramDbContext db, IAbstractFactory<PostView> postFactory)
         {
             ChangeHomeTheme();
-            DataContext = new HomeViewModel(db, postFactory);
+            DataContext = new HomeViewModel(db, postFactory, ChangeHomeTheme);
             InitializeComponent();
         }
 

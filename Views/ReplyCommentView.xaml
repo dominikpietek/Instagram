@@ -33,7 +33,7 @@
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
         <Border Margin="23 0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" BorderThickness="4" BorderBrush="Black"/>
-        <Image Source="{Binding CommentProfilePhotoSource}" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Stretch="Fill"/>
+        <Image Source="{Binding CommentProfilePhotoSource}" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Stretch="Uniform"/>
         <DockPanel Grid.Row="0" Grid.Column="2">
             <Label Content="{Binding CommentProfileName}" DockPanel.Dock="Left"/>
             <Button Width="60" Command="{Binding RemoveButton}" Padding="5">

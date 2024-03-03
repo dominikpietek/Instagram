@@ -102,7 +102,6 @@ C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\ResourceDictionaries\Da
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\ResourceDictionaries\BrightModeDictionary.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\ResourceDictionaries\ButtonValidationDictionary.baml
 C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\Instagram.dll.config
-C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\ResourceDictionaries\DarkModeHomeDictionary.baml
 C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\Microsoft.Extensions.Configuration.dll
 C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\Microsoft.Extensions.Configuration.Binder.dll
 C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\Microsoft.Extensions.Configuration.CommandLine.dll

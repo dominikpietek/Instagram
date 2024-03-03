@@ -56,7 +56,9 @@
             </Button>
             <Label Content="{Binding CommentProfileName}" DockPanel.Dock="Left"/>
         </DockPanel>
-        <TextBlock Text="{Binding CommentText}" Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Padding="5" TextWrapping="Wrap"/>
+        <StackPanel Grid.Row="1" Grid.Column="1" Grid.RowSpan="2">
+            <TextBlock Text="{Binding CommentText}" TextWrapping="Wrap" Padding="5" />
+        </StackPanel>
         <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
             <Label Content="{Binding PublicationDate}" Margin="0 0 20 0"/>
             <Label Content="{Binding LikesNumber, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 20 0"/>
@@ -89,7 +91,7 @@
                     <Style TargetType="Button">
                         <Setter Property="IsEnabled" Value="True"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding CreateComment}" Value="">
+                            <DataTrigger Binding="{Binding CreateComment}" Value="True">
                                 <Setter Property="IsEnabled" Value="False"/>
                             </DataTrigger>
                         </Style.Triggers>

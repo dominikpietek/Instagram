@@ -40,6 +40,7 @@ namespace Instagram.ViewModels
         #region PrivateProperties
         private Comment _comment;
         private User _authorUser;
+        private readonly Action _ChangeHomeTheme;
         private readonly IBothCommentsRepository<CommentResponse> _commentResponseRepository;
         private readonly IBothCommentsRepository<Comment> _commentRepository;
         private readonly IUserLikedRepository _userLikedRepository;
@@ -138,7 +139,7 @@ namespace Instagram.ViewModels
         public ICommand CreateCommentReply { get; set; }
         public ICommand ShowMoreLessButton { get; set; }
         #endregion
-        public CommentViewModel(InstagramDbContext db, IAbstractFactory<ReplyCommentView> replyCommentFactory, int commentId)
+        public CommentViewModel(InstagramDbContext db, IAbstractFactory<ReplyCommentView> replyCommentFactory, int commentId, Action ChangeHomeTheme)
         {
             #region PrivatePropertiesAssignment
             _commentId = commentId;
@@ -148,6 +149,7 @@ namespace Instagram.ViewModels
             _userLikedRepository = new UserLikedRepository(db);
             _userRepository = new UserRepository(db);
             _replyCommentFactory = replyCommentFactory;
+            _ChangeHomeTheme = ChangeHomeTheme;
             #endregion
             GetCommentAndUserAsync();
             GenerateCommentDataAsync();
@@ -241,6 +243,7 @@ namespace Instagram.ViewModels
                 CommentResponses = new ObservableCollection<ReplyCommentView>();
             }
             _areCommentsShown ^= true;
+            _ChangeHomeTheme.Invoke();
         }
 
         private async Task GenerateResponsesAsync() 

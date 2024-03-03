@@ -1,7 +1,9 @@
 ﻿using Instagram.Databases;
 using Instagram.Models;
+using Instagram.Services;
 using Instagram.StartupHelpers;
 using Instagram.ViewModels;
+using System;
 using System.Windows.Controls;
 
 namespace Instagram.Views
@@ -17,9 +19,9 @@ namespace Instagram.Views
             _db = db;
             _replyCommentFactory = replyCommentFactory;
         }
-        public void AddDataContext(int id)
+        public void AddDataContext(int id, Action ChangeHomeTheme)
         {
-            DataContext = new CommentViewModel(_db, _replyCommentFactory, id);
+            DataContext = new CommentViewModel(_db, _replyCommentFactory, id, ChangeHomeTheme);
         }
     }
 }
