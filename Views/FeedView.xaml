@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:c="clr-namespace:Instagram.Conventers"
         mc:Ignorable="d"
-        Title="FeedView" 
+        Title="Instagram" 
         Height="800" Width="840"
         MinHeight="800" MinWidth="840">
     <Window.Resources>

@@ -1,5 +1,6 @@
 ﻿using Instagram.Commands;
 using Instagram.Components;
+using Instagram.ComponentsViewModels;
 using Instagram.Databases;
 using Instagram.DTOs;
 using Instagram.Interfaces;
@@ -158,7 +159,7 @@ namespace Instagram.ViewModels
             _homeFactory = homeFactory;
             #endregion
             #region CommandsInstances
-            CreateNewPost = new CreateNewPostOpenWindowCommand(_newPostFactory);
+            CreateNewPost = new CreateNewPostOpenWindowCommand(_newPostFactory, UpdatePosts);
             LogoutButton = new LogoutCommand(CloseWindow, _loginFactory);
             HomeButton = new ChangeMainContainerContentCommand(ShowPosts);
             MessengerButton = new ChangeMainContainerContentCommand(ShowMessenger);
@@ -227,21 +228,27 @@ namespace Instagram.ViewModels
             }
         }
 
-        private void ShowPosts()
+        public async Task UpdatePosts()
+        {
+            HomeViewModel view = (HomeViewModel)_homeUserControl.DataContext!;
+            await view.ShowPosts();
+        }
+
+        public void ShowPosts()
         {
             _homeUserControl = _homeFactory.Create();
             ShowSomethingInMainBox(_homeUserControl);
             _isHomeUCCreated = true;
         }
 
-        private void ShowProfile()
+        public void ShowProfile()
         {
             _profileUserControl = new ProfileUserControl();
             ShowSomethingInMainBox(_profileUserControl);
             _isProfileUCCreated = true;
         }
 
-        private void ShowMessenger()
+        public void ShowMessenger()
         {
             _messengerUserControl = new MessengerUserControl(_user.Id);
             ShowSomethingInMainBox(_messengerUserControl);

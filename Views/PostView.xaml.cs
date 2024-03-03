@@ -19,9 +19,9 @@ namespace Instagram.Views
             _db = db;
             _commentFactory = commentFactory;
         }
-        public void AddDataContext(int id, Action ChangeHomeTheme)
+        public void AddDataContext(int id, Action ChangeHomeTheme, Func<Task> ShowPosts)
         {
-            DataContext = new PostViewModel(_db, _commentFactory, id, ChangeHomeTheme);
+            DataContext = new PostViewModel(_db, _commentFactory, id, ChangeHomeTheme, ShowPosts);
         }
     }
 }

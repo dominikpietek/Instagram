@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Instagram.Views"
         xmlns:validations="clr-namespace:Instagram.Validations"
         mc:Ignorable="d"
-        Title="CreateNewPostWindowView" Width="310" Height="800">
+        Title="Instagram" Width="310" Height="800">
     <Window.Resources>
         <ControlTemplate x:Key="validationTemplate">
             <StackPanel>

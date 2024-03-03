@@ -69,7 +69,7 @@ namespace Instagram.ComponentsViewModels
             foreach (Post post in posts.Take(_loadedPosts))
             {
                 PostView postView = _postFactory.Create();
-                postView.AddDataContext(post.Id, _ChangeHomeTheme);
+                postView.AddDataContext(post.Id, _ChangeHomeTheme, ShowPosts);
                 HomeSource.Add(postView);
             }
             IsThereMorePosts = posts.Count() <= _loadedPosts ? false : true;

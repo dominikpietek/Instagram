@@ -7,7 +7,7 @@
         xmlns:validations="clr-namespace:Instagram.Validations"
         xmlns:components="clr-namespace:Instagram.Components"
         mc:Ignorable="d"
-        Title="CreateAccountWindowView" Height="820" Width="300" ResizeMode="NoResize">
+        Title="Instagram" Height="820" Width="300" ResizeMode="NoResize">
     <Window.Resources>
         <ControlTemplate x:Key="validationTemplate">
             <StackPanel>

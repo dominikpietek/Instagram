@@ -125,7 +125,7 @@ namespace Instagram.ViewModels
             }
             return tagList;
         }
-        public bool CreatePost()
+        public async Task<bool> CreatePost()
         {
             if (ImageSource.Equals($"{_path}noImageIcon.png"))
             {
@@ -141,7 +141,7 @@ namespace Instagram.ViewModels
                 PublicationDate = DateTime.Now,
                 Tags = ModifyTagsStringToList()
             };
-            _postRepository.AddPostAsync(post);
+            await _postRepository.AddPostAsync(post);
             return true;
         }
     }

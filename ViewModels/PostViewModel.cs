@@ -170,7 +170,7 @@ namespace Instagram.ViewModels
         private readonly int _postId;
         private int _userId;
         #endregion
-        public PostViewModel(InstagramDbContext db, IAbstractFactory<CommentView> commentFactory, int postId, Action ChangeHomeTheme)
+        public PostViewModel(InstagramDbContext db, IAbstractFactory<CommentView> commentFactory, int postId, Action ChangeHomeTheme, Func<Task> ShowPosts)
         {
             #region PrivatePropertiesAssignment
             _postId = postId;
@@ -192,7 +192,7 @@ namespace Instagram.ViewModels
             CommentButton = new CommentButtonCommand(UpdateIsCommentClickedToCreateValue);
             CreateComment = new CommentCreateCommand(CreateNewCommentAsync);
             MessageButton = new OpenCommunicatorWindowCommand();
-            DeletePost = new DeletePostCommand(_postId, _postRepository);
+            DeletePost = new DeletePostCommand(_postId, _postRepository, ShowPosts);
             #endregion
             InitResources();
         }

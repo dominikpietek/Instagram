@@ -14,15 +14,18 @@ namespace Instagram.Commands
     {
         private readonly int _postId;
         private readonly IPostRepository _postRepository;
-        public DeletePostCommand(int postId, IPostRepository postRepository)
+        private readonly Func<Task> _ShowPosts;
+
+        public DeletePostCommand(int postId, IPostRepository postRepository, Func<Task> ShowPosts)
         {
             _postId = postId;
             _postRepository = postRepository;
+            _ShowPosts = ShowPosts;
         }
         public override async void Execute(object parameter)
         {
             await _postRepository.RemovePostByIdAsync(_postId);
-            // refresh posts
+            await _ShowPosts.Invoke();
         }
     }
 }
