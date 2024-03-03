@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Instagram.Commands
 {
-    public class LoadMoreButton : CommandBase
+    public class LoadMoreCommand : CommandBase
     {
         private readonly Action _LoadMorePosts;
 
-        public LoadMoreButton(Action LoadMorePosts)
+        public LoadMoreCommand(Action LoadMorePosts)
         {
             _LoadMorePosts = LoadMorePosts;
         }

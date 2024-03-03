@@ -5,6 +5,7 @@ using Instagram.Interfaces;
 using Instagram.Models;
 using Instagram.Repositories;
 using Instagram.StartupHelpers;
+using Instagram.ViewModels;
 using Instagram.Views;
 using System;
 using System.Collections.Generic;
@@ -13,61 +14,63 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Instagram.ComponentsViewModels
 {
-    public class HomeViewModel : DependencyObject
+    public class HomeViewModel : ViewModelBase
     {
         #region Commands
         public ICommand LoadMoreButton { get; set; }
         #endregion
         #region PrivateProperties
         private readonly IPostRepository _postRepository;
-        private int _loadedPosts = 1;
-        private ObservableCollection<PostView> _posts = new ObservableCollection<PostView>();
+        private int _loadedPosts = 5;
         private IAbstractFactory<PostView> _postFactory;
         #endregion
-        #region DependencyProperty
-        public static DependencyProperty HomeSourceProperty =
-            DependencyProperty.Register(
-                "HomeSource",
-                typeof(ObservableCollection<PostView>),
-                typeof(HomeUserControl),
-                new PropertyMetadata(new ObservableCollection<PostView>()));
-        public ObservableCollection<PostView> HomeSource
-        {
-            get { return (ObservableCollection<PostView>)GetValue(HomeSourceProperty); }
-            set { SetValue(HomeSourceProperty, value); }
+        #region OnPropertyChangedProperties
+        private ObservableCollection<PostView> _HomeSource;
+        public ObservableCollection<PostView> HomeSource 
+        { 
+            get { return _HomeSource; }
+            set
+            {
+                _HomeSource = value;
+                OnPropertyChanged(nameof(HomeSource));
+            }
         }
-        public static DependencyProperty IsThereMorePostsProperty =
-            DependencyProperty.Register("IsThereMorePosts", typeof(bool), typeof(HomeUserControl), new PropertyMetadata(false));
+        private bool _IsThereMorePosts;
         public bool IsThereMorePosts
         {
-            get { return (bool)GetValue(IsThereMorePostsProperty); }
-            set { SetValue(IsThereMorePostsProperty, value); }
+            get { return _IsThereMorePosts; }
+            set 
+            {
+                _IsThereMorePosts = value;
+                OnPropertyChanged(nameof(IsThereMorePosts));
+            }
         }
         #endregion
         public HomeViewModel(InstagramDbContext db, IAbstractFactory<PostView> postFactory)
         {
             _postRepository = new PostRepository(db);
-            LoadMoreButton = new LoadMoreButton(LoadMorePosts);
+            LoadMoreButton = new LoadMoreCommand(LoadMorePosts);
             _postFactory = postFactory;
             ShowPosts();
-            HomeSource = _posts;
-            IsThereMorePosts = _posts.Count() <= _loadedPosts ? false : true;
         }
 
         public async Task ShowPosts()
         {
             List<Post> posts = await _postRepository.GetAllPostsWithAllDataToShowAsync();
+            HomeSource = new ObservableCollection<PostView>();
             posts.Reverse();
             foreach (Post post in posts.Take(_loadedPosts))
             {
                 PostView postView = _postFactory.Create();
                 postView.AddDataContext(post.Id);
-                _posts.Add(postView);
+                HomeSource.Add(postView);
             }
+            IsThereMorePosts = posts.Count() <= _loadedPosts ? false : true;
         }
 
         public void LoadMorePosts()
