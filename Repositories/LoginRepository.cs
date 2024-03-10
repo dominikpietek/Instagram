@@ -58,12 +58,12 @@ namespace Instagram.Repositories
             {
                 userJSONModel.RememberedEmailNickname = emailNickname;
                 userJSONModel.LastLogin = DateTime.Now;
-                userJSONModel.UserId = userId;
             }
             else
             {
                 userJSONModel.RememberedEmailNickname = string.Empty;
             }
+            userJSONModel.UserId = userId;
             await userJSON.SaveAsync(userJSONModel);
         }
 

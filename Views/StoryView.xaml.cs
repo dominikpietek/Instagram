@@ -1,4 +1,7 @@
-﻿using Instagram.Models;
+﻿using Instagram.Databases;
+using Instagram.Services;
+using Instagram.StartupHelpers;
+using Instagram.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,19 +14,25 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Instagram.Views
 {
-    /// <summary>
-    /// Interaction logic for StoryView.xaml
-    /// </summary>
-    public partial class StoryView : UserControl
+    public partial class StoryView : Window
     {
-        public StoryView(Story story)
+        private readonly InstagramDbContext _db;
+        private readonly IAbstractFactory<CreateNewStoryView> _storyFactory;
+
+        public StoryView(InstagramDbContext db, IAbstractFactory<CreateNewStoryView> storyFactory)
         {
             InitializeComponent();
+            ChangeTheme.ChangeAsync(this.Resources);
+            _db = db;
+            _storyFactory = storyFactory;
+        }
+        public void SetDataContext(List<int> storyIds, int authorId)
+        {
+            this.DataContext = new StoryViewModel(_db, storyIds, _storyFactory, authorId);
         }
     }
 }

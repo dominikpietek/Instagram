@@ -23,7 +23,7 @@ namespace Instagram.Repositories
         {
             try
             {
-                await _db.Stories.Include(s => s.Image).ToListAsync();
+                return _db.Stories.AsEnumerable().TakeWhile(s => (DateTime.Now - (DateTime)s.PublicationDate).Hours <= 24).ToList();
             }
             catch (Exception e)
             {
@@ -34,7 +34,16 @@ namespace Instagram.Repositories
 
         public async Task<Story> GetStoryAsync(int id)
         {
-            return await _db.Stories.Where(s => s.Id == id).Include(s => s.Image).FirstAsync();
+            try
+            {
+                return await _db.Stories.Where(s => s.Id == id).Include(s => s.Image).Include(s => s.User).FirstAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
         }
 
         public async Task<bool> RemoveStoryAsync(int id)

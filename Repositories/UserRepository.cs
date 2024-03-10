@@ -34,6 +34,8 @@ namespace Instagram.Repositories
                 .Include(u => u.ProfilePhoto)
                 .Include(u => u.GotFriendRequests)
                 .Include(u => u.SentFriendRequests)
+                .Include(u => u.Stories)
+                .ThenInclude(s => s.Image)
                 .First();
         }
 

@@ -56,7 +56,6 @@ C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FeedView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\LoginOrRegisterWindowView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\PostView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\ReplyCommentView.g.cs
-C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\StoryView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\App.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\GeneratedInternalTypeHelper.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Instagram_MarkupCompile.cache
@@ -69,7 +68,6 @@ C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\CreateNewPostWind
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FeedView.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\LoginOrRegisterWindowView.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\PostView.baml
-C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\StoryView.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Instagram.g.resources
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Instagram.GeneratedMSBuildEditorConfig.editorconfig
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Instagram.AssemblyInfoInputs.cache
@@ -127,3 +125,9 @@ C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\System.Diagnostics.Even
 C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\runtimes\win\lib\net6.0\System.Diagnostics.EventLog.Messages.dll
 C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\runtimes\win\lib\net6.0\System.Diagnostics.EventLog.dll
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Instagram.sourcelink.json
+C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\StoryUserView.g.cs
+C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\StoryUserView.baml
+C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\CreateNewStoryView.g.cs
+C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\StoryView.g.cs
+C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\CreateNewStoryView.baml
+C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\StoryView.baml

@@ -28,6 +28,9 @@
     <Compile Update="Views\CreateNewPostWindowView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\CreateNewStoryView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\FeedView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -44,6 +47,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\PostView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\StoryUserView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\StoryView.xaml.cs">
@@ -84,6 +90,9 @@
     <Page Update="Views\CreateNewPostWindowView.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\CreateNewStoryView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\FeedView.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -100,6 +109,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\PostView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\StoryUserView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\StoryView.xaml">

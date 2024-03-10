@@ -15,7 +15,7 @@
         <Style TargetType="Button" x:Key="redButton" BasedOn="{StaticResource buttonStyle}">
             <Setter Property="Background" Value="Transparent"/>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsCommentLiked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Value="False">
+                <DataTrigger Binding="{Binding IsCommentLiked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Value="True">
                     <Setter Property="Background" Value="#FF7F7F"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -86,18 +86,7 @@
             </StackPanel.Style>
             <Image Source="{Binding ReplyProfilePhotoSource}"/>
             <TextBox Text="{Binding ReplyCommentContent, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" TextWrapping="Wrap" Width="280"/>
-            <Button Content="CREATE" Command="{Binding CreateCommentReply}" Padding="10">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="IsEnabled" Value="True"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding CreateComment}" Value="True">
-                                <Setter Property="IsEnabled" Value="False"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
+            <Button Content="CREATE" Command="{Binding CreateCommentReply}" Padding="10" Cursor="Hand"/>
         </StackPanel>
         <ItemsControl Grid.Column="1" Grid.Row="5" ItemsSource="{Binding CommentResponses, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
         <Button Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="6" Height="40" Command="{Binding ShowMoreLessButton}" Padding="10">

@@ -40,6 +40,7 @@ namespace Instagram.ViewModels
         #region PrivateProperties
         private Comment _comment;
         private User _authorUser;
+        private User _user;
         private readonly Action _ChangeHomeTheme;
         private readonly IBothCommentsRepository<CommentResponse> _commentResponseRepository;
         private readonly IBothCommentsRepository<Comment> _commentRepository;
@@ -51,6 +52,16 @@ namespace Instagram.ViewModels
         private int _commentId;
         #endregion
         #region OnPropertyChangeProperties
+        private BitmapImage _ReplyProfilePhotoSource;
+        public BitmapImage ReplyProfilePhotoSource
+        {
+            get { return _ReplyProfilePhotoSource; }
+            set
+            {
+                _ReplyProfilePhotoSource = value;
+                OnPropertyChanged(nameof(ReplyProfilePhotoSource));
+            }
+        }
         private string _ReplyCommentContent;
         public string ReplyCommentContent
         {
@@ -176,6 +187,7 @@ namespace Instagram.ViewModels
             _comment = await _commentRepository.GetCommentWithResponsesAsync(_commentId);
             _authorUser = await _userRepository.GetUserWithPhotoAndRequestsAsync(_comment.AuthorId);
             _userId = await GetUser.IdFromFile();
+            _user = await _userRepository.GetUserWithPhotoAndRequestsAsync(_userId);   
         }
 
         private async Task GenerateCommentDataAsync()
@@ -188,6 +200,7 @@ namespace Instagram.ViewModels
             IsCommentLiked = await _userLikedRepository.IsLikedBy(_userId, LikedThingsEnum.Comment, _commentId);
             IsCommentYour = _userId == _comment.AuthorId ? true : false;
             PublicationDate = _comment.PublicationDate;
+            ReplyProfilePhotoSource = ConvertImage.FromByteArray(_user.ProfilePhoto.ImageBytes);
         }
 
         public void UpdateLikesNumber(int likesNumber)
@@ -223,7 +236,7 @@ namespace Instagram.ViewModels
             {
                 AuthorId = _userId,
                 Content = ReplyCommentContent,
-                Likes = 0,
+                CommentId = _comment.Id,
                 PublicationDate = DateTime.Now
             };
             await _commentResponseRepository.AddCommentAsync(commentResponse);

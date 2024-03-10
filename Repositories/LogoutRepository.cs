@@ -18,6 +18,7 @@ namespace Instagram.Repositories
             JSON<UserDataModel> userJSON = new JSON<UserDataModel>("UserData");
             UserDataModel userJSONModel = await userJSON.GetAsync<UserDataModel>();
             userJSONModel.LastLogin = DateTime.MinValue;
+            userJSONModel.UserId = 0;
             await userJSON.SaveAsync(userJSONModel);
         }
         public void CloseWindowAndShowStartUpWindow(Action CloseWindow, IAbstractFactory<LoginOrRegisterWindowView> loginFactory)

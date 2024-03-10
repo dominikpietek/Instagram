@@ -1,12 +1,66 @@
-﻿<UserControl x:Class="Instagram.Views.StoryView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Instagram.Views"
-             mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="100">
+﻿<Window x:Class="Instagram.Views.StoryView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Instagram.Views"
+        mc:Ignorable="d"
+        Title="Instagram Story" Width="520">
+    <Window.Resources>
+        <Style TargetType="Button" x:Key="buttonStyle">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Visibility" Value="Visible"/>
+        </Style>
+    </Window.Resources>
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Grid.Row="0">
+            <Label Content="{Binding Nickname}"/>
+            <Separator/>
+            <Label Content="{Binding PublicationDate}"/>
+        </StackPanel>
+        <ProgressBar Grid.Row="1" Value="{Binding StoryIndex}" Maximum="{Binding HowManyStories}" Foreground="#000099"/>
+        <Image Source="{Binding ImageSource}" Stretch="Fill" Grid.Row="2"/>
+        <StackPanel Grid.Row="2" Height="30" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right">
+            <StackPanel.Style>
+                <Style TargetType="StackPanel">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Value="False" Binding="{Binding IsUserAuthor}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Style>
+            <Button Width="30" Height="30" Style="{StaticResource buttonStyle}" Command="{Binding AddStoryButton}">
+                <Button.Content>
+                    <Image Source="{Binding PlusIcon}"/>
+                </Button.Content>
+            </Button>
+            <Button Width="30" Height="30" Style="{StaticResource buttonStyle}" Command="{Binding DeleteStoryButton}">
+                <Button.Content>
+                    <Image Source="{Binding TrashIcon}"/>
+                </Button.Content>
+            </Button>
+        </StackPanel>
+        <StackPanel Grid.Row="3" Orientation="Horizontal">
+            <Button Command="{Binding LeftArrowButton}" Width="260" Height="50" Style="{StaticResource buttonStyle}">
+                <Button.Content>
+                    <Image Source="{Binding LeftArrowIcon}"/>
+                </Button.Content>
+            </Button>
+            <Button Command="{Binding RightArrowButton}" Width="260" Height="50" Style="{StaticResource buttonStyle}">
+                <Button.Content>
+                    <Image Source="{Binding RightArrowIcon}"/>
+                </Button.Content>
+            </Button>
+        </StackPanel>
     </Grid>
-</UserControl>
+</Window>

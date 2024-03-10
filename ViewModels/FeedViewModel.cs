@@ -104,8 +104,8 @@ namespace Instagram.ViewModels
                 OnPropertyChanged(nameof(MaybeFriendsSection));
             }
         }
-        private ObservableCollection<StoryView> _StoriesSection;
-        public ObservableCollection<StoryView> StoriesSection 
+        private ObservableCollection<StoryUserView> _StoriesSection;
+        public ObservableCollection<StoryUserView> StoriesSection 
         {
             get { return _StoriesSection; }
             set
@@ -127,6 +127,7 @@ namespace Instagram.ViewModels
         private ResourceDictionary _resources;
         private IAbstractFactory<CreateNewPostWindowView> _newPostFactory;
         private IAbstractFactory<LoginOrRegisterWindowView> _loginFactory;
+        private IAbstractFactory<StoryUserView> _storyFactory;
         private InstagramDbContext _db;
         private IUserRepository _userRepository;
         private IStoryRepository _storyRepository;
@@ -142,6 +143,7 @@ namespace Instagram.ViewModels
             IAbstractFactory<CreateNewPostWindowView> newPostFactory,
             IAbstractFactory<LoginOrRegisterWindowView> loginFactory,
             IAbstractFactory<HomeUserControl> homeFactory,
+            IAbstractFactory<StoryUserView> storyFactory,
             InstagramDbContext db)
         {
             #region PrivatePropertiesAssignment
@@ -157,6 +159,7 @@ namespace Instagram.ViewModels
             _newPostFactory = newPostFactory;
             _loginFactory = loginFactory;
             _homeFactory = homeFactory;
+            _storyFactory = storyFactory;
             #endregion
             #region CommandsInstances
             CreateNewPost = new CreateNewPostOpenWindowCommand(_newPostFactory, UpdatePosts);
@@ -209,7 +212,7 @@ namespace Instagram.ViewModels
         {
             ProfilePhotoSource = ConvertImage.FromByteArray(_user.ProfilePhoto.ImageBytes);
             LoadFriendRequestAsync(_user.Id);
-            //await ShowStoriesAsync();
+            await ShowStoriesAsync();
         }
 
         private void ShowSomethingInMainBox(UserControl userControl)
@@ -220,12 +223,28 @@ namespace Instagram.ViewModels
 
         private async Task ShowStoriesAsync()
         {
-            StoriesSection = new ObservableCollection<StoryView>();
-            var stories = await _storyRepository.GetAllStoriesAsync();
-            foreach (var story in stories)
+            StoriesSection = new ObservableCollection<StoryUserView>();
+            List<Story> stories = await _storyRepository.GetAllStoriesAsync();
+            var groupedStories = stories.Where(s => s.UserId != _user.Id).GroupBy(s => s.UserId, s => s.Id, (key, ids) => new { UserId = key, Ids = ids.ToList() });
+            var userStory = _storyFactory.Create();
+            userStory.SetDataContext(ReturnUserStories(), _user.Id);
+            StoriesSection.Add(userStory);
+            foreach (var story in groupedStories)
             {
-                StoriesSection.Add(new StoryView(story));
+                var storyBase = _storyFactory.Create();
+                storyBase.SetDataContext(story.Ids, story.UserId);
+                StoriesSection.Add(storyBase);
             }
+        }
+
+        private List<int> ReturnUserStories()
+        {
+            List<int> storyIds = new List<int>();
+            foreach (Story story in _user.Stories)
+            {
+                storyIds.Add(story.Id);
+            }
+            return storyIds;
         }
 
         public async Task UpdatePosts()
