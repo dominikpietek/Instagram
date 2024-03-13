@@ -23,7 +23,7 @@ namespace Instagram.Repositories
         {
             try
             {
-                return _db.Stories.AsEnumerable().TakeWhile(s => (DateTime.Now - (DateTime)s.PublicationDate).Hours <= 24).ToList();
+                return _db.Stories.AsEnumerable().Where(s => s.PublicationDate.AddHours(24) > DateTime.Now).ToList();
             }
             catch (Exception e)
             {

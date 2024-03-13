@@ -27,7 +27,7 @@
             </Button.Style>
             <Button.Content>
                 <Grid>
-                    <Ellipse Width="70" Height="70" x:Name="ElipsePhotoStory" >
+                    <Ellipse Width="70" Height="70" x:Name="ElipsePhotoStory">
                         <Ellipse.Fill>
                             <ImageBrush ImageSource="{Binding ProfilePhotoSource}"/>
                         </Ellipse.Fill>

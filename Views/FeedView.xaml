@@ -133,7 +133,7 @@
             </ItemsControl>
         </ScrollViewer>
         <ScrollViewer Grid.Row="4" Grid.Column="1" Grid.RowSpan="2">
-            <StackPanel x:Name="MainContainer" Background="White"/>
+            <StackPanel x:Name="MainContainer"/>
         </ScrollViewer>
         <StackPanel Orientation="Vertical" Grid.Row="2" Grid.Column="2" Grid.RowSpan="3">
             <Label Content="{Binding FriendRequestMessage, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>

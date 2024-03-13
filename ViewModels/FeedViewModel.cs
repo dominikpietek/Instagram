@@ -232,7 +232,7 @@ namespace Instagram.ViewModels
         {
             StoriesSection = new ObservableCollection<StoryUserView>();
             List<Story> stories = await _storyRepository.GetAllStoriesAsync();
-            var groupedStories = stories.Where(s => (s.UserId != _user.Id && s.PublicationDate.AddHours(24) > DateTime.Now)).GroupBy(s => s.UserId, s => s.Id, (key, ids) => new { UserId = key, Ids = ids.ToList() });
+            var groupedStories = stories.Where(s => s.UserId != _user.Id).GroupBy(s => s.UserId, s => s.Id, (key, ids) => new { UserId = key, Ids = ids.ToList() });
             CreateStoryFromDb(ReturnUserStories(), _user.Id);
             foreach (var story in groupedStories)
             {
@@ -245,7 +245,10 @@ namespace Instagram.ViewModels
             List<int> storyIds = new List<int>();
             foreach (Story story in _user.Stories)
             {
-                storyIds.Add(story.Id);
+                if (story.PublicationDate.AddHours(24) > DateTime.Now)
+                {
+                    storyIds.Add(story.Id);
+                }
             }
             return storyIds;
         }

@@ -16,9 +16,6 @@
     <Style TargetType="Button">
         <Setter Property="Background" Value="#CBC8CC"/>
     </Style>
-    <Style TargetType="ItemsControl">
-        <Setter Property="Background" Value="#606469"/>
-    </Style>
     <Style TargetType="Menu">
         <Setter Property="Background" Value="#CBC8CC"/>
     </Style>

@@ -30,7 +30,6 @@ namespace Instagram.Views
             _db = db;
             _storyFactory = storyFactory;
             _createStoryFactory = createStoryFactory;
-            ChangeTheme.ChangeAsync(this.Resources);
             InitializeComponent();
         }
 
