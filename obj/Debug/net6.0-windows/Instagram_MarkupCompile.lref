@@ -10,13 +10,14 @@ FC:\Programs\Instagram\Instagram\Themes\Generic.xaml;;
 FC:\Programs\Instagram\Instagram\Views\CommentView.xaml;;
 FC:\Programs\Instagram\Instagram\Views\CreateAccountWindowView.xaml;;
 FC:\Programs\Instagram\Instagram\Views\CreateNewPostWindowView.xaml;;
+FC:\Programs\Instagram\Instagram\Views\CreateNewStoryView.xaml;;
 FC:\Programs\Instagram\Instagram\Views\FeedView.xaml;;
 FC:\Programs\Instagram\Instagram\Views\FriendInMessengerView.xaml;;
 FC:\Programs\Instagram\Instagram\Views\FriendRequestView.xaml;;
 FC:\Programs\Instagram\Instagram\Views\LoginOrRegisterWindowView.xaml;;
 FC:\Programs\Instagram\Instagram\Views\MaybeFriendView.xaml;;
 FC:\Programs\Instagram\Instagram\Views\PostView.xaml;;
+FC:\Programs\Instagram\Instagram\Views\ReplyCommentView.xaml;;
 FC:\Programs\Instagram\Instagram\Views\StoryUserView.xaml;;
-FC:\Programs\Instagram\Instagram\Views\CreateNewStoryView.xaml;;
 FC:\Programs\Instagram\Instagram\Views\StoryView.xaml;;
 

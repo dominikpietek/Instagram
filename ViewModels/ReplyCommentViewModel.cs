@@ -124,6 +124,7 @@ namespace Instagram.ViewModels
             IsReplyYours = userId == _comment.AuthorId ? true : false;
             CommentText = _comment.Content;
             PublicationDate = _comment.PublicationDate;
+            CommentProfileName = user.Nickname;
         }
 
         public void UpdateLikesNumber(int likesNumber)

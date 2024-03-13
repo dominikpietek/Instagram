@@ -4,7 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Instagram.Views"
+             xmlns:c="clr-namespace:Instagram.Conventers"
              mc:Ignorable="d">
+    <UserControl.Resources>
+        <c:CenterConverter x:Key="CenterConverter"/>
+        <c:HalfValueConverter x:Key="HalfValueConverter"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="180"/>
@@ -16,7 +21,18 @@
                     <ColumnDefinition Width="80"/>
                     <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
-                <Image Source="{Binding ProfilePhoto}" Grid.Column="0"/>
+                <Ellipse Width="70" Height="70" x:Name="ElipsePhoto" Grid.Column="0">
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="{Binding ProfilePhoto}"/>
+                    </Ellipse.Fill>
+                    <Ellipse.Clip>
+                        <EllipseGeometry 
+                            RadiusX="{Binding Path=Width, Converter={StaticResource HalfValueConverter}, ElementName=ElipsePhoto}" 
+                            RadiusY="{Binding Path=Height, Converter={StaticResource HalfValueConverter}, ElementName=ElipsePhoto}"
+                            Center="{Binding Path=Width, Converter={StaticResource CenterConverter}, ElementName=ElipsePhoto}">
+                        </EllipseGeometry>
+                    </Ellipse.Clip>
+                </Ellipse>
                 <Label Content="{Binding Nickname}" Grid.Column="1"/>
             </Grid>
         </Button>

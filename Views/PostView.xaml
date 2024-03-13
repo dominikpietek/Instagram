@@ -108,7 +108,18 @@
                     </Style.Triggers>
                 </Style>
             </StackPanel.Style>
-            <Image Source="{Binding UserProfilePhotoSource}"/>
+            <Ellipse Width="60" Height="60" x:Name="ElipsePhoto2">
+                <Ellipse.Fill>
+                    <ImageBrush ImageSource="{Binding UserProfilePhotoSource}"/>
+                </Ellipse.Fill>
+                <Ellipse.Clip>
+                    <EllipseGeometry 
+                        RadiusX="{Binding Path=Width, Converter={StaticResource HalfValueConverter}, ElementName=ElipsePhoto2}" 
+                        RadiusY="{Binding Path=Height, Converter={StaticResource HalfValueConverter}, ElementName=ElipsePhoto2}"
+                        Center="{Binding Path=Width, Converter={StaticResource CenterConverter}, ElementName=ElipsePhoto2}">
+                    </EllipseGeometry>
+                </Ellipse.Clip>
+            </Ellipse>
             <TextBox Text="{Binding CommentContent, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" TextWrapping="Wrap" Width="350"/>
             <Button Content="CREATE" Command="{Binding CreateComment}" Padding="10" Cursor="Hand">
                 <Button.Style>

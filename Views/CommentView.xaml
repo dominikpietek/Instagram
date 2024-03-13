@@ -4,9 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Instagram.Views"
+             xmlns:c="clr-namespace:Instagram.Conventers"
              mc:Ignorable="d" 
              d:DesignWidth="380">
     <UserControl.Resources>
+        <c:CenterConverter x:Key="CenterConverter"/>
+        <c:HalfValueConverter x:Key="HalfValueConverter"/>
         <Style x:Key="buttonStyle" TargetType="Button">
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Background" Value="Transparent"/>
@@ -35,7 +38,18 @@
             <ColumnDefinition Width="40"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Image Source="{Binding CommentProfilePhotoSource}" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Stretch="Uniform"/>
+        <Ellipse Width="40" Height="40" x:Name="ElipsePhoto" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Stretch="Uniform">
+            <Ellipse.Fill>
+                <ImageBrush ImageSource="{Binding CommentProfilePhotoSource}"/>
+            </Ellipse.Fill>
+            <Ellipse.Clip>
+                <EllipseGeometry 
+                            RadiusX="{Binding Path=Width, Converter={StaticResource HalfValueConverter}, ElementName=ElipsePhoto}" 
+                            RadiusY="{Binding Path=Height, Converter={StaticResource HalfValueConverter}, ElementName=ElipsePhoto}"
+                            Center="{Binding Path=Width, Converter={StaticResource CenterConverter}, ElementName=ElipsePhoto}">
+                </EllipseGeometry>
+            </Ellipse.Clip>
+        </Ellipse>
         <DockPanel Grid.Row="0" Grid.Column="1">
             <Button Command="{Binding RemoveButton}" DockPanel.Dock="Right" Padding="10" Width="40">
                 <Button.Style>
@@ -84,7 +98,18 @@
                     </Style.Triggers>
                 </Style>
             </StackPanel.Style>
-            <Image Source="{Binding ReplyProfilePhotoSource}"/>
+            <Ellipse Width="40" Height="40" x:Name="ElipsePhoto2">
+                <Ellipse.Fill>
+                    <ImageBrush ImageSource="{Binding ReplyProfilePhotoSource}"/>
+                </Ellipse.Fill>
+                <Ellipse.Clip>
+                    <EllipseGeometry 
+                            RadiusX="{Binding Path=Width, Converter={StaticResource HalfValueConverter}, ElementName=ElipsePhoto2}" 
+                            RadiusY="{Binding Path=Height, Converter={StaticResource HalfValueConverter}, ElementName=ElipsePhoto2}"
+                            Center="{Binding Path=Width, Converter={StaticResource CenterConverter}, ElementName=ElipsePhoto2}">
+                    </EllipseGeometry>
+                </Ellipse.Clip>
+            </Ellipse>
             <TextBox Text="{Binding ReplyCommentContent, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" TextWrapping="Wrap" Width="280"/>
             <Button Content="CREATE" Command="{Binding CreateCommentReply}" Padding="10" Cursor="Hand"/>
         </StackPanel>
