@@ -25,8 +25,15 @@ namespace Instagram.Repositories
 
         public async Task<bool> AddCommentAsync(T comment)
         {
-            await _base.AddAsync(comment);
-            return await SaveChanges.SaveAsync(_db);
+            try
+            {
+                _base.Add(comment);
+                return await SaveChanges.SaveAsync(_db);
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
         }
 
         public async Task<bool> DeleteCommentAsync(int commentId)

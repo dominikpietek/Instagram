@@ -19,7 +19,7 @@ namespace Instagram.Models
         public List<Friend> Friends { get; set; } = new List<Friend>();
         public List<Post> Posts { get; set; } = new List<Post>();
         public List<Story> Stories { get; set; } = new List<Story>();
-        public List<UserIdSentModel> SentFriendRequests { get; set; } = new List<UserIdSentModel>();
-        public List<UserIdGotModel> GotFriendRequests { get; set; } = new List<UserIdGotModel>();
+        public List<SentFriendRequestModel> SentFriendRequests { get; set; } = new List<SentFriendRequestModel>();
+        public List<GotFriendRequestModel> GotFriendRequests { get; set; } = new List<GotFriendRequestModel>();
     }
 }

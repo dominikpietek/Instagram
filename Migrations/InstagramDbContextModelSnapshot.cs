@@ -74,7 +74,9 @@ namespace Instagram.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Likes")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.Property<DateTime>("PublicationDate")
                         .HasColumnType("datetime2");
@@ -105,6 +107,27 @@ namespace Instagram.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Friends");
+                });
+
+            modelBuilder.Entity("Instagram.Models.GotFriendRequestModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("StoredUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UGotFriendRequestModels");
                 });
 
             modelBuilder.Entity("Instagram.Models.Post", b =>
@@ -185,6 +208,27 @@ namespace Instagram.Migrations
                         .IsUnique();
 
                     b.ToTable("ProfileImages");
+                });
+
+            modelBuilder.Entity("Instagram.Models.SentFriendRequestModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("StoredUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("SentFriendRequestModels");
                 });
 
             modelBuilder.Entity("Instagram.Models.Story", b =>
@@ -289,48 +333,6 @@ namespace Instagram.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Instagram.Models.UserIdGotModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("StoredUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserIdGotModels");
-                });
-
-            modelBuilder.Entity("Instagram.Models.UserIdSentModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("StoredUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserIdSentModels");
-                });
-
             modelBuilder.Entity("Instagram.Models.UserLiked", b =>
                 {
                     b.Property<int>("Id")
@@ -386,6 +388,17 @@ namespace Instagram.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Instagram.Models.GotFriendRequestModel", b =>
+                {
+                    b.HasOne("Instagram.Models.User", "User")
+                        .WithMany("GotFriendRequests")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Instagram.Models.Post", b =>
                 {
                     b.HasOne("Instagram.Models.User", "User")
@@ -413,6 +426,17 @@ namespace Instagram.Migrations
                     b.HasOne("Instagram.Models.User", "User")
                         .WithOne("ProfilePhoto")
                         .HasForeignKey("Instagram.Models.ProfileImage", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Instagram.Models.SentFriendRequestModel", b =>
+                {
+                    b.HasOne("Instagram.Models.User", "User")
+                        .WithMany("SentFriendRequests")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -450,28 +474,6 @@ namespace Instagram.Migrations
                         .IsRequired();
 
                     b.Navigation("Post");
-                });
-
-            modelBuilder.Entity("Instagram.Models.UserIdGotModel", b =>
-                {
-                    b.HasOne("Instagram.Models.User", "User")
-                        .WithMany("GotFriendRequests")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Instagram.Models.UserIdSentModel", b =>
-                {
-                    b.HasOne("Instagram.Models.User", "User")
-                        .WithMany("SentFriendRequests")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Instagram.Models.Comment", b =>

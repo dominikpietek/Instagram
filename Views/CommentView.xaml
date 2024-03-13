@@ -98,7 +98,7 @@
                     </Style.Triggers>
                 </Style>
             </StackPanel.Style>
-            <Ellipse Width="40" Height="40" x:Name="ElipsePhoto2">
+            <Ellipse Width="60" Height="60" x:Name="ElipsePhoto2">
                 <Ellipse.Fill>
                     <ImageBrush ImageSource="{Binding ReplyProfilePhotoSource}"/>
                 </Ellipse.Fill>

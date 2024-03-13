@@ -9,7 +9,7 @@ namespace Instagram.Interfaces
 {
     public interface IUserRepository
     {
-        Task<List<User>> GetAllNotFriendsUsersAsync(int userId, IFriendRepository friendRepository, IUserIdGotSentModelRepository userIdSentModelRepository);
+        Task<List<User>> GetAllNotFriendsUsersAsync(int userId, IFriendRepository friendRepository, IGotSentFriendRequestModelRepository userIdSentModelRepository);
         Task<List<User>> GetAllUsersWithPhotosAndRequestsAsync();
         Task<User> GetUserWithPhotoAndRequestsAsync(int id);
         Task<bool> AddUserAsync(User user);

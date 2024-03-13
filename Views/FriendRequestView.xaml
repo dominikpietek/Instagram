@@ -62,7 +62,7 @@
                     <Setter Property="Cursor" Value="Hand"/>
                 </Style>
             </Button.Style>
-            <Image Source="{Binding DeclineIconSource}"/>
+            <Image Source="{Binding DeclineIconSource}" Margin="6"/>
         </Button>
     </Grid>
 </UserControl>

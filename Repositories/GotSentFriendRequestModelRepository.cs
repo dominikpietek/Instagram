@@ -3,25 +3,23 @@ using Instagram.Interfaces;
 using Instagram.Models;
 using Instagram.Services;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Instagram.Repositories
 {
-    public class UserIdGotSentModelsRepository<model> : IUserIdGotSentModelRepository where model : UserIdAbstractModel
+    public class GotSentFriendRequestModelRepository<model> : IGotSentFriendRequestModelRepository where model : FriendRequestAbstractModel
     {
         private readonly InstagramDbContext _db;
         private readonly DbSet<model> _base;
 
-        public UserIdGotSentModelsRepository(InstagramDbContext db)
+        public GotSentFriendRequestModelRepository(InstagramDbContext db)
         {
             _db = db;
             _base = _db.Set<model>();
         }
-        public async Task<bool> AddAsync(UserIdAbstractModel userIdModel)
+        public async Task<bool> AddAsync(FriendRequestAbstractModel userIdModel)
         {
             await _base.AddAsync((userIdModel as model)!);
             return await SaveChanges.SaveAsync(_db);

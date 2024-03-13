@@ -57,7 +57,7 @@ namespace Instagram.Repositories
             return await SaveChanges.SaveAsync(_db);
         }
 
-        public async Task<List<User>> GetAllNotFriendsUsersAsync(int userId, IFriendRepository friendRepository, IUserIdGotSentModelRepository userIdSentModelRepository)
+        public async Task<List<User>> GetAllNotFriendsUsersAsync(int userId, IFriendRepository friendRepository, IGotSentFriendRequestModelRepository userIdSentModelRepository)
         {
             List<int> userFriendsIds = await friendRepository.GetAllUserFriendsIdAsync(userId);
             List<int> sentRequestPeople = await userIdSentModelRepository.GetAllAsync(userId);

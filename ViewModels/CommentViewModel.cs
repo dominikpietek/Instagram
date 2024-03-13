@@ -235,8 +235,9 @@ namespace Instagram.ViewModels
             CommentResponse commentResponse = new CommentResponse()
             {
                 AuthorId = _userId,
-                Content = ReplyCommentContent,
                 CommentId = _comment.Id,
+                Content = ReplyCommentContent,
+                Likes = 0,
                 PublicationDate = DateTime.Now
             };
             await _commentResponseRepository.AddCommentAsync(commentResponse);

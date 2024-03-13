@@ -13,8 +13,8 @@ namespace Instagram.Databases
     public class InstagramDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
-        public DbSet<UserIdSentModel> UserIdSentModels { get; set; }
-        public DbSet<UserIdGotModel> UserIdGotModels { get; set; }
+        public DbSet<SentFriendRequestModel> SentFriendRequestModels { get; set; }
+        public DbSet<GotFriendRequestModel> UGotFriendRequestModels { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<Story> Stories { get; set; }
@@ -25,15 +25,11 @@ namespace Instagram.Databases
         public DbSet<Friend> Friends { get; set; }
         public DbSet<UserLiked> UsersLiked { get; set; }
         public DbSet<CommentResponse> CommentResponses { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings["MainDb"].ConnectionString);
         }
-        //public InstagramDbContext(DbContextOptions<InstagramDbContext> options) : base(options)
-        //{
-
-        //}
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Comment>().Property(p => p.Likes).HasDefaultValue(0);

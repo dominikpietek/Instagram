@@ -131,8 +131,8 @@ namespace Instagram.ViewModels
         private InstagramDbContext _db;
         private IUserRepository _userRepository;
         private IStoryRepository _storyRepository;
-        private IUserIdGotSentModelRepository _userIdGotModelRepository;
-        private IUserIdGotSentModelRepository _userIdSentModelRepository;
+        private IGotSentFriendRequestModelRepository _userIdGotModelRepository;
+        private IGotSentFriendRequestModelRepository _userIdSentModelRepository;
         private IFriendRepository _friendRepository;
         private IAbstractFactory<HomeUserControl> _homeFactory;
         #endregion
@@ -150,8 +150,8 @@ namespace Instagram.ViewModels
             _db = db;
             _userRepository = new UserRepository(_db);
             _storyRepository = new StoryRepository(_db);
-            _userIdGotModelRepository = new UserIdGotSentModelsRepository<UserIdGotModel>(_db);
-            _userIdSentModelRepository = new UserIdGotSentModelsRepository<UserIdSentModel>(_db);
+            _userIdGotModelRepository = new GotSentFriendRequestModelRepository<GotFriendRequestModel>(_db);
+            _userIdSentModelRepository = new GotSentFriendRequestModelRepository<SentFriendRequestModel>(_db);
             _friendRepository = new FriendRepository(_db);
             _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
             _feedViewMainContainer = feedViewMainContainer;

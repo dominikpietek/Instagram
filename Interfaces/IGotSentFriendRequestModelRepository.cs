@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Instagram.Interfaces
 {
-    public interface IUserIdGotSentModelRepository
+    public interface IGotSentFriendRequestModelRepository
     {
         Task<List<int>> GetAllAsync(int userId);
-        Task<bool> AddAsync(UserIdAbstractModel userIdModel);
+        Task<bool> AddAsync(FriendRequestAbstractModel userIdModel);
         Task<bool> RemoveAsync(int id);
     }
 }
