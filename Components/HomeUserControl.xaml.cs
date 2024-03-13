@@ -7,6 +7,7 @@ using Instagram.Repositories;
 using Instagram.Services;
 using Instagram.StartupHelpers;
 using Instagram.Views;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace Instagram.Components
@@ -20,7 +21,7 @@ namespace Instagram.Components
             InitializeComponent();
         }
 
-        public async void ChangeHomeTheme()
+        public async Task ChangeHomeTheme()
         {
             await ChangeTheme.ChangeAsync(this.Resources);
         }

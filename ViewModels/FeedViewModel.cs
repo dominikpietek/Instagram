@@ -221,19 +221,22 @@ namespace Instagram.ViewModels
             _feedViewMainContainer.Children.Add(userControl);
         }
 
+        private void CreateStoryFromDb(List<int> storyIds, int userId)
+        {
+            var storyBase = _storyFactory.Create();
+            storyBase.SetDataContext(storyIds, userId);
+            StoriesSection.Add(storyBase);
+        }
+
         private async Task ShowStoriesAsync()
         {
             StoriesSection = new ObservableCollection<StoryUserView>();
             List<Story> stories = await _storyRepository.GetAllStoriesAsync();
-            var groupedStories = stories.Where(s => s.UserId != _user.Id).GroupBy(s => s.UserId, s => s.Id, (key, ids) => new { UserId = key, Ids = ids.ToList() });
-            var userStory = _storyFactory.Create();
-            userStory.SetDataContext(ReturnUserStories(), _user.Id);
-            StoriesSection.Add(userStory);
+            var groupedStories = stories.Where(s => (s.UserId != _user.Id && s.PublicationDate.AddHours(24) > DateTime.Now)).GroupBy(s => s.UserId, s => s.Id, (key, ids) => new { UserId = key, Ids = ids.ToList() });
+            CreateStoryFromDb(ReturnUserStories(), _user.Id);
             foreach (var story in groupedStories)
             {
-                var storyBase = _storyFactory.Create();
-                storyBase.SetDataContext(story.Ids, story.UserId);
-                StoriesSection.Add(storyBase);
+                CreateStoryFromDb(story.Ids, story.UserId);
             }
         }
 

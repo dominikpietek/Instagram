@@ -10,9 +10,9 @@ namespace Instagram.Commands
 {
     public class ShowMoreLessCommentsCommand : CommandBase
     {
-        private readonly Action _ShowMoreLessComments;
+        private readonly Func<Task> _ShowMoreLessComments;
 
-        public ShowMoreLessCommentsCommand(Action ShowMoreLessComments)
+        public ShowMoreLessCommentsCommand(Func<Task> ShowMoreLessComments)
         {
             _ShowMoreLessComments = ShowMoreLessComments;
         }

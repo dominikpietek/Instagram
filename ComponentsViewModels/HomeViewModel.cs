@@ -28,7 +28,7 @@ namespace Instagram.ComponentsViewModels
         private readonly IPostRepository _postRepository;
         private int _loadedPosts = 3;
         private readonly IAbstractFactory<PostView> _postFactory;
-        private readonly Action _ChangeHomeTheme;
+        private readonly Func<Task> _ChangeHomeTheme;
         #endregion
         #region OnPropertyChangedProperties
         private ObservableCollection<PostView> _HomeSource;
@@ -52,7 +52,7 @@ namespace Instagram.ComponentsViewModels
             }
         }
         #endregion
-        public HomeViewModel(InstagramDbContext db, IAbstractFactory<PostView> postFactory, Action ChangeHomeTheme)
+        public HomeViewModel(InstagramDbContext db, IAbstractFactory<PostView> postFactory, Func<Task> ChangeHomeTheme)
         {
             _postRepository = new PostRepository(db);
             LoadMoreButton = new LoadMoreCommand(LoadMorePosts);

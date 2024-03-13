@@ -141,7 +141,8 @@
                         <Setter Property="Visibility" Value="Visible"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding ShowMoreComments, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Value="false">
-                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Setter Property="Visibility" Value="Hidden"/>
+                                <Setter Property="Height" Value="0"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -189,6 +190,5 @@
                 </Button.Style>
             </Button>
         </StackPanel>
-        <!-- when click more show scroll viewer when hide show one comment and more button, build other user control to it -->
     </Grid>
 </UserControl>

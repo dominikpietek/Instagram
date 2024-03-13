@@ -113,7 +113,19 @@
             <TextBox Text="{Binding ReplyCommentContent, UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" TextWrapping="Wrap" Width="280"/>
             <Button Content="CREATE" Command="{Binding CreateCommentReply}" Padding="10" Cursor="Hand"/>
         </StackPanel>
-        <ItemsControl Grid.Column="1" Grid.Row="5" ItemsSource="{Binding CommentResponses, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+        <ItemsControl Grid.Column="1" Grid.Row="5" ItemsSource="{Binding CommentResponses, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+            <ItemsControl.Style>
+                <Style TargetType="ItemsControl">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding AreCommentsShown,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}" Value="false">
+                            <Setter Property="Visibility" Value="Hidden"/>
+                            <Setter Property="Height" Value="0"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ItemsControl.Style>
+        </ItemsControl>
         <Button Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="6" Height="40" Command="{Binding ShowMoreLessButton}" Padding="10">
             <Button.Content>
                 <Image Source="{Binding ShowMoreLessButtonContent,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>

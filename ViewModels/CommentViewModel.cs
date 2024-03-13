@@ -41,13 +41,12 @@ namespace Instagram.ViewModels
         private Comment _comment;
         private User _authorUser;
         private User _user;
-        private readonly Action _ChangeHomeTheme;
         private readonly IBothCommentsRepository<CommentResponse> _commentResponseRepository;
         private readonly IBothCommentsRepository<Comment> _commentRepository;
         private readonly IUserLikedRepository _userLikedRepository;
         private readonly IUserRepository _userRepository;
         private readonly IAbstractFactory<ReplyCommentView> _replyCommentFactory;
-        private bool _areCommentsShown = false;
+        private readonly Func<Task> _ChangeHomeTheme;
         private int _userId;
         private int _commentId;
         #endregion
@@ -70,6 +69,16 @@ namespace Instagram.ViewModels
             {
                 _ReplyCommentContent = value;
                 OnPropertyChanged(nameof(ReplyCommentContent));
+            }
+        }
+        private bool _AreCommentsShown;
+        public bool AreCommentsShown
+        {
+            get { return _AreCommentsShown; }
+            set
+            {
+                _AreCommentsShown = value;
+                OnPropertyChanged(nameof(AreCommentsShown));
             }
         }
         private bool _AreAnyComments;
@@ -132,7 +141,7 @@ namespace Instagram.ViewModels
                 OnPropertyChanged(nameof(IsCommentYour));
             }
         }
-        private ObservableCollection<ReplyCommentView> _CommentResponses;
+        private ObservableCollection<ReplyCommentView> _CommentResponses = new ObservableCollection<ReplyCommentView>();
         public ObservableCollection<ReplyCommentView> CommentResponses 
         { 
             get { return _CommentResponses; }
@@ -150,7 +159,7 @@ namespace Instagram.ViewModels
         public ICommand CreateCommentReply { get; set; }
         public ICommand ShowMoreLessButton { get; set; }
         #endregion
-        public CommentViewModel(InstagramDbContext db, IAbstractFactory<ReplyCommentView> replyCommentFactory, int commentId, Action ChangeHomeTheme)
+        public CommentViewModel(InstagramDbContext db, IAbstractFactory<ReplyCommentView> replyCommentFactory, int commentId, Func<Task> ChangeHomeTheme)
         {
             #region PrivatePropertiesAssignment
             _commentId = commentId;
@@ -241,33 +250,42 @@ namespace Instagram.ViewModels
                 PublicationDate = DateTime.Now
             };
             await _commentResponseRepository.AddCommentAsync(commentResponse);
+            Comment comment = await _commentRepository.GetCommentWithResponsesAsync(_comment.Id);
+            List<CommentResponse> commentResponses = comment.CommentResponses;
+            AddCommentToResponse(commentResponses[commentResponses.Count() - 1]);
             ChangeReplyClickedStatus();
+            ReplyCommentContent = "";
+            AreAnyComments = true;
+            await _ChangeHomeTheme.Invoke();
         }
 
-        public void ShowMoreLess()
+        public async Task ShowMoreLess()
         {
-            if (!_areCommentsShown)
+            if (!AreCommentsShown)
             {
                 ShowMoreLessButtonContent = $"{_path}showLessIcon.png";
                 GenerateResponsesAsync();
+                await _ChangeHomeTheme.Invoke();
             }
             else
             {
                 ShowMoreLessButtonContent = $"{_path}showMoreIcon.png";
-                CommentResponses = new ObservableCollection<ReplyCommentView>();
             }
-            _areCommentsShown ^= true;
-            _ChangeHomeTheme.Invoke();
+            AreCommentsShown ^= true;
+        }
+
+        private void AddCommentToResponse(CommentResponse commentResponse)
+        {
+            ReplyCommentView replyComment = _replyCommentFactory.Create();
+            replyComment.AddDataContext(commentResponse.Id);
+            CommentResponses.Add(replyComment);
         }
 
         private async Task GenerateResponsesAsync() 
         {
-            CommentResponses = new ObservableCollection<ReplyCommentView>();
             foreach (var commentResponse in _comment.CommentResponses)
             {
-                ReplyCommentView replyComment = _replyCommentFactory.Create();
-                replyComment.AddDataContext(commentResponse.Id);
-                CommentResponses.Add(replyComment);
+                AddCommentToResponse(commentResponse);
             }
         }
     }

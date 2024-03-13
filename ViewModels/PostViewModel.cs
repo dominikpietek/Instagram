@@ -14,6 +14,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -161,7 +162,7 @@ namespace Instagram.ViewModels
         #endregion
         #region PrivateProperties
         private Post _post;
-        private readonly Action _ChangeHomeTheme;
+        private readonly Func<Task> _ChangeHomeTheme;
         private readonly IAbstractFactory<CommentView> _commentFactory;
         private readonly IPostRepository _postRepository;
         private readonly IUserRepository _userRepository;
@@ -170,7 +171,7 @@ namespace Instagram.ViewModels
         private readonly int _postId;
         private int _userId;
         #endregion
-        public PostViewModel(InstagramDbContext db, IAbstractFactory<CommentView> commentFactory, int postId, Action ChangeHomeTheme, Func<Task> ShowPosts)
+        public PostViewModel(InstagramDbContext db, IAbstractFactory<CommentView> commentFactory, int postId, Func<Task> ChangeHomeTheme, Func<Task> ShowPosts)
         {
             #region PrivatePropertiesAssignment
             _postId = postId;
@@ -182,7 +183,6 @@ namespace Instagram.ViewModels
             _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
             _ChangeHomeTheme = ChangeHomeTheme;
             #endregion
-            ChangeHomeTheme.Invoke();
             GetPost();
             GeneratePostData();
             GenerateComments();
@@ -230,15 +230,19 @@ namespace Instagram.ViewModels
             _post = await _postRepository.GetPostWithAllDataAsync(_postId);
         }
 
-        private void GenerateComments()
+        private async Task GenerateComments()
         {
-            Action ChangeTheme = _ChangeHomeTheme;
             foreach (Comment comment in _post.Comments)
             {
-                CommentView commentView = _commentFactory.Create();
-                commentView.AddDataContext(comment.Id, ChangeTheme);
-                CommentsSection.Add(commentView);
+                AddCommentToSection(comment);
             }
+        }
+
+        private void AddCommentToSection(Comment comment)
+        {
+            CommentView commentView = _commentFactory.Create();
+            commentView.AddDataContext(comment.Id, _ChangeHomeTheme);
+            CommentsSection.Add(commentView);
         }
 
         public void UpdateLikes(bool likedOrRemoved)
@@ -257,10 +261,13 @@ namespace Instagram.ViewModels
             UpdateLikesNumber(_post.Likes);
         }   
 
-        public void ShowMoreLessCommentsChange()
+        public async Task ShowMoreLessCommentsChange()
         {
             ShowMoreComments ^= true;
-            _ChangeHomeTheme.Invoke();
+            if (ShowMoreComments)
+            {
+                await _ChangeHomeTheme.Invoke();
+            }
         }
 
         public void UpdateCommentsNumber(int commentsNumber)
@@ -290,8 +297,12 @@ namespace Instagram.ViewModels
                 PublicationDate = DateTime.Now
             };
             await _commentRepository.AddCommentAsync(comment);
-            GenerateComments();
+            Post post = await _postRepository.GetPostWithAllDataAsync(_post.Id);
+            List<Comment> comments = post.Comments;
+            AddCommentToSection(comments[comments.Count() - 1]);
             UpdateCommentsNumber(CommentsSection.Count());
+            CommentContent = "";
+            await _ChangeHomeTheme.Invoke();
         }
     }
 }
