@@ -128,6 +128,8 @@ namespace Instagram.ViewModels
         private readonly IStoryRepository _storyRepository;
         private readonly string _path;
         private readonly int _authorId;
+        private readonly Action _CloseWindow;
+        private readonly Action _ChangePlus;
         #endregion
         #region Commands
         public ICommand LeftArrowButton { get; set; }
@@ -135,20 +137,22 @@ namespace Instagram.ViewModels
         public ICommand AddStoryButton { get; set; }
         public ICommand DeleteStoryButton { get; set; }
         #endregion
-        public StoryViewModel(InstagramDbContext db, List<int> storyIds, IAbstractFactory<CreateNewStoryView> storyFactory, int authorId)
+        public StoryViewModel(InstagramDbContext db, List<int> storyIds, IAbstractFactory<CreateNewStoryView> storyFactory, int authorId, Action CloseWindow, Action ChangePlus)
         {
             #region PrivatePropertiesAssignement
             _storyIds = storyIds;
             _storyRepository = new StoryRepository(db);
             _path = ConfigurationManager.AppSettings["ResourcesPath"]!;
             _authorId = authorId;
+            _CloseWindow = CloseWindow;
+            _ChangePlus = ChangePlus;
             HowManyStories = storyIds.Count();
             #endregion
             #region Commands
             LeftArrowButton = new ChangeStoryCommand(false, ChangeStory);
             RightArrowButton = new ChangeStoryCommand(true, ChangeStory);
-            AddStoryButton = new CreateStoryCommand(storyFactory);
-            DeleteStoryButton = new DeleteStoryCommand(_storyRepository, StoryIndex - 1); //update stories
+            AddStoryButton = new CreateStoryCommand(storyFactory, UpdateStories);
+            DeleteStoryButton = new DeleteStoryCommand(UpdateStories);
             #endregion
             InitAsync();
         }
@@ -177,6 +181,10 @@ namespace Instagram.ViewModels
             {
                 StoryIndex = 1;
             }
+            else if(nextOrPrevious == -1)
+            {
+                StoryIndex--;
+            }
             else
             {
                 StoryIndex++;
@@ -190,6 +198,34 @@ namespace Instagram.ViewModels
         private string HowManyHoursAgo(DateTime publicationDate)
         {
             return $"published: {(DateTime.Now - publicationDate).Hours} hours ago";
+        }
+
+        public async Task UpdateStories(bool remove)
+        {
+            if (remove)
+            {
+                HowManyStories--;
+                await _storyRepository.RemoveStoryAsync(_storyIds[StoryIndex - 1]);
+                _storyIds.RemoveAt(StoryIndex - 1);
+                StoryIndex = 1;
+                if (_storyIds.Count() == 0)
+                {
+                    _CloseWindow.Invoke();
+                    _ChangePlus.Invoke();
+                }
+                else
+                {
+                    ChangeStory();
+                }
+                return;
+            }
+            else
+            {
+                HowManyStories++;
+                var allStories = await _storyRepository.GetAllStoriesAsync();
+                _storyIds.Add(allStories[allStories.Count() - 1].Id);
+                return;
+            }
         }
     }
 }

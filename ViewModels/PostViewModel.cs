@@ -182,6 +182,7 @@ namespace Instagram.ViewModels
             _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
             _ChangeHomeTheme = ChangeHomeTheme;
             #endregion
+            ChangeHomeTheme.Invoke();
             GetPost();
             GeneratePostData();
             GenerateComments();
@@ -289,6 +290,8 @@ namespace Instagram.ViewModels
                 PublicationDate = DateTime.Now
             };
             await _commentRepository.AddCommentAsync(comment);
-    }
+            GenerateComments();
+            UpdateCommentsNumber(CommentsSection.Count());
+        }
     }
 }

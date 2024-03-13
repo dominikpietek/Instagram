@@ -19,15 +19,22 @@ namespace Instagram.Views
 {
     public partial class CreateNewStoryView : Window
     {
+        private readonly InstagramDbContext _db;
+
         public CreateNewStoryView(InstagramDbContext db)
         {
             InitializeComponent();
             ChangeTheme.ChangeAsync(this.Resources);
-            this.DataContext = new CreateNewStoryViewModel(db, CloseWindow);
+            _db = db;
         }
         public void CloseWindow()
         {
             this.Close();
+        }
+        
+        public void SetDataContext(Func<bool, Task> UpdatePosts)
+        {
+            this.DataContext = new CreateNewStoryViewModel(_db, CloseWindow, UpdatePosts);
         }
     }
 }

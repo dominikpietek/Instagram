@@ -47,10 +47,11 @@ namespace Instagram.ViewModels
         #endregion
         #region PrivateProperties
         private readonly IStoryRepository _storyRepository;
+        private readonly Func<bool, Task> _UpdatePosts;
         private readonly string _path;
         private int _userId;
         #endregion
-        public CreateNewStoryViewModel(InstagramDbContext db, Action CloseWindow)
+        public CreateNewStoryViewModel(InstagramDbContext db, Action CloseWindow, Func<bool, Task> UpdatePosts)
         {
             #region Commands
             OpenImageButton = new OpenImageButtonCommand(OnLoadingImage);
@@ -59,6 +60,7 @@ namespace Instagram.ViewModels
             #region PrivatePropertiesAssignement
             _storyRepository = new StoryRepository(db);
             _path = ConfigurationManager.AppSettings["ResourcesPath"]!;
+            _UpdatePosts = UpdatePosts;
             #endregion
             InitAsync();
         }
@@ -76,7 +78,6 @@ namespace Instagram.ViewModels
 
         public async Task<bool> PublishStories()
         {
-            //update stories
             if (ImageSource.Equals($"{_path}noImageIcon.png"))
             {
                 ImageErrorMessage = "You have to import image";
@@ -89,6 +90,7 @@ namespace Instagram.ViewModels
                 PublicationDate = DateTime.Now,
             };
             await _storyRepository.AddStoryAsync(_userId, story);
+            _UpdatePosts.Invoke(false);
             return true;
         }
     }

@@ -4,17 +4,7 @@ using Instagram.StartupHelpers;
 using Instagram.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Instagram.Views
 {
@@ -30,9 +20,14 @@ namespace Instagram.Views
             _db = db;
             _storyFactory = storyFactory;
         }
-        public void SetDataContext(List<int> storyIds, int authorId)
+
+        public void CloseWindow()
         {
-            this.DataContext = new StoryViewModel(_db, storyIds, _storyFactory, authorId);
+            this.Close();
+        }
+        public void SetDataContext(List<int> storyIds, int authorId, Action ChangePlus)
+        {
+            this.DataContext = new StoryViewModel(_db, storyIds, _storyFactory, authorId, CloseWindow, ChangePlus);
         }
     }
 }

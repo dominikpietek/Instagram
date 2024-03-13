@@ -250,7 +250,7 @@ namespace Instagram.ViewModels
         public async Task UpdatePosts()
         {
             HomeViewModel view = (HomeViewModel)_homeUserControl.DataContext!;
-            await view.ShowPosts();
+            await view.RefreshPosts();
         }
 
         public void ShowPosts()

@@ -26,7 +26,7 @@ namespace Instagram.ComponentsViewModels
         #endregion
         #region PrivateProperties
         private readonly IPostRepository _postRepository;
-        private int _loadedPosts = 5;
+        private int _loadedPosts = 3;
         private readonly IAbstractFactory<PostView> _postFactory;
         private readonly Action _ChangeHomeTheme;
         #endregion
@@ -58,18 +58,17 @@ namespace Instagram.ComponentsViewModels
             LoadMoreButton = new LoadMoreCommand(LoadMorePosts);
             _postFactory = postFactory;
             _ChangeHomeTheme = ChangeHomeTheme;
-            ShowPosts();
+            RefreshPosts();
         }
 
         public async Task ShowPosts()
         {
             List<Post> posts = await _postRepository.GetAllPostsWithAllDataToShowAsync();
-            HomeSource = new ObservableCollection<PostView>();
             posts.Reverse();
-            foreach (Post post in posts.Take(_loadedPosts))
+            foreach (Post post in posts.Skip(_loadedPosts - 3).Take(_loadedPosts))
             {
                 PostView postView = _postFactory.Create();
-                postView.AddDataContext(post.Id, _ChangeHomeTheme, ShowPosts);
+                postView.AddDataContext(post.Id, _ChangeHomeTheme, RefreshPosts);
                 HomeSource.Add(postView);
             }
             IsThereMorePosts = posts.Count() <= _loadedPosts ? false : true;
@@ -77,8 +76,15 @@ namespace Instagram.ComponentsViewModels
 
         public void LoadMorePosts()
         {
-            _loadedPosts += 5;
+            _loadedPosts += 3;
             ShowPosts();
+        }
+
+        public async Task RefreshPosts()
+        {
+            HomeSource = new ObservableCollection<PostView>();
+            _loadedPosts = 3;
+            await ShowPosts();
         }
     }
 }

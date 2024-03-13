@@ -9,19 +9,16 @@ namespace Instagram.Commands
 {
     public class DeleteStoryCommand : CommandBase
     {
-        private readonly IStoryRepository _storyRepository;
-        private readonly int _storyId;
+        private readonly Func<bool, Task> _UpdatePosts;
 
-        public DeleteStoryCommand(IStoryRepository storyRepository, int storyId)
+        public DeleteStoryCommand(Func<bool, Task> UpdatePosts)
         {
-            _storyRepository = storyRepository;
-            _storyId = storyId;
+            _UpdatePosts = UpdatePosts;
         }
 
         public async override void Execute(object parameter)
         {
-            await _storyRepository.RemoveStoryAsync(_storyId);
-            // update stories
+            await _UpdatePosts.Invoke(true);
         }
     }
 }

@@ -38,17 +38,17 @@ namespace Instagram.Repositories
             {
                 return await _db.Stories.Where(s => s.Id == id).Include(s => s.Image).Include(s => s.User).FirstAsync();
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
-                throw;
+                throw e;
             }
             
         }
 
         public async Task<bool> RemoveStoryAsync(int id)
         {
-            await _db.Stories.Where(s => s.Id == id).ExecuteDeleteAsync();
+            _db.Stories.Remove(await GetStoryAsync(id));
             return await SaveChanges.SaveAsync(_db);
         }
 
