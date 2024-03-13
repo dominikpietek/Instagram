@@ -74,7 +74,7 @@ namespace Instagram.ViewModels
         public ICommand LikeButton { get; set; }
         public ICommand RemoveButton { get; set; }
         #endregion
-        public ReplyCommentViewModel(InstagramDbContext db, int commentId)
+        public ReplyCommentViewModel(InstagramDbContext db, int commentId, Action<int> UpdateCommentsResponseAfterDelete)
         {
             #region PrivatePropertiesAssignment
             _commentId = commentId;
@@ -86,7 +86,7 @@ namespace Instagram.ViewModels
             LoadDataFromDatabaseAsync();
             #region CommandInstances
             LikeButton = new LikeCommand(LikedThingsEnum.CommentResponse, _comment.AuthorId, _commentId, UpdateLikes, _userLikedRepository);
-            RemoveButton = new RemoveCommentCommand();
+            RemoveButton = new RemoveCommentCommand<CommentResponse>(_commentRepository, commentId, UpdateCommentsResponseAfterDelete);
             #endregion
             InitResources();
         }

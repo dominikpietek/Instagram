@@ -13,6 +13,7 @@ namespace Instagram.Views
     {
         private readonly InstagramDbContext _db;
         private readonly IAbstractFactory<ReplyCommentView> _replyCommentFactory;
+        public int Id { get; set; }
 
         public CommentView(InstagramDbContext db, IAbstractFactory<ReplyCommentView> replyCommentFactory)
         {
@@ -20,9 +21,10 @@ namespace Instagram.Views
             _db = db;
             _replyCommentFactory = replyCommentFactory;
         }
-        public void AddDataContext(int id, Func<Task> ChangeHomeTheme)
+        public void AddDataContext(int id, Func<Task> ChangeHomeTheme, Action<int> UpdateCommentsAfterDelete)
         {
-            DataContext = new CommentViewModel(_db, _replyCommentFactory, id, ChangeHomeTheme);
+            Id = id;
+            DataContext = new CommentViewModel(_db, _replyCommentFactory, id, ChangeHomeTheme, UpdateCommentsAfterDelete);
         }
     }
 }

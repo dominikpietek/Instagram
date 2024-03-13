@@ -159,7 +159,7 @@ namespace Instagram.ViewModels
         public ICommand CreateCommentReply { get; set; }
         public ICommand ShowMoreLessButton { get; set; }
         #endregion
-        public CommentViewModel(InstagramDbContext db, IAbstractFactory<ReplyCommentView> replyCommentFactory, int commentId, Func<Task> ChangeHomeTheme)
+        public CommentViewModel(InstagramDbContext db, IAbstractFactory<ReplyCommentView> replyCommentFactory, int commentId, Func<Task> ChangeHomeTheme, Action<int> UpdateCommentsAfterDelete)
         {
             #region PrivatePropertiesAssignment
             _commentId = commentId;
@@ -173,11 +173,12 @@ namespace Instagram.ViewModels
             #endregion
             GetCommentAndUserAsync();
             GenerateCommentDataAsync();
+            GenerateResponsesAsync();
             InitResources();
             #region CommandsInstances
             LikeButton = new LikeCommand(LikedThingsEnum.Comment, _userId, _commentId, UpdateLikes, _userLikedRepository);
             ReplyButton = new ReplyToCommentCommand(ChangeReplyClickedStatus);
-            RemoveButton = new RemoveCommentCommand();
+            RemoveButton = new RemoveCommentCommand<Comment>(_commentRepository, commentId, UpdateCommentsAfterDelete);
             CreateCommentReply = new CreateCommentReplyCommand(CreateNewReplyAsync);
             ShowMoreLessButton = new ShowMoreLessCommentsCommand(ShowMoreLess);
             #endregion
@@ -239,6 +240,16 @@ namespace Instagram.ViewModels
             IsReplyClicked ^= true;
         }
 
+        public void UpdateCommentsResponseAfterDelete(int commentId)
+        {
+            CommentResponses.Remove(CommentResponses.First(c => c.Id == commentId));
+            if (CommentResponses.Count() == 0)
+            {
+                ShowMoreLess();
+                AreAnyComments = false;
+            }
+        }
+
         public async Task CreateNewReplyAsync()
         {
             CommentResponse commentResponse = new CommentResponse()
@@ -250,9 +261,9 @@ namespace Instagram.ViewModels
                 PublicationDate = DateTime.Now
             };
             await _commentResponseRepository.AddCommentAsync(commentResponse);
-            Comment comment = await _commentRepository.GetCommentWithResponsesAsync(_comment.Id);
-            List<CommentResponse> commentResponses = comment.CommentResponses;
-            AddCommentToResponse(commentResponses[commentResponses.Count() - 1]);
+            Comment comment = await _commentRepository.GetCommentAsync(_comment.Id);
+            List<CommentResponse> responses = comment.CommentResponses;
+            AddCommentToResponse(responses[responses.Count() - 1]);
             ChangeReplyClickedStatus();
             ReplyCommentContent = "";
             AreAnyComments = true;
@@ -264,7 +275,6 @@ namespace Instagram.ViewModels
             if (!AreCommentsShown)
             {
                 ShowMoreLessButtonContent = $"{_path}showLessIcon.png";
-                GenerateResponsesAsync();
                 await _ChangeHomeTheme.Invoke();
             }
             else
@@ -277,7 +287,7 @@ namespace Instagram.ViewModels
         private void AddCommentToResponse(CommentResponse commentResponse)
         {
             ReplyCommentView replyComment = _replyCommentFactory.Create();
-            replyComment.AddDataContext(commentResponse.Id);
+            replyComment.AddDataContext(commentResponse.Id, UpdateCommentsResponseAfterDelete);
             CommentResponses.Add(replyComment);
         }
 

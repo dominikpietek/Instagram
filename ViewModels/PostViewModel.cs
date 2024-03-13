@@ -225,6 +225,16 @@ namespace Instagram.ViewModels
             IsPostYour = _userId == _post.User.Id ? true : false;
         }
 
+        public void UpdateCommentsAfterDelete(int commentId)
+        {
+            CommentsSection.Remove(CommentsSection.First(c => c.Id == commentId));
+            UpdateCommentsNumber(CommentsSection.Count());
+            if (CommentsSection.Count() == 0)
+            {
+                ShowMoreComments = false;
+            }
+        }
+
         private async Task GetPost()
         {
             _post = await _postRepository.GetPostWithAllDataAsync(_postId);
@@ -241,7 +251,7 @@ namespace Instagram.ViewModels
         private void AddCommentToSection(Comment comment)
         {
             CommentView commentView = _commentFactory.Create();
-            commentView.AddDataContext(comment.Id, _ChangeHomeTheme);
+            commentView.AddDataContext(comment.Id, _ChangeHomeTheme, UpdateCommentsAfterDelete);
             CommentsSection.Add(commentView);
         }
 
