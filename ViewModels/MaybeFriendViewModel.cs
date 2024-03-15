@@ -1,8 +1,11 @@
 ﻿using Instagram.Commands;
 using Instagram.Databases;
 using Instagram.DTOs;
+using Instagram.Interfaces;
 using Instagram.Models;
+using Instagram.Repositories;
 using Instagram.Services;
+using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -21,15 +24,12 @@ namespace Instagram.ViewModels
         private string _path;
         public BitmapImage ProfilePhoto { get; set; }
         public string AddUserIconPath { get; set; }
+        public string Nickname { get; set; }
         #endregion
         #region Commands
         public ICommand CheckProfileButton { get; set; }
         public ICommand AddUserButton { get; set; }
         #endregion
-        public string Nickname { get; set; }
-        public int userId;
-        public FriendDto _friendDto;
-        private Action<int> _LoadMaybeFriends;
         #region OnPropertyChangeProperties
         private bool _IsInvitationSent = false;
         public bool IsInvitationSent
@@ -42,58 +42,62 @@ namespace Instagram.ViewModels
             }
         }
         #endregion
-        public MaybeFriendViewModel(FriendDto friendDto, int userId, Action<int> LoadMaybeFriends)
+        #region PrivateProperties
+        private readonly IGotSentFriendRequestModelRepository _gotRepository;
+        private readonly IGotSentFriendRequestModelRepository _sentRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly int _friendId;
+        private User _user;
+        private int _userId;
+        #endregion
+        public MaybeFriendViewModel(InstagramDbContext db, int friendId)
         {
             #region CommandInstances
             CheckProfileButton = new ShowProfileCommand();
             AddUserButton = new SendInvitationCommand(ChangeInvitationStatus);
             #endregion
-            _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
+            #region PrivatePropertiesAssignement
+            _path = ConfigurationManager.AppSettings.Get("ResourcesPath")!;
+            _gotRepository = new GotSentFriendRequestModelRepository<GotFriendRequestModel>(db);
+            _sentRepository = new GotSentFriendRequestModelRepository<SentFriendRequestModel>(db);
+            _userRepository = new UserRepository(db);
+            _friendId = friendId;
+            #endregion
             InitResources();
-            _friendDto = friendDto;
-            BindDtoToData();
-            this.userId = userId;
-            _LoadMaybeFriends = LoadMaybeFriends;
         }
-        private void InitResources()
+
+        private async Task InitResources()
         {
             AddUserIconPath = $"{_path}plusIcon.png";
+            _user = await _userRepository.GetUserWithPhotoAndRequestsAsync(_friendId);
+            ProfilePhoto = ConvertImage.FromByteArray(_user.ProfilePhoto.ImageBytes);
+            Nickname = _user.Nickname;
+            _userId = await GetUser.IdFromFile();
         }
-        private void BindDtoToData()
-        {
-            ProfilePhoto = ConvertImage.FromByteArray(_friendDto.ProfilePhoto.ImageBytes);
-            Nickname = _friendDto.Nickname;
-        }
-        private void ChangeInvitationStatus()
+
+        private async Task ChangeInvitationStatus()
         {
             IsInvitationSent ^= true;
-            SentInvitationAsync();
-            // remove isInvitationSent
-            // and change image sent or unsent invitation
+            if (IsInvitationSent)
+            {
+                await SentInvitationAsync();
+            }
+            else
+            {
+                await UnSentInvitationAsync();
+            }
+            
         }
         private async Task SentInvitationAsync()
         {
-            var ChangeDatabaseAsync = async Task () =>
-            {
+            await _gotRepository.AddAsync(new GotFriendRequestModel() { StoredUserId = _userId, UserId = _friendId });
+            await _sentRepository.AddAsync(new SentFriendRequestModel() { StoredUserId = _friendId, UserId = _userId });
+        }
 
-                //using (var db = new InstagramDbContext("MainDb"))
-                //{
-                //    if (!db.UserIdSentModels.Any(uism => uism.StoredUserId == _friendDto.Id))
-                //    {
-                //        db.Users.First(u => u.Id == userId).SentFriendRequests.Add(new UserIdSentModel()
-                //        {
-                //            StoredUserId = _friendDto.Id
-                //        });
-                //        db.Users.First(u => u.Id == _friendDto.Id).GotFriendRequests.Add(new UserIdGotModel()
-                //        {
-                //            StoredUserId = userId
-                //        });
-                //        db.SaveChanges();
-                //        _LoadMaybeFriends.Invoke(db, userId);
-                //    }
-                //}
-            };
-            await ChangeDatabaseAsync.Invoke();
+        private async Task UnSentInvitationAsync()
+        {
+            await _gotRepository.RemoveAsync(_userId, _friendId);
+            await _sentRepository.RemoveAsync(_userId, _friendId);
         }
     }
 }

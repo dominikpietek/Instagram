@@ -1,6 +1,7 @@
 ﻿using Instagram.Databases;
 using Instagram.Models;
 using Instagram.Services;
+using Instagram;
 using Instagram.StartupHelpers;
 using Instagram.ViewModels;
 using System;

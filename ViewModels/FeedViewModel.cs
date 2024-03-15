@@ -134,19 +134,20 @@ namespace Instagram.ViewModels
         private bool _isProfileUCCreated = false;
         private MessengerUserControl _messengerUserControl;
         private bool _isMessengerUCCreated = false;
-        private ResourceDictionary _resources;
-        private IAbstractFactory<CreateNewPostWindowView> _newPostFactory;
-        private IAbstractFactory<LoginOrRegisterWindowView> _loginFactory;
-        private IAbstractFactory<StoryUserView> _storyFactory;
-        private InstagramDbContext _db;
-        private IUserRepository _userRepository;
-        private IStoryRepository _storyRepository;
-        private IGotSentFriendRequestModelRepository _userIdGotModelRepository;
-        private IGotSentFriendRequestModelRepository _userIdSentModelRepository;
-        private IFriendRepository _friendRepository;
-        private IAbstractFactory<HomeUserControl> _homeFactory;
-        private IAbstractFactory<ProfileUserControl> _profileFactory;
-        private IAbstractFactory<MessengerUserControl> _messengerFactory;
+        private readonly ResourceDictionary _resources;
+        private readonly IAbstractFactory<CreateNewPostWindowView> _newPostFactory;
+        private readonly IAbstractFactory<LoginOrRegisterWindowView> _loginFactory;
+        private readonly IAbstractFactory<StoryUserView> _storyFactory;
+        private readonly IUserRepository _userRepository;
+        private readonly IStoryRepository _storyRepository;
+        private readonly IGotSentFriendRequestModelRepository _userIdGotModelRepository;
+        private readonly IGotSentFriendRequestModelRepository _userIdSentModelRepository;
+        private readonly IFriendRepository _friendRepository;
+        private readonly IAbstractFactory<HomeUserControl> _homeFactory;
+        private readonly IAbstractFactory<ProfileUserControl> _profileFactory;
+        private readonly IAbstractFactory<MessengerUserControl> _messengerFactory;
+        private readonly IAbstractFactory<FriendRequestView> _friendRequestFactory;
+        private readonly IAbstractFactory<MaybeFriendView> _maybeFriendFactory;
         #endregion
         public FeedViewModel(
             Action CloseWindow,
@@ -158,15 +159,16 @@ namespace Instagram.ViewModels
             IAbstractFactory<StoryUserView> storyFactory,
             IAbstractFactory<ProfileUserControl> profileFactory,
             IAbstractFactory<MessengerUserControl> messengerFactory,
+            IAbstractFactory<FriendRequestView> friendRequestFactory,
+            IAbstractFactory<MaybeFriendView> maybeFriendFactory,
             InstagramDbContext db)
         {
             #region PrivatePropertiesAssignment
-            _db = db;
-            _userRepository = new UserRepository(_db);
-            _storyRepository = new StoryRepository(_db);
-            _userIdGotModelRepository = new GotSentFriendRequestModelRepository<GotFriendRequestModel>(_db);
-            _userIdSentModelRepository = new GotSentFriendRequestModelRepository<SentFriendRequestModel>(_db);
-            _friendRepository = new FriendRepository(_db);
+            _userRepository = new UserRepository(db);
+            _storyRepository = new StoryRepository(db);
+            _userIdGotModelRepository = new GotSentFriendRequestModelRepository<GotFriendRequestModel>(db);
+            _userIdSentModelRepository = new GotSentFriendRequestModelRepository<SentFriendRequestModel>(db);
+            _friendRepository = new FriendRepository(db);
             _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
             _feedViewMainContainer = feedViewMainContainer;
             _resources = resources;
@@ -176,6 +178,8 @@ namespace Instagram.ViewModels
             _storyFactory = storyFactory;
             _profileFactory = profileFactory;
             _messengerFactory = messengerFactory;
+            _friendRequestFactory = friendRequestFactory;
+            _maybeFriendFactory = maybeFriendFactory;
             #endregion
             #region CommandsInstances
             CreateNewPost = new CreateNewPostOpenWindowCommand(_newPostFactory, UpdatePosts);
@@ -233,7 +237,7 @@ namespace Instagram.ViewModels
         private async Task LoadEverythingFromDatabaseAsync()
         {
             ProfilePhotoSource = ConvertImage.FromByteArray(_user.ProfilePhoto.ImageBytes);
-            LoadFriendRequestAsync(_user.Id);
+            LoadFriendRequestAsync();
             await ShowStoriesAsync();
         }
 
@@ -301,44 +305,37 @@ namespace Instagram.ViewModels
             ShowSomethingInMainBox(_messengerUserControl);
             _isMessengerUCCreated = true;
         }
-        private async void LoadMaybeFriendsAsync(int userId)
+        private async Task LoadMaybeFriendsAsync()
         {
-            List<User> probablyFriendsAfterSelection = await _userRepository.GetAllNotFriendsUsersAsync(userId, _friendRepository, _userIdSentModelRepository);
+            List<User> probablyFriendsAfterSelection = await _userRepository.GetAllNotFriendsUsersAsync(_user.Id, _friendRepository, _userIdSentModelRepository);
             probablyFriendsAfterSelection = probablyFriendsAfterSelection.TakeLast(7).ToList();
             MaybeFriendsSection = new ObservableCollection<MaybeFriendView>() {};
             foreach (User user in probablyFriendsAfterSelection)
             {
-                MaybeFriendsSection.Add(new MaybeFriendView(new FriendDto() 
-                { 
-                    Id = user.Id,
-                    Nickname = user.Nickname,
-                    ProfilePhoto = user.ProfilePhoto
-                }, userId, LoadMaybeFriendsAsync) { });
+                var maybeView = _maybeFriendFactory.Create();
+                maybeView.SetDataContext(user.Id);
+                MaybeFriendsSection.Add(maybeView);
             }
             if (MaybeFriendsSection.Count == 0)
             {
                 MaybeFriendsMessage = "There is no new users :(";
             }
         }
-        private async void LoadFriendRequestAsync(int userId)
+        private async Task LoadFriendRequestAsync()
         {
             FriendRequestSection = new ObservableCollection<FriendRequestView>();
-            List<int> gotRequestPeopleIds = await _userIdGotModelRepository.GetAllAsync(userId);
+            List<int> gotRequestPeopleIds = await _userIdGotModelRepository.GetAllAsync(_user.Id);
             foreach (int userThatSentRequestId in gotRequestPeopleIds)
             {
-                User user = await _userRepository.GetUserWithPhotoAndRequestsAsync(userThatSentRequestId);
-                FriendRequestSection.Add(new FriendRequestView(new FriendDto()
-                {
-                    Id = userThatSentRequestId,
-                    ProfilePhoto = user.ProfilePhoto,
-                    Nickname = user.Nickname,
-                }, userId, LoadFriendRequestAsync));
+                var friendRequestView = _friendRequestFactory.Create();
+                friendRequestView.SetDataContext(userThatSentRequestId, LoadFriendRequestAsync);
+                FriendRequestSection.Add(friendRequestView);
                 if (FriendRequestSection.Count == 7)
                 {
                     break;
                 }
             }
-            LoadMaybeFriendsAsync(_user.Id);
+            LoadMaybeFriendsAsync();
             if (FriendRequestSection.Count == 0)
             {
                 FriendRequestMessage = "No friend requests :(";

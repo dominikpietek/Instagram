@@ -10,7 +10,9 @@ namespace Instagram.Interfaces
     public interface IFriendRepository
     {
         Task<List<int>> GetAllUserFriendsIdAsync(int userId);
-        Task<bool> AddFriendAsync(int userId);
+        Task<int> GetFriendId(int userId, int friendId);
+        Task<bool> AddFriendAsync(int userId, int friendId);
         Task<bool> RemoveFriendAsync(int userId, int friendId);
+        Task<Message> GetLastMessageAsync(int friendId);
     }
 }

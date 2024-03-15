@@ -78,6 +78,7 @@ C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\runtimes\win\lib\netsta
 C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Instagram.csproj.AssemblyReference.cache
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\ResourceDictionaries\ButtonValidationDictionary.baml
+C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Components\CheckProfileUserControl.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Components\HomeUserControl.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Components\MessengerUserControl.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Components\PasswordBoxUserControl.g.cs
@@ -89,6 +90,7 @@ C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\CreateNewStoryVie
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FeedView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FriendInMessengerView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FriendRequestView.g.cs
+C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FriendView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\LoginOrRegisterWindowView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\MaybeFriendView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\PostView.g.cs
@@ -99,6 +101,7 @@ C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\App.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\GeneratedInternalTypeHelper.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Instagram_MarkupCompile.cache
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Instagram_MarkupCompile.lref
+C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Components\CheckProfileUserControl.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Components\HomeUserControl.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Components\MessengerUserControl.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Components\PasswordBoxUserControl.baml
@@ -113,6 +116,7 @@ C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\CreateNewStoryVie
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FeedView.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FriendInMessengerView.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FriendRequestView.baml
+C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FriendView.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\LoginOrRegisterWindowView.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\MaybeFriendView.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\PostView.baml
@@ -131,7 +135,3 @@ C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\refint\Instagram.dll
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Instagram.pdb
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Instagram.genruntimeconfig.cache
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\ref\Instagram.dll
-C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Components\CheckProfileUserControl.g.cs
-C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FriendView.g.cs
-C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Components\CheckProfileUserControl.baml
-C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FriendView.baml

@@ -38,6 +38,8 @@ namespace Instagram
                     services.AddFormFactory<ProfileUserControl>();
                     services.AddFormFactory<FriendView>();
                     services.AddFormFactory<MessengerUserControl>();
+                    services.AddFormFactory<MaybeFriendView>();
+                    services.AddFormFactory<FriendRequestView>();
                 })
                 .Build();
         }

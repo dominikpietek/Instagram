@@ -8,14 +8,14 @@ namespace Instagram.Commands
 {
     public class SendInvitationCommand : CommandBase
     {
-        private Action _ChangeInvitationStatus;
-        public SendInvitationCommand(Action ChangeInvitationStatus)
+        private readonly Func<Task> _ChangeInvitationStatus;
+        public SendInvitationCommand(Func<Task> ChangeInvitationStatus)
         {
             _ChangeInvitationStatus = ChangeInvitationStatus;
         }
-        public override void Execute(object parameter)
+        public async override void Execute(object parameter)
         {
-            _ChangeInvitationStatus.Invoke();
+            await _ChangeInvitationStatus.Invoke();
         }
     }
 }

@@ -11,6 +11,6 @@ namespace Instagram.Interfaces
     {
         Task<List<int>> GetAllAsync(int userId);
         Task<bool> AddAsync(FriendRequestAbstractModel userIdModel);
-        Task<bool> RemoveAsync(int id);
+        Task<bool> RemoveAsync(int userId, int requestUserId);
     }
 }

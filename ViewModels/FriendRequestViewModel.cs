@@ -1,7 +1,9 @@
 ﻿using Instagram.Commands;
 using Instagram.Databases;
 using Instagram.DTOs;
+using Instagram.Interfaces;
 using Instagram.Models;
+using Instagram.Repositories;
 using Instagram.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -23,17 +25,23 @@ namespace Instagram.ViewModels
         public BitmapImage ProfilePhoto { get; set; }
         public string DeclineIconSource { get; set; }
         public string AcceptIconSource { get; set; }
+        public string Nickname { get; set; }
         #endregion
         #region Commands
         public ICommand CheckProfileButton { get; set; }
         public ICommand AcceptRequestButton { get; set; }
         public ICommand DeclineRequestButton { get; set; }
         #endregion
-        public string Nickname { get; set; }
-        private FriendDto _friendDto;
-        private Action<int> _LoadFriendRequest;
+        #region PrivateProperties
         private int _userId;
-        public FriendRequestViewModel(FriendDto friendDto, int userId, Action<int> LoadFriendRequest)
+        private int _friendRequestId;
+        private readonly IFriendRepository _friendRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IGotSentFriendRequestModelRepository _gotRepository;
+        private readonly IGotSentFriendRequestModelRepository _sentRepository;
+        private readonly Func<Task> _LoadFriendRequestAsync;
+        #endregion
+        public FriendRequestViewModel(InstagramDbContext db, int friendRequestId, Func<Task> LoadFriendRequestAsync)
         {
             #region CommandsInstances
             CheckProfileButton = new ShowProfileCommand();
@@ -41,69 +49,38 @@ namespace Instagram.ViewModels
             DeclineRequestButton = new DeclineRequestCommand(RemoveFriendAsync);
             #endregion
             #region PrivatePropertiesAssignment
-            _friendDto = friendDto;
-            _userId = userId;
-            _LoadFriendRequest = LoadFriendRequest;
-            _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
+            _path = ConfigurationManager.AppSettings.Get("ResourcesPath")!;
+            _friendRequestId = friendRequestId;
+            _friendRepository = new FriendRepository(db);
+            _userRepository = new UserRepository(db);
+            _gotRepository = new GotSentFriendRequestModelRepository<GotFriendRequestModel>(db);
+            _sentRepository = new GotSentFriendRequestModelRepository<SentFriendRequestModel>(db);
+            _LoadFriendRequestAsync = LoadFriendRequestAsync;
             #endregion
-            InitResources();
-            BindDtoToData();
+            InitAsync();
         }
-        private void InitResources()
+        private async Task InitAsync()
         {   
             DeclineIconSource = $"{_path}declineIcon.png";
             AcceptIconSource = $"{_path}acceptIcon.png";
+            User user = await _userRepository.GetUserWithPhotoAndRequestsAsync(_friendRequestId);
+            ProfilePhoto = ConvertImage.FromByteArray(user.ProfilePhoto.ImageBytes);
+            Nickname = user.Nickname;
+            _userId = await GetUser.IdFromFile();
         }
-        private void BindDtoToData()
-        {
-            ProfilePhoto = ConvertImage.FromByteArray(_friendDto.ProfilePhoto.ImageBytes);
-            Nickname = _friendDto.Nickname;
-        }
+
         private async Task AddFriendAsync()
         {
-            var GetFromDatabaseAsync = async Task () =>
-            {
-
-                //using (var db = new InstagramDbContext("MainDb"))
-                //{
-                //    if (!db.Users.First(u => u.Id == _userId).Friends.Select(f => f.FriendId).Contains(_friendDto.Id))
-                //    {
-                //        db.Users.First(u => u.Id == _userId).Friends.Add(new Friend()
-                //        {
-                //            UserId = _userId,
-                //            FriendId = _friendDto.Id
-                //        });
-                //        db.Users.First(u => u.Id == _friendDto.Id).Friends.Add(new Friend()
-                //        {
-                //            UserId = _friendDto.Id,
-                //            FriendId = _userId
-                //        });
-                //        db.SaveChanges();
-                //        await RemoveFriendAsync();
-                //    }
-                //}
-            };
-            await GetFromDatabaseAsync.Invoke();
+            await _friendRepository.AddFriendAsync(_userId, _friendRequestId);
+            await _friendRepository.AddFriendAsync(_friendRequestId, _userId);
+            await RemoveFriendAsync();
         }
+
         private async Task RemoveFriendAsync()
         {
-            var RemoveFromDatabase = async Task () =>
-            {
-                //using (var db = new InstagramDbContext("MainDb"))
-                //{
-                //    if (!db.Users.First(u => u.Id == _userId).GotFriendRequests.Select(gfr => gfr.Id).Contains(_friendDto.Id))
-                //    {
-                //        UserIdGotModel userIdGotModel = db.UserIdGotModels.First(uigm => uigm.UserId == _userId && uigm.StoredUserId == _friendDto.Id);
-                //        db.UserIdGotModels.Remove(userIdGotModel);
-                //        UserIdSentModel userIdSentModel = db.UserIdSentModels.First(uigm => uigm.UserId == _friendDto.Id && uigm.StoredUserId == _userId);
-                //        db.UserIdSentModels.Remove(userIdSentModel);
-                //        db.SaveChanges();
-                //        _LoadFriendRequest.Invoke(db, _userId);
-                //        // rename those two functions
-                //    }
-                //}
-            };
-            await RemoveFromDatabase.Invoke();
+            await _gotRepository.RemoveAsync(_userId, _friendRequestId);
+            await _sentRepository.RemoveAsync(_userId, _friendRequestId);
+            _LoadFriendRequestAsync.Invoke();
         }
     }
 }

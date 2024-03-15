@@ -6,6 +6,7 @@ using Instagram.Models;
 using Instagram.Repositories;
 using Instagram.Services;
 using Instagram.ViewModels;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -121,7 +122,7 @@ namespace Instagram.ComponentsViewModels
         private User UserObject()
         {
             _user.ProfilePhoto.ImageBytes = ConvertImage.ImageToBytaArray(ProfilePhotoSource);
-            if (FirstPassword != string.Empty)
+            if (!FirstPassword.IsNullOrEmpty())
             {
                 _user.Password = Hash.HashString(FirstPassword);
             }
