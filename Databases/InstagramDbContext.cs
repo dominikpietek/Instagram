@@ -25,6 +25,7 @@ namespace Instagram.Databases
         public DbSet<Friend> Friends { get; set; }
         public DbSet<UserLiked> UsersLiked { get; set; }
         public DbSet<CommentResponse> CommentResponses { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -46,6 +47,7 @@ namespace Instagram.Databases
             modelBuilder.Entity<Story>().HasOne(p => p.Image).WithOne(s => s.Story).HasForeignKey<StoryImage>(i => i.StoryId);
             modelBuilder.Entity<User>().HasMany(u => u.SentFriendRequests).WithOne(uid => uid.User).HasForeignKey(uid => uid.UserId);
             modelBuilder.Entity<User>().HasMany(u => u.GotFriendRequests).WithOne(gfr => gfr.User).HasForeignKey(gfr => gfr.UserId);
+            modelBuilder.Entity<Friend>().HasMany(f => f.Messages).WithOne(m => m.Friend).HasForeignKey(m => m.FriendId);
         }
     }
 }

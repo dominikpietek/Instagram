@@ -16,7 +16,7 @@ namespace Instagram.ComponentsViewModels
 {
     public class MessengerViewModel : ViewModelBase
     {
-        private ObservableCollection<FriendView> _FriendsList;
+        private ObservableCollection<FriendView> _FriendsList = new ObservableCollection<FriendView>();
         public ObservableCollection<FriendView> FriendsList 
         { 
             get { return _FriendsList; }
@@ -34,6 +34,7 @@ namespace Instagram.ComponentsViewModels
         {
             _friendRepository = new FriendRepository(db);
             _friendFactory = friendFactory;
+            Init();
         }
 
         private async Task Init()
