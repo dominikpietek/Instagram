@@ -44,6 +44,16 @@ namespace Instagram.ViewModels
         public ICommand SendEmailsButton { get; set; }
         #endregion
         #region OnProperyChangeProperties
+        private bool _IsSearchClicked;
+        public bool IsSearchClicked 
+        { 
+            get { return _IsSearchClicked; }
+            set
+            {
+                _IsSearchClicked = value;
+                OnPropertyChanged(nameof(IsSearchClicked));
+            }
+        }
         private string _FriendRequestMessage;
         public string FriendRequestMessage 
         { 
@@ -135,6 +145,8 @@ namespace Instagram.ViewModels
         private IGotSentFriendRequestModelRepository _userIdSentModelRepository;
         private IFriendRepository _friendRepository;
         private IAbstractFactory<HomeUserControl> _homeFactory;
+        private IAbstractFactory<ProfileUserControl> _profileFactory;
+        private IAbstractFactory<MessengerUserControl> _messengerFactory;
         #endregion
         public FeedViewModel(
             Action CloseWindow,
@@ -144,6 +156,8 @@ namespace Instagram.ViewModels
             IAbstractFactory<LoginOrRegisterWindowView> loginFactory,
             IAbstractFactory<HomeUserControl> homeFactory,
             IAbstractFactory<StoryUserView> storyFactory,
+            IAbstractFactory<ProfileUserControl> profileFactory,
+            IAbstractFactory<MessengerUserControl> messengerFactory,
             InstagramDbContext db)
         {
             #region PrivatePropertiesAssignment
@@ -160,6 +174,8 @@ namespace Instagram.ViewModels
             _loginFactory = loginFactory;
             _homeFactory = homeFactory;
             _storyFactory = storyFactory;
+            _profileFactory = profileFactory;
+            _messengerFactory = messengerFactory;
             #endregion
             #region CommandsInstances
             CreateNewPost = new CreateNewPostOpenWindowCommand(_newPostFactory, UpdatePosts);
@@ -169,9 +185,15 @@ namespace Instagram.ViewModels
             ProfileButton = new ChangeMainContainerContentCommand(ShowProfile);
             DarkModeButton = new DarkModeCommand(ChangeThemes);
             SendEmailsButton = new SendEmailsCommand();
+            SearchButton = new SearchCommand(ChangeIsSearchClickedValue);
             #endregion
             InitResources();
             InitWithDbAsync();
+        }
+
+        private void ChangeIsSearchClickedValue()
+        {
+            IsSearchClicked = true;
         }
 
         private async Task InitWithDbAsync()
@@ -198,8 +220,8 @@ namespace Instagram.ViewModels
             ChangeTheme.ChangeAsync(_resources);
             LogoPath = ChangeTheme.ChangeLogo(_path, isDarkMode);
             if (_isHomeUCCreated) _homeUserControl.ChangeHomeTheme();
-            if (_isProfileUCCreated) _profileUserControl.ChangeProfileTheme(isDarkMode);
-            if (_isMessengerUCCreated) _messengerUserControl.ChangeMessengerTheme(isDarkMode);
+            if (_isProfileUCCreated) _profileUserControl.ChangeProfileTheme();
+            if (_isMessengerUCCreated) _messengerUserControl.ChangeMessengerTheme();
         }
 
         private async Task LoadThemeColourFromJsonFileAsync()
@@ -268,14 +290,14 @@ namespace Instagram.ViewModels
 
         public void ShowProfile()
         {
-            _profileUserControl = new ProfileUserControl();
+            _profileUserControl = _profileFactory.Create();
             ShowSomethingInMainBox(_profileUserControl);
             _isProfileUCCreated = true;
         }
 
         public void ShowMessenger()
         {
-            _messengerUserControl = new MessengerUserControl(_user.Id);
+            _messengerUserControl = _messengerFactory.Create();
             ShowSomethingInMainBox(_messengerUserControl);
             _isMessengerUCCreated = true;
         }

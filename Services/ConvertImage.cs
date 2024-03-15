@@ -15,6 +15,7 @@ namespace Instagram.Services
                 return memoryStream.ToArray();
             }
         }
+
         public static BitmapImage FromByteArray(byte[] byteArray)
         {
             using (MemoryStream memoryStream = new MemoryStream(byteArray))
@@ -25,6 +26,17 @@ namespace Instagram.Services
                 bi.StreamSource = memoryStream;
                 bi.EndInit();
                 return bi;
+            }
+        }
+
+        public static byte[] ImageToBytaArray(BitmapImage bitmapImage)
+        {
+            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmapImage));
+            using (MemoryStream ms = new MemoryStream())
+            {
+                encoder.Save(ms);
+                return ms.ToArray();
             }
         }
     }

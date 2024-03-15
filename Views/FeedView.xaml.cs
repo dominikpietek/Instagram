@@ -14,10 +14,13 @@ namespace Instagram.Views
             IAbstractFactory<CreateNewPostWindowView> newPostFactory,
             IAbstractFactory<LoginOrRegisterWindowView> loginFactory,
             IAbstractFactory<StoryUserView> storyFactory,
-            IAbstractFactory<HomeUserControl> homeFactory)
+            IAbstractFactory<HomeUserControl> homeFactory,
+            IAbstractFactory<ProfileUserControl> profileFactory,
+            IAbstractFactory<MessengerUserControl> messengerFactory
+            )
         {
             InitializeComponent();
-            DataContext = new FeedViewModel(CloseWindow, MainContainer, this.Resources, newPostFactory, loginFactory, homeFactory, storyFactory, db);
+            DataContext = new FeedViewModel(CloseWindow, MainContainer, this.Resources, newPostFactory, loginFactory, homeFactory, storyFactory, profileFactory, messengerFactory, db);
         }
 
         public void CloseWindow()

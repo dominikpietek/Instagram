@@ -22,6 +22,16 @@ namespace Instagram.ViewModels
     public class CreateAccountWindowViewModel : ViewModelBase
     {
         #region OnPropertyChangeProperties
+        private string _ProfilePhotoSource;
+        public string ProfilePhotoSource 
+        { 
+            get { return _ProfilePhotoSource; }
+            set
+            {
+                _ProfilePhotoSource = value;
+                OnPropertyChanged(nameof(ProfilePhotoSource));
+            }
+        }
         private string _BackgroundColour;
         public string BackgroundColour
         {
@@ -115,7 +125,6 @@ namespace Instagram.ViewModels
         #endregion
         #region PrivateProperties
         private readonly string _path;
-        private string _ProfilePhotoSource { get; set; }
         private Action _CloseWindow;
         private Action<bool> _ChangeTheme;
         private readonly RegisterRepository _registerRepository;
@@ -148,7 +157,7 @@ namespace Instagram.ViewModels
         }
         private async Task InitResourcesAsync()
         {
-            _ProfilePhotoSource = $"{_path}defaultProfilePhoto.png";
+            ProfilePhotoSource = $"{_path}defaultProfilePhoto.png";
             JSON<UserDataModel> userJSON = new JSON<UserDataModel>("UserData");
             bool isDarkMode = await userJSON.GetDarkModeAsync();
             BackgroundColour = isDarkMode ? "#CBC8CC" : "white";
@@ -156,7 +165,7 @@ namespace Instagram.ViewModels
         }
         private void OnLoadingImage(string imagePath)
         {
-            _ProfilePhotoSource = imagePath;
+            ProfilePhotoSource = imagePath;
             OpenImageButtonContent = "PHOTO LOADED";
         }
         public void CloseWindowAndOpenLoginWindow()
@@ -168,7 +177,7 @@ namespace Instagram.ViewModels
         {
             ProfileImage profilePhoto = new ProfileImage()
             {
-                ImageBytes = ConvertImage.ToByteArray(_ProfilePhotoSource)
+                ImageBytes = ConvertImage.ToByteArray(ProfilePhotoSource)
             };
             User newUser = new User()
             {

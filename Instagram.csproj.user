@@ -7,6 +7,9 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Components\CheckProfileUserControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Components\HomeUserControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -40,6 +43,9 @@
     <Compile Update="Views\FriendRequestView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\FriendView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\LoginOrRegisterWindowView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -57,6 +63,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Components\CheckProfileUserControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Components\HomeUserControl.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -100,6 +109,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\FriendRequestView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\FriendView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\LoginOrRegisterWindowView.xaml">

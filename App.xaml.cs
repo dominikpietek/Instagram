@@ -35,6 +35,9 @@ namespace Instagram
                     services.AddFormFactory<StoryUserView>();
                     services.AddFormFactory<StoryView>();
                     services.AddFormFactory<CreateNewStoryView>();
+                    services.AddFormFactory<ProfileUserControl>();
+                    services.AddFormFactory<FriendView>();
+                    services.AddFormFactory<MessengerUserControl>();
                 })
                 .Build();
         }

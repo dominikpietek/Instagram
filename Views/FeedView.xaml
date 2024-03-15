@@ -55,7 +55,7 @@
                         <Style TargetType="Button">
                             <Setter Property="BorderBrush" Value="Transparent"/>
                             <Setter Property="Background" Value="Transparent"/>
-                            <Setter Property="Cursor" Value="Hand"/>                        
+                            <Setter Property="Cursor" Value="Hand"/>
                         </Style>
                     </Button.Style>
                 </Button>
@@ -66,7 +66,29 @@
                             <Label Content="SEARCH" FontWeight="Bold" VerticalAlignment="Center" Foreground="Black"/>
                         </StackPanel>
                     </Button.Content>
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSearchClicked}" Value="true">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
                 </Button>
+                <TextBox Grid.Column="3" Height="40" Width="200" Grid.Row="1" VerticalAlignment="Center" Padding="10" FontSize="16">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSearchClicked}" Value="false">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
                 <Menu DockPanel.Dock="Right" Grid.Column="5" Height="40" Grid.Row="1">
                     <MenuItem Command="{Binding HomeButton}" Cursor="Hand" Margin="0 0 10 0">
                         <MenuItem.Header>

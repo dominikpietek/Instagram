@@ -7,7 +7,7 @@
              mc:Ignorable="d" >
     <Grid>
         <Label Content="You have no friends :(" FontSize="22" FontWeight="Black"/>
-        <ItemsControl ItemsSource="{Binding MessengerSource, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Background="White">
+        <ItemsControl ItemsSource="{Binding FriendsList, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Background="White">
         </ItemsControl>
     </Grid>
 </UserControl>

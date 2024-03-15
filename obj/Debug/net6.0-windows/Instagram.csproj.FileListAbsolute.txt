@@ -131,3 +131,7 @@ C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\refint\Instagram.dll
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Instagram.pdb
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Instagram.genruntimeconfig.cache
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\ref\Instagram.dll
+C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Components\CheckProfileUserControl.g.cs
+C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FriendView.g.cs
+C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Components\CheckProfileUserControl.baml
+C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FriendView.baml
