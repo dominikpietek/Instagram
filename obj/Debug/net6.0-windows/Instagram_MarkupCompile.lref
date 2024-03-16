@@ -1,4 +1,4 @@
-﻿C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\GeneratedInternalTypeHelper.g.cs
+﻿
 
 FC:\Programs\Instagram\Instagram\Components\CheckProfileUserControl.xaml;;
 FC:\Programs\Instagram\Instagram\Components\HomeUserControl.xaml;;
@@ -20,6 +20,7 @@ FC:\Programs\Instagram\Instagram\Views\LoginOrRegisterWindowView.xaml;;
 FC:\Programs\Instagram\Instagram\Views\MaybeFriendView.xaml;;
 FC:\Programs\Instagram\Instagram\Views\PostView.xaml;;
 FC:\Programs\Instagram\Instagram\Views\ReplyCommentView.xaml;;
+FC:\Programs\Instagram\Instagram\Views\SearchedUserView.xaml;;
 FC:\Programs\Instagram\Instagram\Views\StoryUserView.xaml;;
 FC:\Programs\Instagram\Instagram\Views\StoryView.xaml;;
 

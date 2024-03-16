@@ -46,6 +46,16 @@ namespace Instagram.ViewModels
         public ICommand ChangeSearching { get; set; }
         #endregion
         #region OnProperyChangeProperties
+        private bool _IsBarVisible;
+        public bool IsBarVisible 
+        { 
+            get {  return _IsBarVisible; }
+            set
+            {
+                _IsBarVisible = value;
+                OnPropertyChanged(nameof(IsBarVisible));
+            }
+        }
         private string _SearchingText;
         public string SearchingText
         {
@@ -116,7 +126,7 @@ namespace Instagram.ViewModels
                 OnPropertyChanged(nameof(IsDarkModeOn));
             }
         }
-        private ObservableCollection<SearchedUserView> _SearchedUsersSection;
+        private ObservableCollection<SearchedUserView> _SearchedUsersSection = new ObservableCollection<SearchedUserView>();
         public ObservableCollection<SearchedUserView> SearchedUsersSection
         {
             get { return _SearchedUsersSection; }
@@ -183,6 +193,9 @@ namespace Instagram.ViewModels
         private readonly IAbstractFactory<FriendRequestView> _friendRequestFactory;
         private readonly IAbstractFactory<MaybeFriendView> _maybeFriendFactory;
         private readonly IAbstractFactory<CheckProfileUserControl> _checkProfileFactory;
+        private readonly IAbstractFactory<SearchedUserView> _searchedUserFactory;
+        private List<SearchUserDto> _searchUsersDtos;
+        private readonly Func<bool> _IsMouseOverSearchingFriends;
         #endregion
         public FeedViewModel(
             Action CloseWindow,
@@ -197,7 +210,10 @@ namespace Instagram.ViewModels
             IAbstractFactory<FriendRequestView> friendRequestFactory,
             IAbstractFactory<MaybeFriendView> maybeFriendFactory,
             IAbstractFactory<CheckProfileUserControl> checkProfileFactory,
-            InstagramDbContext db)
+            IAbstractFactory<SearchedUserView> searchedUserFactory,
+            InstagramDbContext db,
+            Func<bool> IsMouseOverSearchingFriends
+            )
         {
             #region PrivatePropertiesAssignment
             _userRepository = new UserRepository(db);
@@ -217,6 +233,8 @@ namespace Instagram.ViewModels
             _friendRequestFactory = friendRequestFactory;
             _maybeFriendFactory = maybeFriendFactory;
             _checkProfileFactory = checkProfileFactory;
+            _searchedUserFactory = searchedUserFactory;
+            _IsMouseOverSearchingFriends = IsMouseOverSearchingFriends;
             #endregion
             #region CommandsInstances
             CreateNewPost = new CreateNewPostOpenWindowCommand(_newPostFactory, UpdatePosts);
@@ -234,15 +252,41 @@ namespace Instagram.ViewModels
             InitWithDbAsync();
         }
 
-        private void GenerateSearchingUsers()
+        private void InvisibleBar()
         {
-            //Textbox text
-            //SearchedUsersSection.Add();
+            if (SearchedUsersSection.Count() <= 2)
+            {
+                IsBarVisible = false;
+            }
+        }
+
+        private async Task GenerateSearchingUsers()
+        {
+            SearchedUsersSection = new ObservableCollection<SearchedUserView>();
+            IsBarVisible = true;
+            foreach (SearchUserDto user in _searchUsersDtos.Where(u => 
+            u.Nickname.Substring(0, SearchingText.Length > u.Nickname.Length ? u.Nickname.Length : SearchingText.Length).Equals(SearchingText.ToLower())))
+            {
+                var userSearched = _searchedUserFactory.Create();
+                userSearched.SetDataContext(user.Id, ShowCheckProfile);
+                SearchedUsersSection.Add(userSearched);
+            }
+            InvisibleBar();
         }
 
         public void ChangeLostFocus()
         {
-            IsFocused ^= true;
+            if (!_IsMouseOverSearchingFriends.Invoke())
+            {
+                IsFocused ^= true;
+                InvisibleBar();
+            }
+        }
+
+        private void DeactivateSearch()
+        {
+            IsFocused = false;
+            IsSearchClicked = false;
         }
 
         private void ChangeIsSearchClickedValue()
@@ -255,6 +299,7 @@ namespace Instagram.ViewModels
             _user = await GetUser.FromDbAndFileAsync(_userRepository);
             await LoadThemeColourFromJsonFileAsync();
             await LoadEverythingFromDatabaseAsync();
+            _searchUsersDtos = await _userRepository.GetUsersIdAndNickaname();
             ShowPosts();
         }
 
@@ -343,6 +388,7 @@ namespace Instagram.ViewModels
             _checkProfileUserControl.SetDataContext(profileUserId);
             ShowSomethingInMainBox(_checkProfileUserControl);
             _isCheckProfileUCCreated = true;
+            DeactivateSearch();
         }
 
         public void ShowPosts()

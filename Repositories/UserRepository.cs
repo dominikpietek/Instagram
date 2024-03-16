@@ -1,4 +1,5 @@
 ﻿using Instagram.Databases;
+using Instagram.DTOs;
 using Instagram.Interfaces;
 using Instagram.Models;
 using Instagram.SendingEmails;
@@ -105,6 +106,11 @@ namespace Instagram.Repositories
                 throw new Exception();
             }
             
+        }
+
+        public async Task<List<SearchUserDto>> GetUsersIdAndNickaname()
+        {
+            return await _db.Users.Select(u => new SearchUserDto() { Id = u.Id, Nickname = u.Nickname.ToLower() }).ToListAsync();
         }
     }
 }

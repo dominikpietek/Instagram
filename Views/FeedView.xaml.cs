@@ -19,16 +19,22 @@ namespace Instagram.Views
             IAbstractFactory<MessengerUserControl> messengerFactory,
             IAbstractFactory<FriendRequestView> friendRequestFactory,
             IAbstractFactory<MaybeFriendView> maybeFriendFactory,
-            IAbstractFactory<CheckProfileUserControl> checkProfileFactory
+            IAbstractFactory<CheckProfileUserControl> checkProfileFactory,
+            IAbstractFactory<SearchedUserView> searchedUserFactory
             )
         {
             InitializeComponent();
-            DataContext = new FeedViewModel(CloseWindow, MainContainer, this.Resources, newPostFactory, loginFactory, homeFactory, storyFactory, profileFactory, messengerFactory, friendRequestFactory, maybeFriendFactory, checkProfileFactory, db);
+            DataContext = new FeedViewModel(CloseWindow, MainContainer, this.Resources, newPostFactory, loginFactory, homeFactory, storyFactory, profileFactory, messengerFactory, friendRequestFactory, maybeFriendFactory, checkProfileFactory, searchedUserFactory, db, IsMouseOverSearchingFriends);
         }
 
         public void CloseWindow()
         {
             this.Close();
+        }
+
+        public bool IsMouseOverSearchingFriends()
+        {
+            return this.searchScroll.IsMouseOver;
         }
     }
 }

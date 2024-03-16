@@ -1,4 +1,5 @@
-﻿using Instagram.Models;
+﻿using Instagram.DTOs;
+using Instagram.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace Instagram.Interfaces
     {
         Task<List<User>> GetAllNotFriendsUsersAsync(int userId, IFriendRepository friendRepository, IGotSentFriendRequestModelRepository userIdSentModelRepository);
         Task<List<User>> GetAllUsersWithPhotosAndRequestsAsync();
+        Task<List<SearchUserDto>> GetUsersIdAndNickaname();
         Task<User> GetUserWithPhotoAndRequestsAsync(int id);
         Task<bool> AddUserAsync(User user);
         Task<bool> RemoveUserAsync(int id);

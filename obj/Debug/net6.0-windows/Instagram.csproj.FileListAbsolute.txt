@@ -95,6 +95,7 @@ C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\LoginOrRegisterWi
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\MaybeFriendView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\PostView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\ReplyCommentView.g.cs
+C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\SearchedUserView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\StoryUserView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\StoryView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\App.g.cs
@@ -121,6 +122,7 @@ C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\LoginOrRegisterWi
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\MaybeFriendView.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\PostView.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\ReplyCommentView.baml
+C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\SearchedUserView.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\StoryUserView.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\StoryView.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Instagram.g.resources

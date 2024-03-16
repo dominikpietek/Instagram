@@ -142,13 +142,17 @@
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
         </ScrollViewer>
-        <ScrollViewer Grid.Row="1" Grid.Column="2" Grid.RowSpan="3" Width="200" VerticalAlignment="Top" MaxHeight="140">
+        <ScrollViewer Grid.Row="1" Grid.Column="2" Grid.RowSpan="3" Width="200" VerticalAlignment="Top" MaxHeight="140" x:Name="searchScroll">
             <ScrollViewer.Style>
                 <Style TargetType="ScrollViewer">
                     <Setter Property="Visibility" Value="Visible"/>
+                    <Setter Property="VerticalScrollBarVisibility" Value="Visible"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsFocused}" Value="false">
                             <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsBarVisible}" Value="false">
+                            <Setter Property="VerticalScrollBarVisibility" Value="Disabled"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>

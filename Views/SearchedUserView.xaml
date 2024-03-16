@@ -4,9 +4,34 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Instagram.Views"
+             xmlns:c="clr-namespace:Instagram.Conventers"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
-    </Grid>
+             d:DesignHeight="50" d:DesignWidth="200">
+    <UserControl.Resources>
+        <c:CenterConverter x:Key="CenterConverter"/>
+        <c:HalfValueConverter x:Key="HalfValueConverter"/>
+    </UserControl.Resources>
+    <Button Background="Transparent" Command="{Binding CheckProfileButton}" Cursor="Hand">
+        <Button.Content>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="150"/>
+                </Grid.ColumnDefinitions>
+                <Ellipse Width="40" Height="40" x:Name="ElipsePhoto" Grid.Column="0" Grid.Row="0" Stretch="Uniform">
+                    <Ellipse.Fill>
+                        <ImageBrush ImageSource="{Binding ProfilePhotoSource}"/>
+                    </Ellipse.Fill>
+                    <Ellipse.Clip>
+                        <EllipseGeometry 
+                RadiusX="{Binding Path=Width, Converter={StaticResource HalfValueConverter}, ElementName=ElipsePhoto}" 
+                RadiusY="{Binding Path=Height, Converter={StaticResource HalfValueConverter}, ElementName=ElipsePhoto}"
+                Center="{Binding Path=Width, Converter={StaticResource CenterConverter}, ElementName=ElipsePhoto}">
+                        </EllipseGeometry>
+                    </Ellipse.Clip>
+                </Ellipse>
+                <Label Content="{Binding Nickname}" VerticalAlignment="Center" Margin="20" Grid.Column="1"/>
+            </Grid>
+        </Button.Content>
+    </Button>
 </UserControl>
