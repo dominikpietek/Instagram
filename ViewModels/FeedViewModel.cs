@@ -42,8 +42,30 @@ namespace Instagram.ViewModels
         public ICommand CreateNewPost { get; set; }
         public ICommand DarkModeButton { get; set; }
         public ICommand SendEmailsButton { get; set; }
+        public ICommand LostFocus { get; set; }
+        public ICommand ChangeSearching { get; set; }
         #endregion
         #region OnProperyChangeProperties
+        private string _SearchingText;
+        public string SearchingText
+        {
+            get { return _SearchingText; }
+            set
+            {
+                _SearchingText = value;
+                OnPropertyChanged(nameof(SearchingText));
+            }
+        }
+        private bool _IsFocused;
+        public bool IsFocused
+        {
+            get { return _IsFocused; }
+            set
+            {
+                _IsFocused = value;
+                OnPropertyChanged(nameof(IsFocused));
+            }
+        }
         private bool _IsSearchClicked;
         public bool IsSearchClicked 
         { 
@@ -94,7 +116,17 @@ namespace Instagram.ViewModels
                 OnPropertyChanged(nameof(IsDarkModeOn));
             }
         }
-        private ObservableCollection<FriendRequestView> _FriendRequestSection { get; set; }
+        private ObservableCollection<SearchedUserView> _SearchedUsersSection;
+        public ObservableCollection<SearchedUserView> SearchedUsersSection
+        {
+            get { return _SearchedUsersSection; }
+            set
+            {
+                _SearchedUsersSection = value;
+                OnPropertyChanged(nameof(SearchedUsersSection));
+            }
+        }
+        private ObservableCollection<FriendRequestView> _FriendRequestSection;
         public ObservableCollection<FriendRequestView> FriendRequestSection 
         {
             get { return _FriendRequestSection; }
@@ -195,9 +227,22 @@ namespace Instagram.ViewModels
             DarkModeButton = new DarkModeCommand(ChangeThemes);
             SendEmailsButton = new SendEmailsCommand();
             SearchButton = new SearchCommand(ChangeIsSearchClickedValue);
+            LostFocus = new ChangeMainContainerContentCommand(ChangeLostFocus);
+            ChangeSearching = new ChangeSearchingCommand(GenerateSearchingUsers);
             #endregion
             InitResources();
             InitWithDbAsync();
+        }
+
+        private void GenerateSearchingUsers()
+        {
+            //Textbox text
+            //SearchedUsersSection.Add();
+        }
+
+        public void ChangeLostFocus()
+        {
+            IsFocused ^= true;
         }
 
         private void ChangeIsSearchClickedValue()

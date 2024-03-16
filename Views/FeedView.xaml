@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:c="clr-namespace:Instagram.Conventers"
+        xmlns:b="clr-namespace:Instagram.Behaviors"
         mc:Ignorable="d"
         Title="Instagram" 
         Height="800" Width="840"
@@ -20,7 +21,8 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="520"/>
+            <ColumnDefinition Width="320"/>
+            <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="260"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
@@ -33,119 +35,105 @@
             <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.ColumnSpan="4" Background="White" Height="50">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="20"/>
-                    <ColumnDefinition Width="200"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="200"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="200"/>
-                    <ColumnDefinition Width="20"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="5"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="5"/>
-                </Grid.RowDefinitions>
-                <Button Command="{Binding HomeButton}" DockPanel.Dock="Left" Grid.Column="1" Height="40" Grid.Row="1">
-                    <Image Source="{Binding LogoPath}"/>
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="BorderBrush" Value="Transparent"/>
-                            <Setter Property="Background" Value="Transparent"/>
-                            <Setter Property="Cursor" Value="Hand"/>
-                        </Style>
-                    </Button.Style>
-                </Button>
-                <Button Command="{Binding SearchButton}" HorizontalAlignment="Center" Grid.Column="3" Height="40" Width="200" Grid.Row="1" Cursor="Hand">
-                    <Button.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="{Binding SearchIconPath}" VerticalAlignment="Center" Height="20"/>
-                            <Label Content="SEARCH" FontWeight="Bold" VerticalAlignment="Center" Foreground="Black"/>
-                        </StackPanel>
-                    </Button.Content>
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Visibility" Value="Visible"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsSearchClicked}" Value="true">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-                <TextBox Grid.Column="3" Height="40" Width="200" Grid.Row="1" VerticalAlignment="Center" Padding="10" FontSize="16">
-                    <TextBox.Style>
-                        <Style TargetType="TextBox">
-                            <Setter Property="Visibility" Value="Visible"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsSearchClicked}" Value="false">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBox.Style>
-                </TextBox>
-                <Menu DockPanel.Dock="Right" Grid.Column="5" Height="40" Grid.Row="1">
-                    <MenuItem Command="{Binding HomeButton}" Cursor="Hand" Margin="0 0 10 0">
-                        <MenuItem.Header>
-                            <Image Source="{Binding HomeIconPath}"/>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem Command="{Binding MessengerButton}" Cursor="Hand" >
-                        <MenuItem.Header>
-                            <Image Source="{Binding MessageIconPath}" Margin="10 0"/>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem Cursor="Hand" Margin="10 0 0 0">
-                        <MenuItem.Header>
-                            <Ellipse Width="38" Height="38" x:Name="ElipsePhoto">
-                                <Ellipse.Fill>
-                                    <ImageBrush ImageSource="{Binding ProfilePhotoSource}"/>
-                                </Ellipse.Fill>
-                                <Ellipse.Clip>
-                                    <EllipseGeometry 
-                                        RadiusX="{Binding Path=Width, Converter={StaticResource HalfValueConverter}, ElementName=ElipsePhoto}" 
-                                        RadiusY="{Binding Path=Height, Converter={StaticResource HalfValueConverter}, ElementName=ElipsePhoto}"
-                                        Center="{Binding Path=Width, Converter={StaticResource CenterConverter}, ElementName=ElipsePhoto}">
-                                    </EllipseGeometry>
-                                </Ellipse.Clip>
-                            </Ellipse>
-                        </MenuItem.Header>
-                        <MenuItem Command="{Binding LogoutButton}">
-                            <MenuItem.Icon>
-                                <Image Source="{Binding LogoutPath}"/>
-                            </MenuItem.Icon>
-                            <MenuItem.Header>
-                                logout
-                            </MenuItem.Header>
-                        </MenuItem>
-                        <MenuItem Command="{Binding ProfileButton}">
-                            <MenuItem.Icon>
-                                <Image Source="{Binding ProfilePhotoSource}"/>
-                            </MenuItem.Icon>
-                            <MenuItem.Header>
-                                manage your profile
-                            </MenuItem.Header>
-                        </MenuItem>
-                        <MenuItem IsCheckable="True" Command="{Binding DarkModeButton}" IsChecked="{Binding IsDarkModeOn, UpdateSourceTrigger=PropertyChanged}">
-                            <MenuItem.Header>
-                                dark mode
-                            </MenuItem.Header>
-                        </MenuItem>
-                        <MenuItem IsCheckable="True" Command="{Binding SendEmailsButton}">
-                            <MenuItem.Header>
-                                send emails
-                            </MenuItem.Header>
-                        </MenuItem>
-                    </MenuItem>
-                </Menu>
-            </Grid>
-        </StackPanel>
-        <ScrollViewer Grid.Row="2" Grid.Column="1" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Disabled">
+        <Button Command="{Binding HomeButton}" DockPanel.Dock="Left" Grid.Column="1" Height="40" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center">
+            <Image Source="{Binding LogoPath}"/>
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Button Command="{Binding SearchButton}" HorizontalAlignment="Center" Grid.Column="2" Height="40" Width="200" Grid.Row="0" Cursor="Hand">
+            <Button.Content>
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{Binding SearchIconPath}" VerticalAlignment="Center" Height="20"/>
+                    <Label Content="SEARCH" FontWeight="Bold" VerticalAlignment="Center" Foreground="Black"/>
+                </StackPanel>
+            </Button.Content>
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsSearchClicked}" Value="true">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <TextBox Grid.Column="2" Grid.Row="0" Height="50" Width="200" VerticalAlignment="Center" Padding="10" 
+                 FontSize="16" x:Name="searchingBox"
+                 b:TextBoxIsFocusedBehavior.IsFocusedCommand="{Binding LostFocus}"
+                 b:TextBoxTextChangedBehavior.TextChangedCommand="{Binding ChangeSearching}"
+                 Text="{Binding SearchingText, UpdateSourceTrigger=PropertyChanged}">
+            <TextBox.Style>
+                <Style TargetType="TextBox">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsSearchClicked}" Value="false">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+        <Menu DockPanel.Dock="Right" Grid.Column="3" Height="40" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right">
+            <MenuItem Command="{Binding HomeButton}" Cursor="Hand" Margin="0 0 10 0">
+                <MenuItem.Header>
+                    <Image Source="{Binding HomeIconPath}"/>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem Command="{Binding MessengerButton}" Cursor="Hand" >
+                <MenuItem.Header>
+                    <Image Source="{Binding MessageIconPath}" Margin="10 0"/>
+                </MenuItem.Header>
+            </MenuItem>
+            <MenuItem Cursor="Hand" Margin="10 0 0 0">
+                <MenuItem.Header>
+                    <Ellipse Width="38" Height="38" x:Name="ElipsePhoto">
+                        <Ellipse.Fill>
+                            <ImageBrush ImageSource="{Binding ProfilePhotoSource}"/>
+                        </Ellipse.Fill>
+                        <Ellipse.Clip>
+                            <EllipseGeometry 
+                        RadiusX="{Binding Path=Width, Converter={StaticResource HalfValueConverter}, ElementName=ElipsePhoto}" 
+                        RadiusY="{Binding Path=Height, Converter={StaticResource HalfValueConverter}, ElementName=ElipsePhoto}"
+                        Center="{Binding Path=Width, Converter={StaticResource CenterConverter}, ElementName=ElipsePhoto}">
+                            </EllipseGeometry>
+                        </Ellipse.Clip>
+                    </Ellipse>
+                </MenuItem.Header>
+                <MenuItem Command="{Binding LogoutButton}">
+                    <MenuItem.Icon>
+                        <Image Source="{Binding LogoutPath}"/>
+                    </MenuItem.Icon>
+                    <MenuItem.Header>
+                        logout
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Command="{Binding ProfileButton}">
+                    <MenuItem.Icon>
+                        <Image Source="{Binding ProfilePhotoSource}"/>
+                    </MenuItem.Icon>
+                    <MenuItem.Header>
+                        manage your profile
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem IsCheckable="True" Command="{Binding DarkModeButton}" IsChecked="{Binding IsDarkModeOn, UpdateSourceTrigger=PropertyChanged}">
+                    <MenuItem.Header>
+                        dark mode
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem IsCheckable="True" Command="{Binding SendEmailsButton}">
+                    <MenuItem.Header>
+                        send emails
+                    </MenuItem.Header>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+        <ScrollViewer Grid.Row="2" Grid.Column="1" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Disabled" Grid.ColumnSpan="2">
             <ItemsControl ItemsSource="{Binding StoriesSection}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -154,15 +142,30 @@
                 </ItemsControl.ItemsPanel>
             </ItemsControl>
         </ScrollViewer>
-        <ScrollViewer Grid.Row="4" Grid.Column="1" Grid.RowSpan="2">
+        <ScrollViewer Grid.Row="1" Grid.Column="2" Grid.RowSpan="3" Width="200" VerticalAlignment="Top" MaxHeight="140">
+            <ScrollViewer.Style>
+                <Style TargetType="ScrollViewer">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsFocused}" Value="false">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ScrollViewer.Style>
+            <ScrollViewer.Content>
+                <ItemsControl ItemsSource="{Binding SearchedUsersSection}"/>
+            </ScrollViewer.Content>
+        </ScrollViewer>
+        <ScrollViewer Grid.Row="4" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2">
             <StackPanel x:Name="MainContainer"/>
         </ScrollViewer>
-        <StackPanel Orientation="Vertical" Grid.Row="2" Grid.Column="2" Grid.RowSpan="3">
+        <StackPanel Orientation="Vertical" Grid.Row="2" Grid.Column="3" Grid.RowSpan="3">
             <Label Content="{Binding FriendRequestMessage, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
             <ItemsControl ItemsSource="{Binding FriendRequestSection, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
             <Label Content="{Binding MaybeFriendsMessage, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
             <ItemsControl ItemsSource="{Binding MaybeFriendsSection, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
         </StackPanel>
-        <Button Grid.Column="2" Grid.Row="5" Content="Create New Post" Command="{Binding CreateNewPost}" Cursor="Hand"/>
+        <Button Grid.Column="3" Grid.Row="5" Content="Create New Post" Command="{Binding CreateNewPost}" Cursor="Hand"/>
     </Grid>
 </Window>
