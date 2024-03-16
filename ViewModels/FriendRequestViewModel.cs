@@ -41,10 +41,10 @@ namespace Instagram.ViewModels
         private readonly IGotSentFriendRequestModelRepository _sentRepository;
         private readonly Func<Task> _LoadFriendRequestAsync;
         #endregion
-        public FriendRequestViewModel(InstagramDbContext db, int friendRequestId, Func<Task> LoadFriendRequestAsync)
+        public FriendRequestViewModel(InstagramDbContext db, int friendRequestId, Func<Task> LoadFriendRequestAsync, Action<int> ShowCheckProfile)
         {
             #region CommandsInstances
-            CheckProfileButton = new ShowProfileCommand();
+            CheckProfileButton = new ShowProfileCommand(ShowCheckProfile, friendRequestId);
             AcceptRequestButton = new AcceptRequestCommand(AddFriendAsync);
             DeclineRequestButton = new DeclineRequestCommand(RemoveFriendAsync);
             #endregion

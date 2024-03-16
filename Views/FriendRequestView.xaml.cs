@@ -18,9 +18,9 @@ namespace Instagram.Views
             _db = db;
         }
 
-        public void SetDataContext(int requestFriendId, Func<Task> LoadFriendRequestAsync)
+        public void SetDataContext(int requestFriendId, Func<Task> LoadFriendRequestAsync, Action<int> ShowCheckProfile)
         {
-            this.DataContext = new FriendRequestViewModel(_db, requestFriendId, LoadFriendRequestAsync);
+            this.DataContext = new FriendRequestViewModel(_db, requestFriendId, LoadFriendRequestAsync, ShowCheckProfile);
         }
     }
 }

@@ -16,9 +16,9 @@ namespace Instagram.Views
             _db = db;
         }
 
-        public void SetDataContext(int friendId)
+        public void SetDataContext(int friendId, Action<int> ShowCheckProfile)
         {
-            DataContext = new MaybeFriendViewModel(_db, friendId);
+            DataContext = new MaybeFriendViewModel(_db, friendId, ShowCheckProfile);
         }
     }
 }

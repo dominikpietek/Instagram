@@ -10,6 +10,7 @@ namespace Instagram.Interfaces
     public interface IPostRepository
     {
         Task<List<Post>> GetAllPostsWithAllDataToShowAsync();
+        Task<List<Post>> GetUserPostsWithAllDataToShowAsync(int userId);
         Task<Post> GetPostWithAllDataAsync(int id);
         Task<bool> UpdatePostAsync(Post post);
         Task<bool> RemovePostByIdAsync(int postId);

@@ -18,11 +18,12 @@ namespace Instagram.Views
             IAbstractFactory<ProfileUserControl> profileFactory,
             IAbstractFactory<MessengerUserControl> messengerFactory,
             IAbstractFactory<FriendRequestView> friendRequestFactory,
-            IAbstractFactory<MaybeFriendView> maybeFriendFactory
+            IAbstractFactory<MaybeFriendView> maybeFriendFactory,
+            IAbstractFactory<CheckProfileUserControl> checkProfileFactory
             )
         {
             InitializeComponent();
-            DataContext = new FeedViewModel(CloseWindow, MainContainer, this.Resources, newPostFactory, loginFactory, homeFactory, storyFactory, profileFactory, messengerFactory, friendRequestFactory, maybeFriendFactory, db);
+            DataContext = new FeedViewModel(CloseWindow, MainContainer, this.Resources, newPostFactory, loginFactory, homeFactory, storyFactory, profileFactory, messengerFactory, friendRequestFactory, maybeFriendFactory, checkProfileFactory, db);
         }
 
         public void CloseWindow()

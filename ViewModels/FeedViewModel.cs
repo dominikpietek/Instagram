@@ -134,6 +134,8 @@ namespace Instagram.ViewModels
         private bool _isProfileUCCreated = false;
         private MessengerUserControl _messengerUserControl;
         private bool _isMessengerUCCreated = false;
+        private CheckProfileUserControl _checkProfileUserControl;
+        private bool _isCheckProfileUCCreated = false;
         private readonly ResourceDictionary _resources;
         private readonly IAbstractFactory<CreateNewPostWindowView> _newPostFactory;
         private readonly IAbstractFactory<LoginOrRegisterWindowView> _loginFactory;
@@ -148,6 +150,7 @@ namespace Instagram.ViewModels
         private readonly IAbstractFactory<MessengerUserControl> _messengerFactory;
         private readonly IAbstractFactory<FriendRequestView> _friendRequestFactory;
         private readonly IAbstractFactory<MaybeFriendView> _maybeFriendFactory;
+        private readonly IAbstractFactory<CheckProfileUserControl> _checkProfileFactory;
         #endregion
         public FeedViewModel(
             Action CloseWindow,
@@ -161,6 +164,7 @@ namespace Instagram.ViewModels
             IAbstractFactory<MessengerUserControl> messengerFactory,
             IAbstractFactory<FriendRequestView> friendRequestFactory,
             IAbstractFactory<MaybeFriendView> maybeFriendFactory,
+            IAbstractFactory<CheckProfileUserControl> checkProfileFactory,
             InstagramDbContext db)
         {
             #region PrivatePropertiesAssignment
@@ -180,6 +184,7 @@ namespace Instagram.ViewModels
             _messengerFactory = messengerFactory;
             _friendRequestFactory = friendRequestFactory;
             _maybeFriendFactory = maybeFriendFactory;
+            _checkProfileFactory = checkProfileFactory;
             #endregion
             #region CommandsInstances
             CreateNewPost = new CreateNewPostOpenWindowCommand(_newPostFactory, UpdatePosts);
@@ -226,6 +231,7 @@ namespace Instagram.ViewModels
             if (_isHomeUCCreated) _homeUserControl.ChangeHomeTheme();
             if (_isProfileUCCreated) _profileUserControl.ChangeProfileTheme();
             if (_isMessengerUCCreated) _messengerUserControl.ChangeMessengerTheme();
+            if (_isCheckProfileUCCreated) _checkProfileUserControl.ChangeProfileTheme();
         }
 
         private async Task LoadThemeColourFromJsonFileAsync()
@@ -237,7 +243,7 @@ namespace Instagram.ViewModels
         private async Task LoadEverythingFromDatabaseAsync()
         {
             ProfilePhotoSource = ConvertImage.FromByteArray(_user.ProfilePhoto.ImageBytes);
-            LoadFriendRequestAsync();
+            await LoadFriendRequestAsync();
             await ShowStoriesAsync();
         }
 
@@ -258,6 +264,7 @@ namespace Instagram.ViewModels
         {
             StoriesSection = new ObservableCollection<StoryUserView>();
             List<Story> stories = await _storyRepository.GetAllStoriesAsync();
+
             var groupedStories = stories.Where(s => s.UserId != _user.Id).GroupBy(s => s.UserId, s => s.Id, (key, ids) => new { UserId = key, Ids = ids.ToList() });
             CreateStoryFromDb(ReturnUserStories(), _user.Id);
             foreach (var story in groupedStories)
@@ -283,6 +290,14 @@ namespace Instagram.ViewModels
         {
             HomeViewModel view = (HomeViewModel)_homeUserControl.DataContext!;
             await view.RefreshPosts();
+        }
+
+        public void ShowCheckProfile(int profileUserId)
+        {
+            _checkProfileUserControl = _checkProfileFactory.Create();
+            _checkProfileUserControl.SetDataContext(profileUserId);
+            ShowSomethingInMainBox(_checkProfileUserControl);
+            _isCheckProfileUCCreated = true;
         }
 
         public void ShowPosts()
@@ -313,7 +328,7 @@ namespace Instagram.ViewModels
             foreach (User user in probablyFriendsAfterSelection)
             {
                 var maybeView = _maybeFriendFactory.Create();
-                maybeView.SetDataContext(user.Id);
+                maybeView.SetDataContext(user.Id, ShowCheckProfile);
                 MaybeFriendsSection.Add(maybeView);
             }
             if (MaybeFriendsSection.Count == 0)
@@ -328,7 +343,7 @@ namespace Instagram.ViewModels
             foreach (int userThatSentRequestId in gotRequestPeopleIds)
             {
                 var friendRequestView = _friendRequestFactory.Create();
-                friendRequestView.SetDataContext(userThatSentRequestId, LoadFriendRequestAsync);
+                friendRequestView.SetDataContext(userThatSentRequestId, LoadFriendRequestAsync, ShowCheckProfile);
                 FriendRequestSection.Add(friendRequestView);
                 if (FriendRequestSection.Count == 7)
                 {

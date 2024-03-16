@@ -48,6 +48,11 @@ namespace Instagram.Repositories
             .Include(p => p.Comments).First(p => p.Id == id);
         }
 
+        public async Task<List<Post>> GetUserPostsWithAllDataToShowAsync(int userId)
+        {
+            return await _db.Posts.Where(p => p.UserId == userId).ToListAsync();
+        }
+
         public async Task<bool> RemovePostByIdAsync(int postId)
         {
             var post = await _db.Posts.FirstAsync(p => p.Id == postId);

@@ -50,10 +50,10 @@ namespace Instagram.ViewModels
         private User _user;
         private int _userId;
         #endregion
-        public MaybeFriendViewModel(InstagramDbContext db, int friendId)
+        public MaybeFriendViewModel(InstagramDbContext db, int friendId, Action<int> ShowCheckProfile)
         {
             #region CommandInstances
-            CheckProfileButton = new ShowProfileCommand();
+            CheckProfileButton = new ShowProfileCommand(ShowCheckProfile, friendId);
             AddUserButton = new SendInvitationCommand(ChangeInvitationStatus);
             #endregion
             #region PrivatePropertiesAssignement
