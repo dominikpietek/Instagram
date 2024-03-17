@@ -19,17 +19,15 @@ namespace Instagram.Repositories
             _searchUsersDtos = searchUsersDtos;
         }
 
-        public ObservableCollection<SearchedUserView> GetMatchingProfiles(string searchingText, IAbstractFactory<SearchedUserView> searchedUserFactory, Action<int> ShowCheckProfile)
+        public List<int> GetMatchingProfiles(string searchingText)
         {
-            ObservableCollection<SearchedUserView> searchedUsersSection = new ObservableCollection<SearchedUserView>();
+            List<int> profileIds = new List<int>();
             foreach (SearchUserDto user in _searchUsersDtos.Where(u =>
             u.Nickname.Substring(0, searchingText.Length > u.Nickname.Length ? u.Nickname.Length : searchingText.Length).Equals(searchingText.ToLower())))
             {
-                var userSearched = searchedUserFactory.Create();
-                userSearched.SetDataContext(user.Id, ShowCheckProfile);
-                searchedUsersSection.Add(userSearched);
+                profileIds.Add(user.Id);
             }
-            return searchedUsersSection;
+            return profileIds;
         }
     }
 }

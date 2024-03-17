@@ -64,7 +64,7 @@ namespace Instagram.ViewModels
                 OnPropertyChanged(nameof(IsBarVisible));
             }
         }
-        private string _SearchingText;
+        private string _SearchingText = "";
         public string SearchingText
         {
             get { return _SearchingText; }
@@ -302,8 +302,14 @@ namespace Instagram.ViewModels
         #region SearchingUsers
         public void GenerateSearchingUsers()
         {
+            IsFocused = true;
             SearchedUsersSection = new ObservableCollection<SearchedUserView>();
-            SearchedUsersSection = _SearchFilterRepository.GetMatchingProfiles(SearchingText, _searchedUserFactory, ShowCheckProfile);
+            foreach (int userId in _SearchFilterRepository.GetMatchingProfiles(SearchingText))
+            {
+                var userSearched = _searchedUserFactory.Create();
+                userSearched.SetDataContext(userId, ShowCheckProfile);
+                SearchedUsersSection.Add(userSearched);
+            }
             ChangeBarVisibility();
         }
 
@@ -328,6 +334,7 @@ namespace Instagram.ViewModels
         public void ChangeIsSearchClickedValue()
         {
             IsSearchClicked = true;
+            GenerateSearchingUsers();
         }
         #endregion
         #region Stories
