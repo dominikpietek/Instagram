@@ -14,5 +14,6 @@ namespace Instagram.Interfaces
         Task<bool> AddFriendAsync(int userId, int friendId);
         Task<bool> RemoveFriendAsync(int userId, int friendId);
         Task<Message> GetLastMessageAsync(int friendId);
+        Task<bool> IsFriend(int userId, int friendId);
     }
 }

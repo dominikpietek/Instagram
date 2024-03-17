@@ -53,7 +53,7 @@ namespace Instagram.Repositories
         private async void MakeChangesInUserDataFile(bool rememberMe, string emailNickname, int userId)
         {
             JSON<UserDataModel> userJSON = new JSON<UserDataModel>("UserData");
-            UserDataModel userJSONModel = await userJSON.GetAsync<UserDataModel>();
+            UserDataModel userJSONModel = userJSON.Get<UserDataModel>();
             if (rememberMe)
             {
                 userJSONModel.RememberedEmailNickname = emailNickname;
@@ -64,7 +64,7 @@ namespace Instagram.Repositories
                 userJSONModel.RememberedEmailNickname = string.Empty;
             }
             userJSONModel.UserId = userId;
-            await userJSON.SaveAsync(userJSONModel);
+            userJSON.Save(userJSONModel);
         }
 
         public async Task AutomaticLoginAsync(string emailNickname)

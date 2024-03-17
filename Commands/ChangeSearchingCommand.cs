@@ -8,9 +8,9 @@ namespace Instagram.Commands
 {
     public class ChangeSearchingCommand : CommandBase
     {
-        private readonly Func<Task> _GenerateSearchingUsers;
+        private readonly Action _GenerateSearchingUsers;
 
-        public ChangeSearchingCommand(Func<Task> GenerateSearchingUsers)
+        public ChangeSearchingCommand(Action GenerateSearchingUsers)
         {
             _GenerateSearchingUsers = GenerateSearchingUsers;
         }

@@ -30,6 +30,11 @@ namespace Instagram.Repositories
             return await _base.Where(b => b.UserId == userId).Select(b => b.StoredUserId).ToListAsync();
         }
 
+        public async Task<bool> IsRequest(int userId, int requestUserId)
+        {
+            return await _base.AnyAsync(b => (b.UserId == userId && b.StoredUserId == requestUserId));
+        }
+
         public async Task<bool> RemoveAsync(int userId, int requestUserId)
         {
             _base.Remove(await _base.FirstAsync(b => (b.UserId == userId && b.StoredUserId == requestUserId)));

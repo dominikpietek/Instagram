@@ -159,7 +159,7 @@ namespace Instagram.ViewModels
         {
             ProfilePhotoSource = $"{_path}defaultProfilePhoto.png";
             JSON<UserDataModel> userJSON = new JSON<UserDataModel>("UserData");
-            bool isDarkMode = await userJSON.GetDarkModeAsync();
+            bool isDarkMode = userJSON.GetDarkMode();
             BackgroundColour = isDarkMode ? "#CBC8CC" : "white";
             _ChangeTheme(isDarkMode);
         }

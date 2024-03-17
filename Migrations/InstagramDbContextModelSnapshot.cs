@@ -127,7 +127,7 @@ namespace Instagram.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UGotFriendRequestModels");
+                    b.ToTable("GotFriendRequestModels");
                 });
 
             modelBuilder.Entity("Instagram.Models.Message", b =>

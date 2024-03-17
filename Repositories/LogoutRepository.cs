@@ -16,10 +16,10 @@ namespace Instagram.Repositories
         public async Task RestartAutomaticLoginAsync()
         {
             JSON<UserDataModel> userJSON = new JSON<UserDataModel>("UserData");
-            UserDataModel userJSONModel = await userJSON.GetAsync<UserDataModel>();
+            UserDataModel userJSONModel = userJSON.Get<UserDataModel>();
             userJSONModel.LastLogin = DateTime.MinValue;
             userJSONModel.UserId = 0;
-            await userJSON.SaveAsync(userJSONModel);
+            userJSON.Save(userJSONModel);
         }
         public void CloseWindowAndShowStartUpWindow(Action CloseWindow, IAbstractFactory<LoginOrRegisterWindowView> loginFactory)
         {

@@ -4,7 +4,6 @@ using Instagram.ComponentsViewModels;
 using Instagram.Databases;
 using Instagram.DTOs;
 using Instagram.Interfaces;
-using Instagram.JSONModels;
 using Instagram.Models;
 using Instagram.Repositories;
 using Instagram.Services;
@@ -27,7 +26,6 @@ namespace Instagram.ViewModels
     {
         #region Resources
         private readonly string _path;
-        public BitmapImage ProfilePhotoSource { get; set; }
         public string LogoutPath { get; set; }
         public string MessageIconPath { get; set; }
         public string HomeIconPath { get; set; }
@@ -46,6 +44,16 @@ namespace Instagram.ViewModels
         public ICommand ChangeSearching { get; set; }
         #endregion
         #region OnProperyChangeProperties
+        private BitmapImage _ProfilePhotoSource;
+        public BitmapImage ProfilePhotoSource 
+        {
+            get { return _ProfilePhotoSource; }
+            set
+            {
+                _ProfilePhotoSource = value;
+                OnPropertyChanged(nameof(ProfilePhotoSource));
+            }
+        }
         private bool _IsBarVisible;
         public bool IsBarVisible 
         { 
@@ -194,6 +202,7 @@ namespace Instagram.ViewModels
         private readonly IAbstractFactory<MaybeFriendView> _maybeFriendFactory;
         private readonly IAbstractFactory<CheckProfileUserControl> _checkProfileFactory;
         private readonly IAbstractFactory<SearchedUserView> _searchedUserFactory;
+        private SearchFilterRepository _SearchFilterRepository;
         private List<SearchUserDto> _searchUsersDtos;
         private readonly Func<bool> _IsMouseOverSearchingFriends;
         #endregion
@@ -221,7 +230,7 @@ namespace Instagram.ViewModels
             _userIdGotModelRepository = new GotSentFriendRequestModelRepository<GotFriendRequestModel>(db);
             _userIdSentModelRepository = new GotSentFriendRequestModelRepository<SentFriendRequestModel>(db);
             _friendRepository = new FriendRepository(db);
-            _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
+            _path = ConfigurationManager.AppSettings.Get("ResourcesPath")!;
             _feedViewMainContainer = feedViewMainContainer;
             _resources = resources;
             _newPostFactory = newPostFactory;
@@ -249,60 +258,9 @@ namespace Instagram.ViewModels
             ChangeSearching = new ChangeSearchingCommand(GenerateSearchingUsers);
             #endregion
             InitResources();
-            InitWithDbAsync();
+            InitAsync();
         }
-
-        private void InvisibleBar()
-        {
-            if (SearchedUsersSection.Count() <= 2)
-            {
-                IsBarVisible = false;
-            }
-        }
-
-        private async Task GenerateSearchingUsers()
-        {
-            SearchedUsersSection = new ObservableCollection<SearchedUserView>();
-            IsBarVisible = true;
-            foreach (SearchUserDto user in _searchUsersDtos.Where(u => 
-            u.Nickname.Substring(0, SearchingText.Length > u.Nickname.Length ? u.Nickname.Length : SearchingText.Length).Equals(SearchingText.ToLower())))
-            {
-                var userSearched = _searchedUserFactory.Create();
-                userSearched.SetDataContext(user.Id, ShowCheckProfile);
-                SearchedUsersSection.Add(userSearched);
-            }
-            InvisibleBar();
-        }
-
-        public void ChangeLostFocus()
-        {
-            if (!_IsMouseOverSearchingFriends.Invoke())
-            {
-                IsFocused ^= true;
-                InvisibleBar();
-            }
-        }
-
-        private void DeactivateSearch()
-        {
-            IsFocused = false;
-            IsSearchClicked = false;
-        }
-
-        private void ChangeIsSearchClickedValue()
-        {
-            IsSearchClicked = true;
-        }
-
-        private async Task InitWithDbAsync()
-        {
-            _user = await GetUser.FromDbAndFileAsync(_userRepository);
-            await LoadThemeColourFromJsonFileAsync();
-            await LoadEverythingFromDatabaseAsync();
-            _searchUsersDtos = await _userRepository.GetUsersIdAndNickaname();
-            ShowPosts();
-        }
-
+        #region Init
         private void InitResources()
         {
             LogoPath = ChangeTheme.ChangeLogo(_path, IsDarkModeOn);
@@ -314,72 +272,92 @@ namespace Instagram.ViewModels
             MaybeFriendsMessage = "New users, maybe you know them?:";
         }
 
-        public void ChangeThemes(bool isDarkMode)
+        private async Task InitAsync()
         {
-            ChangeTheme.ChangeAsync(_resources);
-            LogoPath = ChangeTheme.ChangeLogo(_path, isDarkMode);
-            if (_isHomeUCCreated) _homeUserControl.ChangeHomeTheme();
-            if (_isProfileUCCreated) _profileUserControl.ChangeProfileTheme();
-            if (_isMessengerUCCreated) _messengerUserControl.ChangeMessengerTheme();
-            if (_isCheckProfileUCCreated) _checkProfileUserControl.ChangeProfileTheme();
+            _user = await GetUser.FromDbAndFileAsync(_userRepository);
+            _SearchFilterRepository = new SearchFilterRepository(await _userRepository.GetUsersIdAndNickaname());
+            ProfilePhotoSource = ConvertImage.FromByteArray(_user.ProfilePhoto.ImageBytes);
+            await LoadThemeColourFromJsonFileAsync();
+            await LoadFriendRequestAsync();
+            await ShowStoriesAsync();
+            ShowPosts();
         }
 
         private async Task LoadThemeColourFromJsonFileAsync()
         {
             IsDarkModeOn = await ChangeTheme.GetModeAsync();
-            ChangeThemes(IsDarkModeOn);
+            await ChangeThemes(IsDarkModeOn);
         }
 
-        private async Task LoadEverythingFromDatabaseAsync()
+        public async Task ChangeThemes(bool isDarkMode)
         {
-            ProfilePhotoSource = ConvertImage.FromByteArray(_user.ProfilePhoto.ImageBytes);
-            await LoadFriendRequestAsync();
-            await ShowStoriesAsync();
+            await ChangeTheme.ChangeAsync(_resources);
+            LogoPath = ChangeTheme.ChangeLogo(_path, isDarkMode);
+            if (_isHomeUCCreated) await _homeUserControl.ChangeHomeTheme();
+            if (_isProfileUCCreated) await _profileUserControl.ChangeProfileTheme();
+            if (_isMessengerUCCreated) await _messengerUserControl.ChangeMessengerTheme();
+            if (_isCheckProfileUCCreated) await _checkProfileUserControl.ChangeProfileTheme();
         }
-
-        private void ShowSomethingInMainBox(UserControl userControl)
+        #endregion
+        #region SearchingUsers
+        public void GenerateSearchingUsers()
         {
-            _feedViewMainContainer.Children.Clear();
-            _feedViewMainContainer.Children.Add(userControl);
+            SearchedUsersSection = new ObservableCollection<SearchedUserView>();
+            SearchedUsersSection = _SearchFilterRepository.GetMatchingProfiles(SearchingText, _searchedUserFactory, ShowCheckProfile);
+            ChangeBarVisibility();
         }
 
-        private void CreateStoryFromDb(List<int> storyIds, int userId)
+        private void ChangeBarVisibility()
+        {
+            if (SearchedUsersSection.Count() <= 2) IsBarVisible = false;
+            else IsBarVisible = true;
+        }
+
+        public void ChangeLostFocus()
+        {
+            if (!_IsMouseOverSearchingFriends.Invoke()) DeactivateSearch();
+        }
+
+        private void DeactivateSearch()
+        {
+            IsFocused = false;
+            IsBarVisible = false;
+            IsSearchClicked = false;
+        }
+
+        public void ChangeIsSearchClickedValue()
+        {
+            IsSearchClicked = true;
+        }
+        #endregion
+        #region Stories
+        private async Task ShowStoriesAsync()
+        {
+            StoriesSection = new ObservableCollection<StoryUserView>();
+            var groupedStories = 
+                (await _storyRepository.GetAllStoriesAsync())
+                .Where(s => s.UserId != _user.Id)
+                .GroupBy(s => s.UserId, s => s.Id, 
+                (key, ids) => new { UserId = key, Ids = ids.ToList() });
+            ShowStoryInBox(_user.Stories.Where(s => s.PublicationDate.AddHours(24) > DateTime.Now).Select(s => s.Id).ToList(), _user.Id);
+            foreach (var story in groupedStories)
+            {
+                ShowStoryInBox(story.Ids, story.UserId);
+            }
+        }
+
+        private void ShowStoryInBox(List<int> storyIds, int userId)
         {
             var storyBase = _storyFactory.Create();
             storyBase.SetDataContext(storyIds, userId);
             StoriesSection.Add(storyBase);
         }
-
-        private async Task ShowStoriesAsync()
+        #endregion
+        #region ShowInMainBox
+        private void ShowSomethingInMainBox(UserControl userControl)
         {
-            StoriesSection = new ObservableCollection<StoryUserView>();
-            List<Story> stories = await _storyRepository.GetAllStoriesAsync();
-
-            var groupedStories = stories.Where(s => s.UserId != _user.Id).GroupBy(s => s.UserId, s => s.Id, (key, ids) => new { UserId = key, Ids = ids.ToList() });
-            CreateStoryFromDb(ReturnUserStories(), _user.Id);
-            foreach (var story in groupedStories)
-            {
-                CreateStoryFromDb(story.Ids, story.UserId);
-            }
-        }
-
-        private List<int> ReturnUserStories()
-        {
-            List<int> storyIds = new List<int>();
-            foreach (Story story in _user.Stories)
-            {
-                if (story.PublicationDate.AddHours(24) > DateTime.Now)
-                {
-                    storyIds.Add(story.Id);
-                }
-            }
-            return storyIds;
-        }
-
-        public async Task UpdatePosts()
-        {
-            HomeViewModel view = (HomeViewModel)_homeUserControl.DataContext!;
-            await view.RefreshPosts();
+            _feedViewMainContainer.Children.Clear();
+            _feedViewMainContainer.Children.Add(userControl);
         }
 
         public void ShowCheckProfile(int profileUserId)
@@ -411,10 +389,17 @@ namespace Instagram.ViewModels
             ShowSomethingInMainBox(_messengerUserControl);
             _isMessengerUCCreated = true;
         }
+
+        public async Task UpdatePosts()
+        {
+            HomeViewModel view = (HomeViewModel)_homeUserControl.DataContext!;
+            await view.RefreshPosts();
+        }
+        #endregion
+        #region Friends
         private async Task LoadMaybeFriendsAsync()
         {
-            List<User> probablyFriendsAfterSelection = await _userRepository.GetAllNotFriendsUsersAsync(_user.Id, _friendRepository, _userIdSentModelRepository);
-            probablyFriendsAfterSelection = probablyFriendsAfterSelection.TakeLast(7).ToList();
+            List<User> probablyFriendsAfterSelection = (await _userRepository.GetAllNotFriendsUsersAsync(_user.Id, _friendRepository, _userIdSentModelRepository)).TakeLast(7).ToList();
             MaybeFriendsSection = new ObservableCollection<MaybeFriendView>() {};
             foreach (User user in probablyFriendsAfterSelection)
             {
@@ -422,11 +407,9 @@ namespace Instagram.ViewModels
                 maybeView.SetDataContext(user.Id, ShowCheckProfile);
                 MaybeFriendsSection.Add(maybeView);
             }
-            if (MaybeFriendsSection.Count == 0)
-            {
-                MaybeFriendsMessage = "There is no new users :(";
-            }
+            NoMaybeFriends();
         }
+
         private async Task LoadFriendRequestAsync()
         {
             FriendRequestSection = new ObservableCollection<FriendRequestView>();
@@ -441,11 +424,19 @@ namespace Instagram.ViewModels
                     break;
                 }
             }
-            LoadMaybeFriendsAsync();
-            if (FriendRequestSection.Count == 0)
-            {
-                FriendRequestMessage = "No friend requests :(";
-            }
+            await LoadMaybeFriendsAsync();
+            NoFriendRequests();
         }
+
+        private void NoFriendRequests()
+        {
+            if (FriendRequestSection.Count == 0) FriendRequestMessage = "No friend requests :(";
+        }
+
+        private void NoMaybeFriends()
+        {
+            if (MaybeFriendsSection.Count == 0) MaybeFriendsMessage = "There is no new users :(";
+        }
+        #endregion
     }
 }

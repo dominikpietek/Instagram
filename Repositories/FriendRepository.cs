@@ -56,6 +56,11 @@ namespace Instagram.Repositories
             
         }
 
+        public Task<bool> IsFriend(int userId, int friendId)
+        {
+            return _db.Friends.AnyAsync(f => (f.UserId == userId && f.FriendId == friendId));
+        }
+
         public async Task<bool> RemoveFriendAsync(int userId, int friendId)
         {
             await _db.Friends.Where(f => f.UserId == userId).ExecuteDeleteAsync();

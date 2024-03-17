@@ -96,7 +96,7 @@ namespace Instagram.ViewModels
 
         private async Task UnSentInvitationAsync()
         {
-            await _gotRepository.RemoveAsync(_userId, _friendId);
+            await _gotRepository.RemoveAsync(_friendId, _userId);
             await _sentRepository.RemoveAsync(_userId, _friendId);
         }
     }

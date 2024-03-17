@@ -14,7 +14,7 @@ namespace Instagram.Services
         public static async Task<bool> GetModeAsync()
         {
             JSON<UserDataModel> json = new JSON<UserDataModel>("UserData");
-            return await json.GetDarkModeAsync();
+            return json.GetDarkMode();
         }
 
         public static async Task ChangeAsync(ResourceDictionary resource)

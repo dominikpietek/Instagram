@@ -14,7 +14,7 @@ using System.Windows.Media.Animation;
 
 namespace Instagram.Databases
 {
-    public class JSON<JSONModel>
+    public class JSON<JSONModel> where JSONModel : class
     {
         private string _fileName;
         private readonly string _hardPath;
@@ -22,21 +22,26 @@ namespace Instagram.Databases
         public JSON(string fileName)
         {
             _fileName = fileName;
-            _hardPath = ConfigurationManager.AppSettings.Get("DatabasesPath");
+            _hardPath = ConfigurationManager.AppSettings.Get("DatabasesPath")!;
             _path = $"{_hardPath}{_fileName}.json";
         }
-        public async Task<JSONModel> GetAsync<JSONModel>()
+        public JSONModel Get<JSONModel>()
         {
-            return JsonConvert.DeserializeObject<JSONModel>(File.ReadAllText(_path));
+            if (!File.Exists(_path))
+            {
+                File.Create(_path).Dispose();
+            }
+            return JsonConvert.DeserializeObject<JSONModel>(File.ReadAllText(_path))!;
         }
-        public async Task SaveAsync(JSONModel model)
+
+        public void Save(JSONModel model)
         {
             string serializedModel = JsonConvert.SerializeObject(model);
             File.WriteAllText(_path, serializedModel);
         }
-        public async Task<bool> GetDarkModeAsync()
+        public bool GetDarkMode()
         {
-            var jsonModel = await GetAsync<UserDataModel>();
+            var jsonModel = Get<UserDataModel>();
             return jsonModel.DarkMode;
         }
     }

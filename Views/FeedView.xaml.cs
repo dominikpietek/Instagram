@@ -34,7 +34,7 @@ namespace Instagram.Views
 
         public bool IsMouseOverSearchingFriends()
         {
-            return this.searchScroll.IsMouseOver;
+            return (this.searchScroll.IsMouseOver || this.searchingBox.IsMouseOver);
         }
     }
 }
