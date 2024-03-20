@@ -74,13 +74,14 @@ namespace Instagram.ViewModels
             await _friendRepository.AddFriendAsync(_userId, _friendRequestId);
             await _friendRepository.AddFriendAsync(_friendRequestId, _userId);
             await RemoveFriendAsync();
+            await _LoadFriendRequestAsync.Invoke();
         }
 
         private async Task RemoveFriendAsync()
         {
             await _gotRepository.RemoveAsync(_userId, _friendRequestId);
             await _sentRepository.RemoveAsync(_userId, _friendRequestId);
-            _LoadFriendRequestAsync.Invoke();
+            await _LoadFriendRequestAsync.Invoke();
         }
     }
 }

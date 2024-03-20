@@ -16,8 +16,8 @@ namespace Instagram.ComponentsViewModels
 {
     public class MessengerViewModel : ViewModelBase
     {
-        private ObservableCollection<FriendView> _FriendsList = new ObservableCollection<FriendView>();
-        public ObservableCollection<FriendView> FriendsList 
+        private ObservableCollection<FriendInMessengerView> _FriendsList = new ObservableCollection<FriendInMessengerView>();
+        public ObservableCollection<FriendInMessengerView> FriendsList 
         { 
             get { return _FriendsList; }
             set
@@ -28,22 +28,23 @@ namespace Instagram.ComponentsViewModels
         }
 
         private readonly IFriendRepository _friendRepository;
-        private readonly IAbstractFactory<FriendView> _friendFactory;
+        private readonly IAbstractFactory<FriendInMessengerView> _friendFactory;
 
-        public MessengerViewModel(InstagramDbContext db, IAbstractFactory<FriendView> friendFactory)
+        public MessengerViewModel(InstagramDbContext db, IAbstractFactory<FriendInMessengerView> friendFactory)
         {
             _friendRepository = new FriendRepository(db);
             _friendFactory = friendFactory;
             Init();
         }
 
-        private async Task Init()
+        public async Task Init()
         {
+            FriendsList = new ObservableCollection<FriendInMessengerView>();
             List<int> friendsId = await _friendRepository.GetAllUserFriendsIdAsync(await GetUser.IdFromFile());
             foreach (int id in friendsId)
             {
                 var friend = _friendFactory.Create();
-                friend.SetDataContext(id);
+                friend.SetDataContext(id, Init);
                 FriendsList.Add(friend);
             }
         }

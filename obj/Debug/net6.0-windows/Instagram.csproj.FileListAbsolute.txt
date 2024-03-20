@@ -90,7 +90,6 @@ C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\CreateNewStoryVie
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FeedView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FriendInMessengerView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FriendRequestView.g.cs
-C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FriendView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\LoginOrRegisterWindowView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\MaybeFriendView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\PostView.g.cs
@@ -117,7 +116,6 @@ C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\CreateNewStoryVie
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FeedView.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FriendInMessengerView.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FriendRequestView.baml
-C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\FriendView.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\LoginOrRegisterWindowView.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\MaybeFriendView.baml
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\PostView.baml

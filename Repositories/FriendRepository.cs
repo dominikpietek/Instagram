@@ -61,10 +61,15 @@ namespace Instagram.Repositories
             return _db.Friends.AnyAsync(f => (f.UserId == userId && f.FriendId == friendId));
         }
 
+        public async Task<Friend> GetFriendAsync(int userId, int friendId)
+        {
+            return _db.Friends.First(f => f.UserId == userId && f.FriendId == friendId);
+        }
+
         public async Task<bool> RemoveFriendAsync(int userId, int friendId)
         {
-            await _db.Friends.Where(f => f.UserId == userId).ExecuteDeleteAsync();
-            await _db.Friends.Where(f => f.FriendId == friendId).ExecuteDeleteAsync();
+            _db.Friends.Remove(await GetFriendAsync(userId, friendId));
+            _db.Friends.Remove(await GetFriendAsync(friendId, userId));
             return await SaveChanges.SaveAsync(_db);
         }
     }

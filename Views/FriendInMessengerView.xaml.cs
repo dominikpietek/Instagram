@@ -1,4 +1,5 @@
-﻿using Instagram.DTOs;
+﻿using Instagram.Databases;
+using Instagram.DTOs;
 using Instagram.Models;
 using Instagram.ViewModels;
 using System;
@@ -18,15 +19,19 @@ using System.Windows.Shapes;
 
 namespace Instagram.Views
 {
-    /// <summary>
-    /// Interaction logic for FriendInMessenger.xaml
-    /// </summary>
     public partial class FriendInMessengerView : UserControl
     {
-        public FriendInMessengerView(FriendDto friend)
+        private readonly InstagramDbContext _db;
+
+        public FriendInMessengerView(InstagramDbContext db)
         {
-            DataContext = new FriendInMessengerViewModel(friend);
             InitializeComponent();
+            _db = db;
+        }
+
+        public void SetDataContext(int friendId, Func<Task> UpdateMessenger)
+        {
+            DataContext = new FriendInMessengerViewModel(_db, friendId, UpdateMessenger);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Instagram.Components
 {
     public partial class MessengerUserControl : UserControl
     {
-        public MessengerUserControl(InstagramDbContext db, IAbstractFactory<FriendView> friendFactory)
+        public MessengerUserControl(InstagramDbContext db, IAbstractFactory<FriendInMessengerView> friendFactory)
         {
             ChangeMessengerTheme();
             this.DataContext = new MessengerViewModel(db, friendFactory);

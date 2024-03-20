@@ -36,12 +36,12 @@ namespace Instagram
                     services.AddFormFactory<StoryView>();
                     services.AddFormFactory<CreateNewStoryView>();
                     services.AddFormFactory<ProfileUserControl>();
-                    services.AddFormFactory<FriendView>();
                     services.AddFormFactory<MessengerUserControl>();
                     services.AddFormFactory<MaybeFriendView>();
                     services.AddFormFactory<FriendRequestView>();
                     services.AddFormFactory<CheckProfileUserControl>();
                     services.AddFormFactory<SearchedUserView>();
+                    services.AddFormFactory<FriendInMessengerView>();
                 })
                 .Build();
         }

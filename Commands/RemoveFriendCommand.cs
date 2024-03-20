@@ -9,9 +9,15 @@ namespace Instagram.Commands
 {
     public class RemoveFriendCommand : CommandBase
     {
-        public override void Execute(object parameter)
+        private readonly Func<Task> _RemoveFriend;
+
+        public RemoveFriendCommand(Func<Task> RemoveFriend)
         {
-            MessageBox.Show("ohhh remove him from my life...");
+            _RemoveFriend = RemoveFriend;
+        }
+        public override async void Execute(object parameter)
+        {
+            await _RemoveFriend.Invoke();
         }
     }
 }

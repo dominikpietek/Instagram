@@ -1,6 +1,9 @@
 ﻿using Instagram.Commands;
+using Instagram.Databases;
 using Instagram.DTOs;
+using Instagram.Interfaces;
 using Instagram.Models;
+using Instagram.Repositories;
 using Instagram.Services;
 using System;
 using System.Collections.Generic;
@@ -25,28 +28,51 @@ namespace Instagram.ViewModels
         #region Properties
         public string Nickname { get; set; }
         public string LastMessage { get; set; }
-        private FriendDto _friend;
         #endregion
         #region Commands
-        public ICommand OpenChatButton;
-        public ICommand RemoveFriendButton;
+        public ICommand OpenChatButton { get; set; }
+        public ICommand RemoveFriendButton { get; set; }
         #endregion
-        public FriendInMessengerViewModel(FriendDto friend)
+        #region PrivateProperties
+        private int _friendId;
+        private readonly IFriendRepository _friendRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly Func<Task> _UpdateMessenger;
+        #endregion
+        public FriendInMessengerViewModel(InstagramDbContext db, int friendId, Func<Task> UpdateMessenger)
         {
+            #region PrivatePropertiesAssignement
+            _friendRepository = new FriendRepository(db);
+            _userRepository = new UserRepository(db);
+            _UpdateMessenger = UpdateMessenger;
+            _friendId = friendId;
+            _path = ConfigurationManager.AppSettings.Get("ResourcesPath")!;
+            #endregion
             #region CommandsInstances
             OpenChatButton = new OpenChatCommand();
-            RemoveFriendButton = new RemoveFriendCommand();
+            RemoveFriendButton = new RemoveFriendCommand(RemoveFriend);
             #endregion
-            _friend = friend;
-            _path = ConfigurationManager.AppSettings.Get("ResourcesPath");
             InitResources();
-            Nickname = friend.Nickname;
-            LastMessage = friend.LastMessage;
+            InitAsync();
         }
+
         private void InitResources()
         {
             TrashIconPath = $"{_path}trashIcon.png";
-            ProfilePhotoSource = ConvertImage.FromByteArray(_friend.ProfilePhoto.ImageBytes);
+        }
+
+        private async Task InitAsync()
+        {
+            User user = await _userRepository.GetUserWithPhotoAndRequestsAsync(_friendId);
+            Nickname = user.Nickname;
+            //LastMessage = (await _friendRepository.GetLastMessageAsync(_friendId)).Content;
+            ProfilePhotoSource = ConvertImage.FromByteArray(user.ProfilePhoto.ImageBytes);
+        }
+
+        public async Task RemoveFriend()
+        {
+            await _friendRepository.RemoveFriendAsync(await GetUser.IdFromFile(), _friendId);
+            await _UpdateMessenger.Invoke();
         }
     }
 }
