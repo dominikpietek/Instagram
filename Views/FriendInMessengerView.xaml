@@ -15,9 +15,9 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="100"/>
         </Grid.ColumnDefinitions>
-        <Button Grid.Column="0" Command="{Binding OpenChatButton}" Cursor="Hand" Background="Transparent" HorizontalAlignment="Left" Width="420">
+        <Button Grid.Column="0" Command="{Binding OpenChatButton}" Cursor="Hand" Background="Transparent" HorizontalAlignment="Left" Width="420" BorderThickness="0">
             <Button.Content>
-                <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" Width="420">
                     <Ellipse Width="100" Height="100" x:Name="ElipsePhoto" Stretch="Uniform">
                         <Ellipse.Fill>
                             <ImageBrush ImageSource="{Binding ProfilePhotoSource}"/>
@@ -35,7 +35,7 @@
                 </StackPanel>
             </Button.Content>
         </Button>
-        <Button Grid.Column="1" Command="{Binding RemoveFriendButton}" Cursor="Hand" Background="Transparent">
+        <Button Grid.Column="1" Command="{Binding RemoveFriendButton}" Cursor="Hand" Background="Transparent" BorderThickness="0">
             <Image Source="{Binding TrashIconPath}"/>
         </Button>
     </Grid>

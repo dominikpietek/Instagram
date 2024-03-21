@@ -29,9 +29,9 @@ namespace Instagram.Views
             _db = db;
         }
 
-        public void SetDataContext(int friendId, Func<Task> UpdateMessenger)
+        public void SetDataContext(int friendId, Func<Task> UpdateMessenger, Func<int, Task> ShowMessages)
         {
-            DataContext = new FriendInMessengerViewModel(_db, friendId, UpdateMessenger);
+            DataContext = new FriendInMessengerViewModel(_db, friendId, UpdateMessenger, ShowMessages);
         }
     }
 }

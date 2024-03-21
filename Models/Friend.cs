@@ -12,6 +12,5 @@ namespace Instagram.Models
         public User User { get; set; }
         public int UserId { get; set; }
         public int FriendId { get; set; }
-        public List<Message> Messages { get; set; } = new List<Message>();
     }
 }

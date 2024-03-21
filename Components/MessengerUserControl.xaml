@@ -6,8 +6,67 @@
              xmlns:local="clr-namespace:Instagram.Components"
              mc:Ignorable="d" >
     <Grid>
-        <Label Content="You have no friends :(" FontSize="22" FontWeight="Black"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="480"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="510"/>
+            <ColumnDefinition Width="10"/>
+        </Grid.ColumnDefinitions>
+        <Label Content="You have no friends :(" FontSize="22" FontWeight="Black">
+            <Label.Style>
+                <Style TargetType="Label">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding AreMessagesShown}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Label.Style>
+        </Label>
         <ItemsControl ItemsSource="{Binding FriendsList, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Background="White">
+            <ItemsControl.Style>
+                <Style TargetType="ItemsControl">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding AreAnyFriendsInMessenger}" Value="false">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding AreMessagesShown}" Value="true">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ItemsControl.Style>
         </ItemsControl>
+        <ItemsControl ItemsSource="{Binding Message, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+            <ItemsControl.Style>
+                <Style TargetType="ItemsControl">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding AreMessagesShown}" Value="false">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ItemsControl.Style>
+        </ItemsControl>
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Width="520">
+            <StackPanel.Style>
+                <Style TargetType="StackPanel">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding AreMessagesShown}" Value="false">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Style>
+            <TextBox  Text="{Binding WritenTextInMessenger, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="470"/>
+            <Button Width="40" Command="{Binding SendMessageButton}" Cursor="Hand"/>
+            <!--add validation-->
+        </StackPanel>
     </Grid>
 </UserControl>

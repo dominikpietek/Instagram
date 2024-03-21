@@ -148,9 +148,10 @@ namespace Instagram.Migrations
                     b.Property<DateTime>("SendDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("FriendId");
+                    b.HasKey("Id");
 
                     b.ToTable("Messages");
                 });
@@ -424,17 +425,6 @@ namespace Instagram.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Instagram.Models.Message", b =>
-                {
-                    b.HasOne("Instagram.Models.Friend", "Friend")
-                        .WithMany("Messages")
-                        .HasForeignKey("FriendId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Friend");
-                });
-
             modelBuilder.Entity("Instagram.Models.Post", b =>
                 {
                     b.HasOne("Instagram.Models.User", "User")
@@ -515,11 +505,6 @@ namespace Instagram.Migrations
             modelBuilder.Entity("Instagram.Models.Comment", b =>
                 {
                     b.Navigation("CommentResponses");
-                });
-
-            modelBuilder.Entity("Instagram.Models.Friend", b =>
-                {
-                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("Instagram.Models.Post", b =>

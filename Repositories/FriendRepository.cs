@@ -44,15 +44,17 @@ namespace Instagram.Repositories
         public async Task<Message> GetLastMessageAsync(int friendId)
         {
             Friend friend = await _db.Friends.FirstAsync(f => f.Id == friendId);
-            try
-            {
-                return friend.Messages.Last();
-            }
-            catch (Exception)
-            {
+            return new Message();
+            //try
+            //{
+            //    return friend.Messages.Last();
+                
+            //}
+            //catch (Exception)
+            //{
 
-                return null;
-            }
+            //    return null;
+            //}
             
         }
 

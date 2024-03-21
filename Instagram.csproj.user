@@ -49,6 +49,9 @@
     <Compile Update="Views\MaybeFriendView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\MessageView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\PostView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -115,6 +118,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\MaybeFriendView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\MessageView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\PostView.xaml">

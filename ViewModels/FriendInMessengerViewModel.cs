@@ -1,10 +1,12 @@
 ﻿using Instagram.Commands;
+using Instagram.Components;
 using Instagram.Databases;
 using Instagram.DTOs;
 using Instagram.Interfaces;
 using Instagram.Models;
 using Instagram.Repositories;
 using Instagram.Services;
+using Instagram.StartupHelpers;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -39,7 +41,7 @@ namespace Instagram.ViewModels
         private readonly IUserRepository _userRepository;
         private readonly Func<Task> _UpdateMessenger;
         #endregion
-        public FriendInMessengerViewModel(InstagramDbContext db, int friendId, Func<Task> UpdateMessenger)
+        public FriendInMessengerViewModel(InstagramDbContext db, int friendId, Func<Task> UpdateMessenger, Func<int, Task> ShowMessages)
         {
             #region PrivatePropertiesAssignement
             _friendRepository = new FriendRepository(db);
@@ -49,7 +51,7 @@ namespace Instagram.ViewModels
             _path = ConfigurationManager.AppSettings.Get("ResourcesPath")!;
             #endregion
             #region CommandsInstances
-            OpenChatButton = new OpenChatCommand();
+            OpenChatButton = new OpenChatCommand(ShowMessages, friendId);
             RemoveFriendButton = new RemoveFriendCommand(RemoveFriend);
             #endregion
             InitResources();
