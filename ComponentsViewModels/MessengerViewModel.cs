@@ -152,6 +152,7 @@ namespace Instagram.ComponentsViewModels
             await _messageRepository.AddMessage(message);
             WritenTextInMessenger = "";
             Message.Add(new MessageView(message, true));
+            _ScrollToBottom.Invoke();
         }
     }
 }

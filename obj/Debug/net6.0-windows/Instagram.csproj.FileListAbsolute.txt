@@ -137,3 +137,7 @@ C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Instagram.genruntimecon
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\ref\Instagram.dll
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\MessageView.g.cs
 C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Views\MessageView.baml
+C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\NLog.dll
+C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\NLog.Extensions.Logging.dll
+C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\NLog.config
+C:\Programs\Instagram\Instagram\obj\Debug\net6.0-windows\Instagram_Content.g.cs

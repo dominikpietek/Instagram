@@ -3,6 +3,7 @@ using Instagram.Interfaces;
 using Instagram.Models;
 using Instagram.Services;
 using Microsoft.EntityFrameworkCore;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +16,13 @@ namespace Instagram.Repositories
     public class StoryRepository : IStoryRepository
     {
         private readonly InstagramDbContext _db;
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
         public StoryRepository(InstagramDbContext db)
         {
             _db = db;
         }
+
         public async Task<List<Story>> GetAllStoriesAsync()
         {
             try
@@ -27,9 +31,9 @@ namespace Instagram.Repositories
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message);
+                _logger.Error($"{e.Message};StoryRepository");
+                throw;
             }
-            return await _db.Stories.Include(s => s.Image).ToListAsync();
         }
 
         public async Task<Story> GetStoryAsync(int id)
@@ -40,28 +44,51 @@ namespace Instagram.Repositories
             }
             catch (Exception e)
             {
-
-                throw e;
+                _logger.Error($"{e.Message};StoryRepository");
+                throw;
             }
-            
         }
 
         public async Task<bool> RemoveStoryAsync(int id)
         {
-            _db.Stories.Remove(await GetStoryAsync(id));
-            return await SaveChanges.SaveAsync(_db);
+            try
+            {
+                _db.Stories.Remove(await GetStoryAsync(id));
+                return await SaveChanges.SaveAsync(_db);
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"{e.Message};StoryRepository");
+                throw;
+            }
         }
 
         public async Task<bool> UpdateStoryAsync(Story story)
         {
-            _db.Stories.Update(story);
-            return await SaveChanges.SaveAsync(_db);
+            try
+            {
+                _db.Stories.Update(story);
+                return await SaveChanges.SaveAsync(_db);
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"{e.Message};StoryRepository");
+                throw;
+            }
         }
 
         public async Task<bool> AddStoryAsync(int userId, Story story)
         {
-            _db.Users.Where(u => u.Id == userId).Include(u => u.Stories).First().Stories.Add(story);
-            return await SaveChanges.SaveAsync(_db);
+            try
+            {
+                _db.Users.Where(u => u.Id == userId).Include(u => u.Stories).First().Stories.Add(story);
+                return await SaveChanges.SaveAsync(_db);
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"{e.Message};StoryRepository");
+                throw;
+            }
         }
     }
 }

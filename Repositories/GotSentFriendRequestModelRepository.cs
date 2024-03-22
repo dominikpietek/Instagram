@@ -3,6 +3,8 @@ using Instagram.Interfaces;
 using Instagram.Models;
 using Instagram.Services;
 using Microsoft.EntityFrameworkCore;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +15,7 @@ namespace Instagram.Repositories
     {
         private readonly InstagramDbContext _db;
         private readonly DbSet<model> _base;
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public GotSentFriendRequestModelRepository(InstagramDbContext db)
         {
@@ -21,24 +24,56 @@ namespace Instagram.Repositories
         }
         public async Task<bool> AddAsync(FriendRequestAbstractModel userIdModel)
         {
-            await _base.AddAsync((userIdModel as model)!);
-            return await SaveChanges.SaveAsync(_db);
+            try
+            {
+                await _base.AddAsync((userIdModel as model)!);
+                return await SaveChanges.SaveAsync(_db);
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"{e.Message};GotSentFriendRequestModelRepository");
+                throw;
+            }
         }
 
         public async Task<List<int>> GetAllAsync(int userId)
         {
-            return await _base.Where(b => b.UserId == userId).Select(b => b.StoredUserId).ToListAsync();
+            try
+            {
+                return await _base.Where(b => b.UserId == userId).Select(b => b.StoredUserId).ToListAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"{e.Message};GotSentFriendRequestModelRepository");
+                throw;
+            }
         }
 
         public async Task<bool> IsRequest(int userId, int requestUserId)
         {
-            return await _base.AnyAsync(b => (b.UserId == userId && b.StoredUserId == requestUserId));
+            try
+            {
+                return await _base.AnyAsync(b => (b.UserId == userId && b.StoredUserId == requestUserId));
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"{e.Message};GotSentFriendRequestModelRepository");
+                throw;
+            }
         }
 
         public async Task<bool> RemoveAsync(int userId, int requestUserId)
         {
-            _base.Remove(await _base.FirstAsync(b => (b.UserId == userId && b.StoredUserId == requestUserId)));
-            return await SaveChanges.SaveAsync(_db);
+            try
+            {
+                _base.Remove(await _base.FirstAsync(b => (b.UserId == userId && b.StoredUserId == requestUserId)));
+                return await SaveChanges.SaveAsync(_db);
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"{e.Message};GotSentFriendRequestModelRepository");
+                throw;
+            }
         }
     }
 }

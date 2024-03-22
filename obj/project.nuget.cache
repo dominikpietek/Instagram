@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "EheDmKSmY+OyVuUUktJHtaGcRFRXpe0u3FHq+BZd3vj96YLG4y9jt06Uf1TFtJpwyktYT5EPi1YCOs4dSIO9iQ==",
+  "dgSpecHash": "piUi77rt6zxj7yD6BBAbol0sk4usnAMOJnU5kaMm3AbkljwbTHTrsTmzesI2aTNY5ckM57Wbc5ZUTJWzyOujjA==",
   "success": true,
   "projectFilePath": "C:\\Programs\\Instagram\\Instagram\\Instagram.csproj",
   "expectedPackageFiles": [
@@ -63,6 +63,10 @@
     "C:\\Users\\domin\\.nuget\\packages\\microsoft.win32.systemevents\\7.0.0\\microsoft.win32.systemevents.7.0.0.nupkg.sha512",
     "C:\\Users\\domin\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
     "C:\\Users\\domin\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\domin\\.nuget\\packages\\nlog\\5.2.8\\nlog.5.2.8.nupkg.sha512",
+    "C:\\Users\\domin\\.nuget\\packages\\nlog.config\\4.7.15\\nlog.config.4.7.15.nupkg.sha512",
+    "C:\\Users\\domin\\.nuget\\packages\\nlog.extensions.logging\\5.3.8\\nlog.extensions.logging.5.3.8.nupkg.sha512",
+    "C:\\Users\\domin\\.nuget\\packages\\nlog.schema\\4.7.15\\nlog.schema.4.7.15.nupkg.sha512",
     "C:\\Users\\domin\\.nuget\\packages\\system.buffers\\4.5.1\\system.buffers.4.5.1.nupkg.sha512",
     "C:\\Users\\domin\\.nuget\\packages\\system.codedom\\4.4.0\\system.codedom.4.4.0.nupkg.sha512",
     "C:\\Users\\domin\\.nuget\\packages\\system.configuration.configurationmanager\\5.0.0\\system.configuration.configurationmanager.5.0.0.nupkg.sha512",

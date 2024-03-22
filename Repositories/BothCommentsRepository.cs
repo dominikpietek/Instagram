@@ -3,6 +3,7 @@ using Instagram.Interfaces;
 using Instagram.Models;
 using Instagram.Services;
 using Microsoft.EntityFrameworkCore;
+using NLog;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace Instagram.Repositories
     {
         private readonly InstagramDbContext _db;
         private readonly DbSet<T> _base;
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public BothCommentsRepository(InstagramDbContext db)
         {
@@ -27,39 +29,72 @@ namespace Instagram.Repositories
         {
             try
             {
-                _base.Add(comment);
+                await _base.AddAsync(comment);
                 return await SaveChanges.SaveAsync(_db);
             }
             catch(Exception e)
             {
-                throw e;
+                _logger.Error($"{e.Message};BothCommentsRepository");
+                throw;
             }
         }
 
         public async Task<bool> DeleteCommentAsync(int commentId)
         {
-            _base.Remove(await _base.FirstAsync(c => c.Id == commentId));
-            return await SaveChanges.SaveAsync(_db);
+            try
+            {
+                _base.Remove(await _base.FirstAsync(c => c.Id == commentId));
+                return await SaveChanges.SaveAsync(_db);
+            }
+            catch(Exception e)
+            {
+                _logger.Error($"{e.Message};BothCommentsRepository");
+                throw;
+            }
         }
 
         public async Task<T> GetCommentAsync(int commentId)
         {
-            return _base.First(c => c.Id == commentId);
+            try
+            {
+                return _base.First(c => c.Id == commentId);
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"{e.Message};BothCommentsRepository");
+                throw;
+            }
         }
 
         public async Task<Comment> GetCommentWithResponsesAsync(int commentId)
         {
-            if (typeof(T) == typeof(Comment))
+            try
             {
-                return _db.Comments.Include(c => c.CommentResponses).First(c => c.Id == commentId);
+                if (typeof(T) == typeof(Comment))
+                {
+                    return _db.Comments.Include(c => c.CommentResponses).First(c => c.Id == commentId);
+                }
+                return new Comment();
             }
-            return new Comment();
+            catch (Exception e)
+            {
+                _logger.Error($"{e.Message};BothCommentsRepository");
+                throw;
+            }
         }
 
         public async Task<bool> UpdateCommentAsync(T comment)
         {
-            _base.Update(comment);
-            return await SaveChanges.SaveAsync(_db);
+            try
+            {
+                _base.Update(comment);
+                return await SaveChanges.SaveAsync(_db);
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"{e.Message};BothCommentsRepository");
+                throw;
+            }
         }
     }
 }

@@ -30,8 +30,10 @@
                             </EllipseGeometry>
                         </Ellipse.Clip>
                     </Ellipse>
-                    <Label Content="{Binding Nickname}"/>
-                    <Label Content="{Binding LastMessage}"/>
+                    <StackPanel Orientation="Vertical">
+                        <Label Content="{Binding Nickname}" FontSize="16" Margin="6"/>
+                        <Label Content="{Binding LastMessage}" FontSize="16" Margin="6"/>
+                    </StackPanel>
                 </StackPanel>
             </Button.Content>
         </Button>
