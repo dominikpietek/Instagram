@@ -161,7 +161,7 @@
                 <ItemsControl ItemsSource="{Binding SearchedUsersSection}"/>
             </ScrollViewer.Content>
         </ScrollViewer>
-        <ScrollViewer Grid.Row="4" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2">
+        <ScrollViewer Grid.Row="4" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2" x:Name="MainScrollViewer">
             <StackPanel x:Name="MainContainer"/>
         </ScrollViewer>
         <StackPanel Orientation="Vertical" Grid.Row="2" Grid.Column="3" Grid.RowSpan="3">

@@ -205,6 +205,7 @@ namespace Instagram.ViewModels
         private SearchFilterRepository _SearchFilterRepository;
         private List<SearchUserDto> _searchUsersDtos;
         private readonly Func<bool> _IsMouseOverSearchingFriends;
+        private readonly Action _ScrollToBottom;
         #endregion
         public FeedViewModel(
             Action CloseWindow,
@@ -221,7 +222,8 @@ namespace Instagram.ViewModels
             IAbstractFactory<CheckProfileUserControl> checkProfileFactory,
             IAbstractFactory<SearchedUserView> searchedUserFactory,
             InstagramDbContext db,
-            Func<bool> IsMouseOverSearchingFriends
+            Func<bool> IsMouseOverSearchingFriends,
+            Action ScrollToBottom
             )
         {
             #region PrivatePropertiesAssignment
@@ -244,6 +246,7 @@ namespace Instagram.ViewModels
             _checkProfileFactory = checkProfileFactory;
             _searchedUserFactory = searchedUserFactory;
             _IsMouseOverSearchingFriends = IsMouseOverSearchingFriends;
+            _ScrollToBottom = ScrollToBottom;
             #endregion
             #region CommandsInstances
             CreateNewPost = new CreateNewPostOpenWindowCommand(_newPostFactory, UpdatePosts);
@@ -393,6 +396,7 @@ namespace Instagram.ViewModels
         public void ShowMessenger()
         {
             _messengerUserControl = _messengerFactory.Create();
+            _messengerUserControl.SetDataContext(_ScrollToBottom);
             ShowSomethingInMainBox(_messengerUserControl);
             _isMessengerUCCreated = true;
         }

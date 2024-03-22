@@ -24,7 +24,7 @@ namespace Instagram.Views
             )
         {
             InitializeComponent();
-            DataContext = new FeedViewModel(CloseWindow, MainContainer, this.Resources, newPostFactory, loginFactory, homeFactory, storyFactory, profileFactory, messengerFactory, friendRequestFactory, maybeFriendFactory, checkProfileFactory, searchedUserFactory, db, IsMouseOverSearchingFriends);
+            DataContext = new FeedViewModel(CloseWindow, MainContainer, this.Resources, newPostFactory, loginFactory, homeFactory, storyFactory, profileFactory, messengerFactory, friendRequestFactory, maybeFriendFactory, checkProfileFactory, searchedUserFactory, db, IsMouseOverSearchingFriends, ScrollToBottom);
         }
 
         public void CloseWindow()
@@ -35,6 +35,11 @@ namespace Instagram.Views
         public bool IsMouseOverSearchingFriends()
         {
             return (this.searchScroll.IsMouseOver || this.searchingBox.IsMouseOver);
+        }
+
+        public void ScrollToBottom()
+        {
+            this.MainScrollViewer.ScrollToEnd();
         }
     }
 }

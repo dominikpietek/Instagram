@@ -20,20 +20,26 @@
             <StackPanel.Style>
                 <Style TargetType="StackPanel">
                     <Setter Property="HorizontalAlignment" Value="Left"/>
+                    <Setter Property="Margin" Value="0"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding MyOrHis}" Value="True">
                             <Setter Property="HorizontalAlignment" Value="Right"/>
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding IsTurnChanged}" Value="True">
+                            <Setter Property="Margin" Value="0 10 0 0"/>
+                        </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </StackPanel.Style>
-            <TextBlock Text="{Binding Content}" Padding="10" FontSize="16" MaxWidth="400" TextWrapping="Wrap">
+            <TextBlock Text="{Binding Content}" FontSize="16" MaxWidth="400" TextWrapping="Wrap">
                 <TextBlock.Style>
                     <Style TargetType="TextBlock">
                         <Setter Property="Background" Value="#E9EBEE"/>
+                        <Setter Property="Padding" Value="10"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding MyOrHis}" Value="True">
                                 <Setter Property="Background" Value="#168AFF"/>
+                                <Setter Property="Padding" Value="10 10 22 10"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>

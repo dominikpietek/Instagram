@@ -11,6 +11,7 @@ using Instagram.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,10 @@ namespace Instagram.ComponentsViewModels
 {
     public class MessengerViewModel : ViewModelBase
     {
+        #region ResourcesProperties
+        private string _path;
+        public string SendIcon { get; set; }
+        #endregion
         #region OnPropertyChangedProperties
         private string _WritenTextInMessenger;
         public string WritenTextInMessenger 
@@ -80,15 +85,18 @@ namespace Instagram.ComponentsViewModels
         private readonly IFriendRepository _friendRepository;
         private readonly IAbstractFactory<FriendInMessengerView> _friendFactory;
         private readonly IMessageRepository _messageRepository;
+        private readonly Action _ScrollToBottom;
         private int _userId;
         private int _friendId = 0;
         #endregion
-        public MessengerViewModel(InstagramDbContext db, IAbstractFactory<FriendInMessengerView> friendFactory)
+        public MessengerViewModel(InstagramDbContext db, IAbstractFactory<FriendInMessengerView> friendFactory, Action ScrollToBottom)
         {
             #region ProperitesAssignement
+            _path = ConfigurationManager.AppSettings["ResourcesPath"]!;
             _friendRepository = new FriendRepository(db);
             _friendFactory = friendFactory;
             _messageRepository = new MessageRepository(db);
+            _ScrollToBottom = ScrollToBottom;
             AreMessagesShown = false;
             SendMessageButton = new SendMessageCommand(SendMessage);
             #endregion
@@ -97,6 +105,7 @@ namespace Instagram.ComponentsViewModels
 
         public async Task Init()
         {
+            SendIcon = $"{_path}/sendMessageIcon.png";
             _userId = await GetUser.IdFromFile(); ;
             AreMessagesShown = false;
             FriendsList = new ObservableCollection<FriendInMessengerView>();
@@ -117,25 +126,32 @@ namespace Instagram.ComponentsViewModels
             List<Message> myMessages = await _messageRepository.GetUserMessagesToFriend(_userId, friendId);
             List<Message> hisMessages = await _messageRepository.GetUserMessagesToFriend(friendId, _userId);
             List<Message> messages = myMessages.Concat(hisMessages).OrderBy(m => m.SendDate).ToList();
+            int previousMessageId = _userId;
             foreach (Message message in messages)
             {
-                Message.Add(new MessageView(message));
+                if (previousMessageId != message.UserId)
+                {
+                    Message.Add(new MessageView(message, true));
+                }
+                Message.Add(new MessageView(message, false));
+                previousMessageId = message.UserId;
             }
             AreMessagesShown = true;
+            _ScrollToBottom.Invoke();
         }
 
         public async Task SendMessage()
         {
-            await _messageRepository.AddMessage(new Message()
+            Message message = new Message()
             {
                 Content = WritenTextInMessenger,
                 UserId = _userId,
                 FriendId = _friendId,
                 SendDate = DateTime.Now
-            });
-            //update messages
-            // change something
+            };
+            await _messageRepository.AddMessage(message);
             WritenTextInMessenger = "";
+            Message.Add(new MessageView(message, true));
         }
     }
 }

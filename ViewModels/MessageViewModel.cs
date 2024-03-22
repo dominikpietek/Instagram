@@ -15,12 +15,14 @@ namespace Instagram.ViewModels
     {
         public string Content { get; set; }
         public bool MyOrHis { get; set; }
+        public bool IsTurnChanged { get; set; }
 
         private readonly Message _message;
 
-        public MessageViewModel(Message message)
+        public MessageViewModel(Message message, bool isTurnChanged)
         {
             _message = message;
+            IsTurnChanged = isTurnChanged;
             Init();
         }
 

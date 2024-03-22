@@ -6,14 +6,6 @@
              xmlns:local="clr-namespace:Instagram.Components"
              mc:Ignorable="d" >
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="480"/>
-            <RowDefinition Height="40"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="510"/>
-            <ColumnDefinition Width="10"/>
-        </Grid.ColumnDefinitions>
         <Label Content="You have no friends :(" FontSize="22" FontWeight="Black">
             <Label.Style>
                 <Style TargetType="Label">
@@ -41,19 +33,7 @@
                 </Style>
             </ItemsControl.Style>
         </ItemsControl>
-        <ItemsControl ItemsSource="{Binding Message, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
-            <ItemsControl.Style>
-                <Style TargetType="ItemsControl">
-                    <Setter Property="Visibility" Value="Visible"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding AreMessagesShown}" Value="false">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ItemsControl.Style>
-        </ItemsControl>
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Width="520">
+        <StackPanel Orientation="Vertical">
             <StackPanel.Style>
                 <Style TargetType="StackPanel">
                     <Setter Property="Visibility" Value="Visible"/>
@@ -64,9 +44,37 @@
                     </Style.Triggers>
                 </Style>
             </StackPanel.Style>
-            <TextBox  Text="{Binding WritenTextInMessenger, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="470"/>
-            <Button Width="40" Command="{Binding SendMessageButton}" Cursor="Hand"/>
-            <!--add validation-->
+            <ItemsControl ItemsSource="{Binding Message, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                <ItemsControl.Style>
+                    <Style TargetType="ItemsControl">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding AreMessagesShown}" Value="false">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ItemsControl.Style>
+            </ItemsControl>
+            <StackPanel Orientation="Horizontal" Width="520" Margin="0 15 0 0">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding AreMessagesShown}" Value="false">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <TextBox  Text="{Binding WritenTextInMessenger, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="450" Padding="10" FontSize="14" Height="50" VerticalContentAlignment="Center"/>
+                <Button Width="50" Command="{Binding SendMessageButton}" Cursor="Hand" Background="Transparent" BorderThickness="0">
+                    <Button.Content>
+                        <Image Source="{Binding SendIcon}"/>
+                    </Button.Content>
+                </Button>
+                <!--add validation-->
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>

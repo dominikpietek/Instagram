@@ -1,37 +1,30 @@
 ﻿using Instagram.ComponentsViewModels;
 using Instagram.Databases;
-using Instagram.DTOs;
-using Instagram.JSONModels;
-using Instagram.Models;
 using Instagram.Services;
 using Instagram.StartupHelpers;
 using Instagram.Views;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Instagram.Components
 {
     public partial class MessengerUserControl : UserControl
     {
+        private readonly InstagramDbContext _db;
+        private readonly IAbstractFactory<FriendInMessengerView> _friendFactory;
+
         public MessengerUserControl(InstagramDbContext db, IAbstractFactory<FriendInMessengerView> friendFactory)
         {
             ChangeMessengerTheme();
-            this.DataContext = new MessengerViewModel(db, friendFactory);
             InitializeComponent();
+            _db = db;
+            _friendFactory = friendFactory;
+        }
+
+        public void SetDataContext(Action ScrollToBottom)
+        {
+            this.DataContext = new MessengerViewModel(_db, _friendFactory, ScrollToBottom);
         }
 
         public async Task ChangeMessengerTheme()
