@@ -81,9 +81,6 @@
                     </Binding.ValidationRules>
                 </Binding>
             </components:PasswordBoxUserControl.Password>
-            <components:PasswordBoxUserControl.BackgroundColour>
-                <Binding Path="BackgroundColour" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay"/>
-            </components:PasswordBoxUserControl.BackgroundColour>
             <components:PasswordBoxUserControl.ToolTip>
                 <Label Content="Enter your password"/>
             </components:PasswordBoxUserControl.ToolTip>

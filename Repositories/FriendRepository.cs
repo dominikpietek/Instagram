@@ -100,7 +100,7 @@ namespace Instagram.Repositories
         {
             try
             {
-                return _db.Friends.First(f => f.UserId == userId && f.FriendId == friendId);
+                return await _db.Friends.FirstAsync(f => f.UserId == userId && f.FriendId == friendId);
             }
             catch (Exception e)
             {

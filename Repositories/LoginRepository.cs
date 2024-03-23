@@ -67,15 +67,6 @@ namespace Instagram.Repositories
             userJSON.Save(userJSONModel);
         }
 
-        public async Task AutomaticLoginAsync(string emailNickname)
-        {
-            IsInDatabaseRepository isInDatabase = new IsInDatabaseRepository(_userRepository, emailNickname);
-            if (await isInDatabase.CheckLoginAsync("Email or Nickname doesn't exist!"))
-            {
-                CloseLoginWindowAndShowMainWindow();
-            }
-        }
-
         public async Task CheckWithDatabaseAsync(string password, string emailNickname, bool rememberMe)
         {
             IsInDatabaseRepository isInDatabase = new IsInDatabaseRepository(_userRepository, emailNickname);

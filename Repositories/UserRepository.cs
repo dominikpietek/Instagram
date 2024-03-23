@@ -125,7 +125,7 @@ namespace Instagram.Repositories
         {
             try
             {
-                return await _db.Users.FirstAsync(u => u.Nickname == nickname);
+                return _db.Users.First(u => u.Nickname == nickname);
             }
             catch (Exception e)
             {
@@ -138,7 +138,7 @@ namespace Instagram.Repositories
         {
             try
             {
-                return await _db.Users.FirstAsync(u => u.EmailAdress == email);
+                return _db.Users.First(u => u.EmailAdress == email);
             }
             catch (Exception e)
             {
@@ -152,7 +152,7 @@ namespace Instagram.Repositories
         {
             try
             {
-                return await _db.Users.FirstAsync(u => u.Id == id);
+                return _db.Users.First(u => u.Id == id);
             }
             catch (Exception e)
             {

@@ -65,9 +65,6 @@
                     </Binding.ValidationRules>
                 </Binding>
             </components:PasswordBoxUserControl.Password>
-            <components:PasswordBoxUserControl.BackgroundColour>
-                <Binding Path="BackgroundColour" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay"/>
-            </components:PasswordBoxUserControl.BackgroundColour>
             <components:PasswordBoxUserControl.InputBindings>
                 <KeyBinding Key="Return" Command="{Binding GoToNextBoxCommand}"/>
             </components:PasswordBoxUserControl.InputBindings>

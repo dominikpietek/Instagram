@@ -89,9 +89,6 @@
                     </Binding.ValidationRules>
                 </Binding>
             </components:PasswordBoxUserControl.Password>
-            <components:PasswordBoxUserControl.BackgroundColour>
-                <Binding Path="BackgroundColour" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay"/>
-            </components:PasswordBoxUserControl.BackgroundColour>
             <components:PasswordBoxUserControl.ToolTip>
                 <Label Content="Enter your password"/>
             </components:PasswordBoxUserControl.ToolTip>
@@ -105,12 +102,6 @@
                     </Binding.ValidationRules>
                 </Binding>
             </components:PasswordBoxUserControl.Password>
-            <components:PasswordBoxUserControl.BackgroundColour>
-                <Binding Path="BackgroundColour" UpdateSourceTrigger="PropertyChanged" Mode="TwoWay"/>
-            </components:PasswordBoxUserControl.BackgroundColour>
-            <components:PasswordBoxUserControl.ToolTip>
-                <Label Content="Enter your password"/>
-            </components:PasswordBoxUserControl.ToolTip>
         </components:PasswordBoxUserControl>
         <Label Content="FIRST NAME:" Grid.Column="1" Grid.Row="15"/>
         <TextBox Grid.Column="1" Grid.Row="16" Padding="7" VerticalAlignment="Center" Validation.ErrorTemplate="{StaticResource validationTemplate}" x:Name="firstNameBox" Height="40">

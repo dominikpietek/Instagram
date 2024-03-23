@@ -43,7 +43,7 @@ namespace Instagram.Repositories
         {
             try
             {
-                _base.Remove(await _base.FirstAsync(c => c.Id == commentId));
+                _base.Remove(_base.First(c => c.Id == commentId));
                 return await SaveChanges.SaveAsync(_db);
             }
             catch(Exception e)

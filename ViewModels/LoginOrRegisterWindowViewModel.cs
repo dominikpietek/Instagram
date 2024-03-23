@@ -1,27 +1,13 @@
 ﻿using Instagram.Commands;
 using Instagram.Databases;
-using Instagram.JSONModels;
-using Instagram.Models;
 using Instagram.Repositories;
 using Instagram.Services;
 using Instagram.StartupHelpers;
 using Instagram.Views;
-using Newtonsoft.Json;
 using System;
-using System.CodeDom;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Nodes;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Shapes;
 
 namespace Instagram.ViewModels
 {
@@ -116,13 +102,6 @@ namespace Instagram.ViewModels
         private async Task Init()
         {
             VerifyAutoLogin verifyAutoLogin = new VerifyAutoLogin();
-
-            // check auto login
-            if (await verifyAutoLogin.IsAutoLogged())
-            {
-                await _loginRepository.AutomaticLoginAsync(verifyAutoLogin.LoginName());
-            }
-
             // assign properties
             EmailNickname = verifyAutoLogin.LoginName();
             RememberMe = verifyAutoLogin.IsUserRemembered();

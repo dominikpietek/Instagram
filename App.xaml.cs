@@ -1,6 +1,9 @@
 ﻿using Instagram.Components;
 using Instagram.Databases;
+using Instagram.Interfaces;
 using Instagram.Models;
+using Instagram.Repositories;
+using Instagram.Services;
 using Instagram.StartupHelpers;
 using Instagram.ViewModels;
 using Instagram.Views;
@@ -49,10 +52,24 @@ namespace Instagram
         {
             await AppHost!.StartAsync();
 
-            var startupForm = AppHost.Services.GetRequiredService<LoginOrRegisterWindowView>();
-            startupForm.Show();
+            InstagramDbContext dbContext = new InstagramDbContext();
+            IUserRepository userRepository = new UserRepository(dbContext);
+            User user = await GetUser.FromDbAndFileAsync(userRepository);
 
-            base.OnStartup(e);
+            IsInDatabaseRepository isInDatabase = new IsInDatabaseRepository(userRepository, user.Nickname);
+            if (await isInDatabase.CheckLoginAsync("Email or Nickname doesn't exist!"))
+            {
+                var startupForm = AppHost.Services.GetRequiredService<FeedView>();
+                startupForm.Show();
+                base.OnStartup(e);
+            }
+
+            else
+            {
+                var startupForm = AppHost.Services.GetRequiredService<LoginOrRegisterWindowView>();
+                startupForm.Show();
+                base.OnStartup(e);
+            }
         }
         protected override async void OnExit(ExitEventArgs e)
         {
