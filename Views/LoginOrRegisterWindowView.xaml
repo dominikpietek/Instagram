@@ -50,7 +50,7 @@
                 </Binding>
             </TextBox.Text>
             <TextBox.ToolTip>
-                <Label Content="Enter your email"/>
+                <Label Content="Enter your email" Foreground="red"/>
             </TextBox.ToolTip>
             <TextBox.InputBindings>
                 <KeyBinding Key="Return" Command="{Binding GoToNextBoxCommand}"/>

@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "piUi77rt6zxj7yD6BBAbol0sk4usnAMOJnU5kaMm3AbkljwbTHTrsTmzesI2aTNY5ckM57Wbc5ZUTJWzyOujjA==",
+  "dgSpecHash": "SHZbH3FaheNtWDClUe8C+ML0kC8BD7g0XO4VM65gIoWCK36Q1aJO4/MtCzLynRu9MPIoc/k1ExP5Iul2LF2KvA==",
   "success": true,
   "projectFilePath": "C:\\Programs\\Instagram\\Instagram\\Instagram.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\domin\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\domin\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
+    "C:\\Users\\domin\\.nuget\\packages\\bogus\\35.5.0\\bogus.35.5.0.nupkg.sha512",
     "C:\\Users\\domin\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\domin\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
     "C:\\Users\\domin\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",

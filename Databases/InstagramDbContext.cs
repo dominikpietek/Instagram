@@ -1,4 +1,5 @@
 ﻿using Instagram.Models;
+using Instagram;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -27,9 +28,23 @@ namespace Instagram.Databases
         public DbSet<CommentResponse> CommentResponses { get; set; }
         public DbSet<Message> Messages { get; set; }
 
+        private readonly string _databaseName;
+
+        public InstagramDbContext(string databaseName)
+        {
+            _databaseName = databaseName;
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings["MainDb"].ConnectionString);
+            try
+            {
+                optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings[_databaseName].ConnectionString);
+            }
+            catch
+            {
+                optionsBuilder.UseSqlServer("Server=DESKTOP-KKCA33K;Database=InstagramDbTests;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True;");
+            }
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

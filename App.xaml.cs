@@ -1,5 +1,6 @@
 ﻿using Instagram.Components;
 using Instagram.Databases;
+using Instagram.GenerateFakeData;
 using Instagram.Interfaces;
 using Instagram.Models;
 using Instagram.Repositories;
@@ -21,11 +22,10 @@ namespace Instagram
         public static IHost? AppHost { get; private set; }
         public App()
         {
-            string connectionString = ConfigurationManager.ConnectionStrings["MainDb"].ConnectionString;
             AppHost = Host.CreateDefaultBuilder()
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddTransient<InstagramDbContext>();
+                    services.AddTransient<InstagramDbContext>(db => new InstagramDbContext("FakeDataDb"));
                     services.AddSingleton<LoginOrRegisterWindowView>();
                     services.AddFormFactory<CreateAccountWindowView>();
                     services.AddFormFactory<CreateNewPostWindowView>();
@@ -50,21 +50,24 @@ namespace Instagram
         }
         protected override async void OnStartup(StartupEventArgs e)
         {
+            CreateFakeData fakeData = new CreateFakeData();
+
             await AppHost!.StartAsync();
 
-            InstagramDbContext dbContext = new InstagramDbContext();
+            InstagramDbContext dbContext = new InstagramDbContext("FakeDataDb");
             IUserRepository userRepository = new UserRepository(dbContext);
-            User user = await GetUser.FromDbAndFileAsync(userRepository);
-
-            IsInDatabaseRepository isInDatabase = new IsInDatabaseRepository(userRepository, user.Nickname);
-            if (await isInDatabase.CheckLoginAsync("Email or Nickname doesn't exist!"))
+            try
             {
-                var startupForm = AppHost.Services.GetRequiredService<FeedView>();
-                startupForm.Show();
-                base.OnStartup(e);
+                User user = await GetUser.FromDbAndFileAsync(userRepository);
+                IsInDatabaseRepository isInDatabase = new IsInDatabaseRepository(userRepository, user.Nickname);
+                if (await isInDatabase.CheckLoginAsync("Email or Nickname doesn't exist!"))
+                {
+                    var startupForm = AppHost.Services.GetRequiredService<FeedView>();
+                    startupForm.Show();
+                    base.OnStartup(e);
+                }
             }
-
-            else
+            catch (Exception ex)
             {
                 var startupForm = AppHost.Services.GetRequiredService<LoginOrRegisterWindowView>();
                 startupForm.Show();
