@@ -1,0 +1,7 @@
+2024-03-26 12:43:13.2188|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
+2024-03-26 12:43:13.3434|ERROR|Instagram.Repositories.GetUser|Sequence contains no elements;GetUser
+2024-03-26 12:43:22.4960|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
+2024-03-26 12:58:34.2229|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
+2024-03-26 13:00:53.9392|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
+2024-03-26 13:02:07.1654|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
+2024-03-26 13:07:13.1081|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository

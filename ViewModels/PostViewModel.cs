@@ -192,7 +192,6 @@ namespace Instagram.ViewModels
             LikeButton = new LikeCommand(LikedThingsEnum.Post, _userId, _postId, UpdateLikes, _userLikedRepository);
             CommentButton = new CommentButtonCommand(UpdateIsCommentClickedToCreateValue);
             CreateComment = new CommentCreateCommand(CreateNewCommentAsync);
-            MessageButton = new OpenCommunicatorWindowCommand();
             DeletePost = new DeletePostCommand(_postId, _postRepository, ShowPosts);
             #endregion
             InitResources();
@@ -206,6 +205,7 @@ namespace Instagram.ViewModels
             TrashIconPath = $"{_path}trashIcon.png";
             ShowMoreIconPath = $"{_path}showMoreIcon.png";
             ShowLessIconPath = $"{_path}showLessIcon.png";
+            _ChangeHomeTheme.Invoke();
         }
 
         private async Task GeneratePostData()

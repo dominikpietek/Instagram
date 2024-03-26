@@ -94,8 +94,8 @@
             <Label Content="{Binding CommentsNumber, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
         </StackPanel>
         <StackPanel Orientation="Vertical" Grid.Row="5">
-            <Label Content="{Binding Description}" Margin="0 0 0 20"/>
-            <Label Content="{Binding Tags}" Margin="0 0 0 10"/>
+            <TextBlock Text="{Binding Description}" Margin="0 0 0 20" TextWrapping="Wrap"/>
+            <TextBlock Text="{Binding Tags}" Margin="0 0 0 10" TextWrapping="Wrap"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Grid.Row="6" Height="60">
             <StackPanel.Style>

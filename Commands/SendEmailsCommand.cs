@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Windows;
 
 namespace Instagram.Commands
 {
@@ -10,7 +6,7 @@ namespace Instagram.Commands
     {
         public override void Execute(object parameter)
         {
-            throw new NotImplementedException();
+            MessageBox.Show("Will be soon! :)");
         }
     }
 }

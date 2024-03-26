@@ -50,7 +50,7 @@ namespace Instagram
         }
         protected override async void OnStartup(StartupEventArgs e)
         {
-            CreateFakeData fakeData = new CreateFakeData();
+            //CreateFakeData fakeData = new CreateFakeData();
 
             await AppHost!.StartAsync();
 
