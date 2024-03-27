@@ -16,5 +16,5 @@ C:\Programs\Instagram\Instagram\App.xaml
 247321738663
 Components\CheckProfileUserControl.xaml;Components\HomeUserControl.xaml;Components\MessengerUserControl.xaml;Components\PasswordBoxUserControl.xaml;Components\ProfileUserControl.xaml;ResourceDictionaries\BrightModeDictionary.xaml;ResourceDictionaries\ButtonValidationDictionary.xaml;ResourceDictionaries\DarkModeDictionary.xaml;Themes\Generic.xaml;Views\CommentView.xaml;Views\CreateAccountWindowView.xaml;Views\CreateNewPostWindowView.xaml;Views\CreateNewStoryView.xaml;Views\FeedView.xaml;Views\FriendInMessengerView.xaml;Views\FriendRequestView.xaml;Views\LoginOrRegisterWindowView.xaml;Views\MaybeFriendView.xaml;Views\MessageView.xaml;Views\PostView.xaml;Views\ReplyCommentView.xaml;Views\SearchedUserView.xaml;Views\StoryUserView.xaml;Views\StoryView.xaml;
 
-True
+False
 
