@@ -2,13 +2,14 @@
 
 Aplikacja jest wzorowana na popularnym instagramie, którego głównymi funkcjami jest umieszczanie postów, stories (zdjęć widocznych tylko przez 24h) oraz komunikacji ze znajmomymi.
 
+
 # Użyte biblioteki i wzorce projektowe
 
 Biblioteki:
 - Entity Framework Core
 - Nlog
 - Newtonsoft.json
-- XUnit
+- XUnit (testy w jednostkowe i integracyjne w osobnym repozytorium)
 - Bogus
 
 Wzorce projektowe:
@@ -19,6 +20,7 @@ Wzorce projektowe:
 
 Inne:
 - Szyfrowanie haseł przez hashowanie
+
 
 # Zdjęcia gotowego projektu i jego funkcji
 
@@ -87,6 +89,7 @@ Stories oraz ich tworzenie:
 
 <img src="ReadmePhotos/story.png"/>
 
+
 # Creditsy:
 
 Zdjęcia do wygenerowania kont i postów pobrane z:
@@ -95,9 +98,17 @@ https://pixabay.com/
 Algorytm hashowania:
 https://www.sean-lloyd.com/post/hash-a-string/
 
+
 # Jak zainstalować? (Quick start)
 
-niedługo :)
+1. Należy pobrać aplikację z: https://drive.google.com/drive/folders/1VV8W6N7CyXNH3p-z7Eq6tlAKJFnA9fdI
+
+2. W pobranym folderze znaleźć plik Instagram.exe
+
+3. Uruchomić go.
+
+4. Program gotowy do użytku, a potrzebne hasła do wygenerowanych kont znajdują się na githubie w GenerateFakeData/LoginData.txt
+
 
 # Kim jest kontrybutor?
 
