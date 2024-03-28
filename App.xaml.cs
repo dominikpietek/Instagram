@@ -50,6 +50,8 @@ namespace Instagram
         }
         protected override async void OnStartup(StartupEventArgs e)
         {
+            AssignRelativePaths();
+
             //CreateFakeData fakeData = new CreateFakeData();
 
             await AppHost!.StartAsync();
@@ -78,6 +80,13 @@ namespace Instagram
         {
             await AppHost!.StopAsync();
             base.OnExit(e);
+        }
+
+        private void AssignRelativePaths()
+        {
+            string path = Environment.CurrentDirectory;
+            ConfigurationManager.AppSettings["DatabasesPath"] = $"{path}\\Databases\\";
+            ConfigurationManager.AppSettings["ResourcesPath"] = $"{path}\\Resources\\";
         }
     }
 }

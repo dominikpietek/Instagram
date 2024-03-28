@@ -103,11 +103,15 @@ https://www.sean-lloyd.com/post/hash-a-string/
 
 1. Należy pobrać aplikację z: https://drive.google.com/drive/folders/1VV8W6N7CyXNH3p-z7Eq6tlAKJFnA9fdI
 
-2. W pobranym folderze znaleźć plik Instagram.exe
+2. Trzeba posiadać zainstalowanego dockera i go uruchomić.
 
-3. Uruchomić go.
+3. Należy wywołać w terminalu komendę: docker run dominikpietek/sql:instagram
 
-4. Program gotowy do użytku, a potrzebne hasła do wygenerowanych kont znajdują się na githubie w GenerateFakeData/LoginData.txt
+4. W pobranym folderze znaleźć plik Instagram.exe
+
+5. Uruchomić go.
+
+6. Program gotowy do użytku, a potrzebne hasła do wygenerowanych kont znajdują się na githubie w GenerateFakeData/LoginData.txt
 
 
 # Kim jest kontrybutor?

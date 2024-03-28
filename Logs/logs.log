@@ -10,3 +10,19 @@
 2024-03-27 14:53:21.0990|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
 2024-03-27 14:53:43.4656|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
 2024-03-27 14:53:43.6060|ERROR|Instagram.Repositories.GetUser|Sequence contains no elements;GetUser
+2024-03-27 22:17:49.3614|ERROR|Instagram.Repositories.GetUser|Could not find a part of the path 'C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\Databases\UserData.json'.;GetUser
+2024-03-27 22:17:50.0728|ERROR|Instagram.Repositories.GetUser|Could not find a part of the path 'C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\Databases\UserData.json'.;GetUser
+2024-03-27 22:18:39.8672|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
+2024-03-27 22:18:39.9906|ERROR|Instagram.Repositories.GetUser|Sequence contains no elements;GetUser
+2024-03-28 10:20:43.2592|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
+2024-03-28 10:20:43.3881|ERROR|Instagram.Repositories.GetUser|Sequence contains no elements;GetUser
+2024-03-28 10:21:25.8230|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
+2024-03-28 10:21:25.9656|ERROR|Instagram.Repositories.GetUser|Sequence contains no elements;GetUser
+2024-03-28 10:21:36.6396|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
+2024-03-28 10:28:58.6336|ERROR|Instagram.Repositories.UserRepository|A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: TCP Provider, error: 0 - No connection could be made because the target machine actively refused it.);UserRepository
+2024-03-28 10:28:58.6639|ERROR|Instagram.Repositories.GetUser|A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: TCP Provider, error: 0 - No connection could be made because the target machine actively refused it.);GetUser
+2024-03-28 10:29:31.5033|ERROR|Instagram.Repositories.UserRepository|An exception has been raised that is likely due to a transient failure. Consider enabling transient error resiliency by adding 'EnableRetryOnFailure' to the 'UseSqlServer' call.;UserRepository
+2024-03-28 10:29:31.5243|ERROR|Instagram.Repositories.GetUser|An exception has been raised that is likely due to a transient failure. Consider enabling transient error resiliency by adding 'EnableRetryOnFailure' to the 'UseSqlServer' call.;GetUser
+2024-03-28 10:29:57.4789|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
+2024-03-28 10:31:31.1763|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
+2024-03-28 10:31:51.1993|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository

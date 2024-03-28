@@ -14,7 +14,7 @@ namespace Instagram.GenerateFakeData
 {
     public class CreateFakeData
     {
-        private int _lastId;
+        private int _lastId = 0;
         public CreateFakeData()
         {
             List<string> loremipsum = new List<string>();
@@ -29,7 +29,14 @@ namespace Instagram.GenerateFakeData
             using (InstagramDbContext db = new InstagramDbContext("FakeDataDb"))
             {
                 // truncate
-                _lastId = db.Users.OrderBy(u => u.Id).Last().Id;
+                try
+                {
+                    _lastId = db.Users.OrderBy(u => u.Id).Last().Id;
+                }
+                catch (Exception)
+                {
+                    
+                }
                 db.Users.RemoveRange(db.Users);
                 db.Posts.RemoveRange(db.Posts);
                 db.Tags.RemoveRange(db.Tags);
