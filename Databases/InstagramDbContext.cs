@@ -34,20 +34,18 @@ namespace Instagram.Databases
         public InstagramDbContext(string databaseName)
         {
             _databaseName = databaseName;
-            _databaseName = "Server=localhost,1433;Database=OrderFoodDb;User Id=SA;Password=P4ssw0rd;Trusted_Connection=false;TrustServerCertificate=True;";
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=localhost,1433;Database=OrderFoodDb;User Id=SA;Password=P4ssw0rd;Trusted_Connection=false;TrustServerCertificate=True;");
-            //try
-            //{
-            //    optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings[_databaseName].ConnectionString);
-            //}
-            //catch
-            //{
-            //    optionsBuilder.UseSqlServer("Server=DESKTOP-KKCA33K;Database=InstagramDbTests;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True;");
-            //}
+            try
+            {
+                optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings[_databaseName].ConnectionString);
+            }
+            catch
+            {
+                optionsBuilder.UseSqlServer("Server=DESKTOP-KKCA33K;Database=InstagramDbTests;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True;");
+            }
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
