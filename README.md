@@ -105,7 +105,7 @@ https://www.sean-lloyd.com/post/hash-a-string/
 
 2. Trzeba posiadać zainstalowanego dockera i go uruchomić.
 
-3. Należy wywołać w terminalu komendę: docker run dominikpietek/sql:instagram
+3. Należy wywołać w terminalu komendę: docker run -p 1433:1433 dominikpietek/sql:instagram
 
 4. W pobranym folderze znaleźć plik Instagram.exe
 
