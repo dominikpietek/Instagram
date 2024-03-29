@@ -64,7 +64,7 @@ namespace Instagram.Repositories
         {
             try
             {
-                await _db.Users.Where(u => u.Id == id).ExecuteDeleteAsync();
+                _db.Users.Remove(_db.Users.Where(u => u.Id == id).First());
                 return await SaveChanges.SaveAsync(_db);
             }
             catch (Exception e)

@@ -1,28 +1,22 @@
-2024-03-26 12:43:13.2188|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
-2024-03-26 12:43:13.3434|ERROR|Instagram.Repositories.GetUser|Sequence contains no elements;GetUser
-2024-03-26 12:43:22.4960|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
-2024-03-26 12:58:34.2229|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
-2024-03-26 13:00:53.9392|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
-2024-03-26 13:02:07.1654|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
-2024-03-26 13:07:13.1081|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
-2024-03-26 13:11:27.2373|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
-2024-03-27 14:49:34.0325|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
-2024-03-27 14:53:21.0990|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
-2024-03-27 14:53:43.4656|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
-2024-03-27 14:53:43.6060|ERROR|Instagram.Repositories.GetUser|Sequence contains no elements;GetUser
-2024-03-27 22:17:49.3614|ERROR|Instagram.Repositories.GetUser|Could not find a part of the path 'C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\Databases\UserData.json'.;GetUser
-2024-03-27 22:17:50.0728|ERROR|Instagram.Repositories.GetUser|Could not find a part of the path 'C:\Programs\Instagram\Instagram\bin\Debug\net6.0-windows\Databases\UserData.json'.;GetUser
-2024-03-27 22:18:39.8672|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
-2024-03-27 22:18:39.9906|ERROR|Instagram.Repositories.GetUser|Sequence contains no elements;GetUser
-2024-03-28 10:20:43.2592|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
-2024-03-28 10:20:43.3881|ERROR|Instagram.Repositories.GetUser|Sequence contains no elements;GetUser
-2024-03-28 10:21:25.8230|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
-2024-03-28 10:21:25.9656|ERROR|Instagram.Repositories.GetUser|Sequence contains no elements;GetUser
-2024-03-28 10:21:36.6396|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
-2024-03-28 10:28:58.6336|ERROR|Instagram.Repositories.UserRepository|A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: TCP Provider, error: 0 - No connection could be made because the target machine actively refused it.);UserRepository
-2024-03-28 10:28:58.6639|ERROR|Instagram.Repositories.GetUser|A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: TCP Provider, error: 0 - No connection could be made because the target machine actively refused it.);GetUser
-2024-03-28 10:29:31.5033|ERROR|Instagram.Repositories.UserRepository|An exception has been raised that is likely due to a transient failure. Consider enabling transient error resiliency by adding 'EnableRetryOnFailure' to the 'UseSqlServer' call.;UserRepository
-2024-03-28 10:29:31.5243|ERROR|Instagram.Repositories.GetUser|An exception has been raised that is likely due to a transient failure. Consider enabling transient error resiliency by adding 'EnableRetryOnFailure' to the 'UseSqlServer' call.;GetUser
-2024-03-28 10:29:57.4789|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
-2024-03-28 10:31:31.1763|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
-2024-03-28 10:31:51.1993|ERROR|Instagram.Repositories.UserRepository|Sequence contains no elements;UserRepository
+2024-03-28 16:15:46.5306|ERROR|Instagram.Repositories.BothCommentsRepository`1|An error occurred while saving the entity changes. See the inner exception for details.;BothCommentsRepository
+2024-03-28 16:16:02.6613|ERROR|Instagram.Repositories.BothCommentsRepository`1|Sequence contains no elements;BothCommentsRepository
+2024-03-28 16:16:02.7778|ERROR|Instagram.Repositories.BothCommentsRepository`1|Sequence contains no elements;BothCommentsRepository
+2024-03-28 16:16:02.8326|ERROR|Instagram.Repositories.BothCommentsRepository`1|Sequence contains no elements;BothCommentsRepository
+2024-03-28 16:18:24.0200|ERROR|Instagram.Repositories.BothCommentsRepository`1|An error occurred while saving the entity changes. See the inner exception for details.;BothCommentsRepository
+2024-03-28 16:21:39.2715|ERROR|Instagram.Repositories.FriendRepository|Sequence contains no elements.;FriendRepository
+2024-03-28 16:21:39.2909|ERROR|Instagram.Repositories.FriendRepository|Sequence contains no elements.;FriendRepository
+2024-03-28 16:21:49.4767|ERROR|Instagram.Repositories.FriendRepository|Sequence contains no elements.;FriendRepository
+2024-03-28 16:21:49.4986|ERROR|Instagram.Repositories.FriendRepository|Sequence contains no elements.;FriendRepository
+2024-03-28 16:22:11.1765|ERROR|Instagram.Repositories.FriendRepository|Sequence contains no elements.;FriendRepository
+2024-03-28 16:22:11.1969|ERROR|Instagram.Repositories.FriendRepository|Sequence contains no elements.;FriendRepository
+2024-03-28 16:23:37.7276|ERROR|Instagram.Repositories.FriendRepository|Sequence contains no elements.;FriendRepository
+2024-03-28 16:23:37.7456|ERROR|Instagram.Repositories.FriendRepository|Sequence contains no elements.;FriendRepository
+2024-03-28 16:26:34.6709|ERROR|Instagram.Repositories.FriendRepository|Sequence contains no elements.;FriendRepository
+2024-03-28 16:26:34.6899|ERROR|Instagram.Repositories.FriendRepository|Sequence contains no elements.;FriendRepository
+2024-03-28 16:27:58.4393|ERROR|Instagram.Repositories.BothCommentsRepository`1|Sequence contains no elements;BothCommentsRepository
+2024-03-29 10:53:19.8506|ERROR|Instagram.Repositories.GotSentFriendRequestModelRepository`1|Sequence contains no elements.;GotSentFriendRequestModelRepository
+2024-03-29 10:53:44.1490|ERROR|Instagram.Repositories.GotSentFriendRequestModelRepository`1|Sequence contains no elements.;GotSentFriendRequestModelRepository
+2024-03-29 10:56:06.6695|ERROR|Instagram.Repositories.GotSentFriendRequestModelRepository`1|The database operation was expected to affect 1 row(s), but actually affected 0 row(s); data may have been modified or deleted since entities were loaded. See http://go.microsoft.com/fwlink/?LinkId=527962 for information on understanding and handling optimistic concurrency exceptions.;GotSentFriendRequestModelRepository
+2024-03-29 10:56:06.7975|ERROR|Instagram.Repositories.FriendRepository|Sequence contains no elements.;FriendRepository
+2024-03-29 11:37:15.8904|ERROR|Instagram.Repositories.FriendRepository|Sequence contains no elements;FriendRepository
+2024-03-29 11:37:34.8364|ERROR|Instagram.Repositories.BothCommentsRepository`1|The database operation was expected to affect 1 row(s), but actually affected 0 row(s); data may have been modified or deleted since entities were loaded. See http://go.microsoft.com/fwlink/?LinkId=527962 for information on understanding and handling optimistic concurrency exceptions.;BothCommentsRepository
